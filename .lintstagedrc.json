@@ -1,3 +1,6 @@
 {
-  "src/**/*.{js,cjs,ts}": ["npm run format && npm run lint"]
+  "src/**/*.{js,cjs,ts}": [
+    "npm run format",
+    "npm run lint"
+  ]
 }
