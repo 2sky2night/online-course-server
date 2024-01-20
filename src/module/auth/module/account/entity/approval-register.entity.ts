@@ -4,11 +4,13 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { ApplyRegister } from "./index";
+import { Account } from "@src/module/account/entity";
 
 /**
  * 审批申请注册表
@@ -50,5 +52,12 @@ export class ApprovalRegister {
    */
   @OneToOne(() => ApplyRegister)
   @JoinColumn({ name: "apply_id" })
-  apply: ApplyRegister;
+  apply: Promise<ApplyRegister>;
+
+  /**
+   * 一个审批结果对应一个审核人
+   */
+  @ManyToOne(() => Account, (account) => account.register_approvals)
+  @JoinColumn({ name: "account_id" })
+  approval_account: Promise<Account>;
 }

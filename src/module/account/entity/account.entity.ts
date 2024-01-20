@@ -5,10 +5,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Role } from "@src/module/role/entity";
+import { ApprovalRegister } from "src/module/auth/module/account/entity";
 
 @Entity()
 export class Account {
@@ -61,9 +63,15 @@ export class Account {
   deleted_time: Date | null;
 
   /**
-   * 一个账户拥有一个角色
+   * 一个账户拥有一个角色(开启延迟加载，读取角色数据)
    */
   @ManyToOne(() => Role, (role) => role.accounts)
   @JoinColumn({ name: "role_id" })
-  role: Role;
+  role: Promise<Role>;
+
+  /**
+   * 一个账户可以审核多个申请注册的记录
+   */
+  @OneToMany(() => ApprovalRegister, (app) => app.approval_account)
+  register_approvals: ApprovalRegister[];
 }

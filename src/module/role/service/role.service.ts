@@ -6,6 +6,10 @@ import { Roles } from "@src/module/role/enum";
 
 @Injectable()
 export class RoleService {
+  /**
+   * 角色表
+   * @private
+   */
   @InjectRepository(Role)
   private roleRepository: Repository<Role>;
 

@@ -41,8 +41,8 @@ export class AccountService {
           email,
           password: encrypt_password,
         });
-        // 建立与角色的关系
-        account.role = role;
+        // 建立与角色的关系(延迟加载导致需要使用Promise类型)
+        account.role = Promise.resolve(role);
         return this.accountRepository.save(account);
       } else {
         // 角色不存在
@@ -61,5 +61,21 @@ export class AccountService {
    */
   findByName(account_name: string): Promise<Account | null> {
     return this.accountRepository.findOneBy({ account_name });
+  }
+
+  /**
+   * 通过邮箱查询此账户是否存在
+   * @param email 邮箱
+   */
+  findByEmail(email: string) {
+    return this.accountRepository.findOneBy({ email });
+  }
+
+  /**
+   * 通过账户id查询账户
+   * @param account_id 账户id
+   */
+  findById(account_id: number) {
+    return this.accountRepository.findOneBy({ account_id });
   }
 }

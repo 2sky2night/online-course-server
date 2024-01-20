@@ -28,7 +28,7 @@ export function initLoader(accountService: AccountService) {
           Logger.log(ServerMessage.init_super_admin_success);
         }
       } else {
-        Logger.error(ServerMessage.init_role_error);
+        Logger.error(ServerMessage.init_role_error + ":角色不存在!");
       }
     } catch (e) {
       Logger.error(`${ServerMessage.init_role_error}:${e.toString()}`);

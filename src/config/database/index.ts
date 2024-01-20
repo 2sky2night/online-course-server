@@ -6,12 +6,24 @@ import type {
 } from "@nestjs/typeorm";
 import { Role } from "@src/module/role/entity";
 import { Account } from "@src/module/account/entity";
-import { ApplyRegister, ApprovalRegister } from "@src/module/auth/entity";
+import {
+  ApplyRegister,
+  ApprovalRegister,
+} from "src/module/auth/module/account/entity";
+import { User } from "@src/module/user/entity";
+import { UserRegisterType } from "@src/module/auth/module/user/entity";
 
 /**
  * 所有实体
  */
-export const entities = [Role, Account, ApprovalRegister, ApplyRegister];
+export const entities = [
+  Role,
+  Account,
+  ApprovalRegister,
+  ApplyRegister,
+  User,
+  UserRegisterType,
+];
 
 /**
  * 数据库连接配置项工厂函数

@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { ApprovalRegister } from "@src/module/auth/module/account/entity/approval-register.entity";
 
 @Entity()
 export class ApplyRegister {
@@ -30,8 +32,14 @@ export class ApplyRegister {
   /**
    * 申请注册的原因
    */
-  @Column({ comment: "申请注册的原因" })
+  @Column({ comment: "申请注册的原因", type: "text" })
   description: string;
+
+  /**
+   * 申请注册时的邮箱
+   */
+  @Column({ comment: "申请注册的邮箱" })
+  email: string;
 
   /**
    * 申请注册的角色id
@@ -56,4 +64,10 @@ export class ApplyRegister {
    */
   @DeleteDateColumn({ type: "datetime", comment: "删除时间" })
   deleted_time: Date | null;
+
+  /**
+   * 一个申请对应一个审批结果
+   */
+  @OneToOne(() => ApprovalRegister, (approval) => approval.apply)
+  approval: Promise<ApprovalRegister>;
 }
