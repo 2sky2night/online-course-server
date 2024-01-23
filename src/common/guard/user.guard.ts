@@ -5,34 +5,29 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
-import { JwtService } from "@nestjs/jwt";
-import { AccountToken } from "@src/types/common";
 import { AuthMessage } from "@src/config/message";
+import { JwtService } from "@nestjs/jwt";
 
 /**
- * 后台账户守卫
+ * 前台用户守卫
  */
 @Injectable()
-export class AccountGuard implements CanActivate {
+export class UserGuard implements CanActivate {
   private jwtService: JwtService;
 
   constructor() {
     this.jwtService = new JwtService();
   }
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.getToken(request);
-    // 解析token
     try {
-      request.account_token = await this.jwtService.verifyAsync<AccountToken>(
-        token,
-        {
-          secret: process.env.JSON_WEB_TOKEN_ACCOUNT_SECRET,
-        },
-      );
+      request.user_token = this.jwtService.verify(token, {
+        secret: process.env.JSON_WEB_TOKEN_USER_SECRET,
+      });
       return true;
-    } catch (error) {
+    } catch (e) {
       throw new UnauthorizedException(AuthMessage.token_error);
     }
   }

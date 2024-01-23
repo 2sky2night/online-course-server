@@ -24,6 +24,31 @@ export class EmailService {
   }
 
   /**
+   * 给邮箱发送登录验证码
+   * @param email 邮箱地址
+   * @param code 验证码
+   */
+  sendCode(email: string, code: string) {
+    return this.sendMail(
+      email,
+      `【${process.env.APP_NAME}】登录验证码`,
+      `【${process.env.APP_NAME}】您正在进行登录验证，验证码为${code}。提供给他人会导致账号被盗，若非本人操作，请忽视，验证码在五分钟内有效。`,
+    );
+  }
+
+  /**
+   * 将账户申请信息发送给用户邮箱
+   * @param email 邮箱验证码
+   */
+  sendApplyMsg(email: string) {
+    return this.sendMail(
+      email,
+      `【${process.env.APP_NAME}】账号申请`,
+      `【${process.env.APP_NAME}】您正在进行账号申请，发送此邮件是想验证您的邮箱是否正确有效。申请结果会通过此邮件进行通知。`,
+    );
+  }
+
+  /**
    * 将注册申请的审核结果发送给对应的邮箱
    * @param account_name 账户名
    * @param email 邮箱地址

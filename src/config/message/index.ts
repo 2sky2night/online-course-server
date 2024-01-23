@@ -39,6 +39,9 @@ export const AuthMessage = Object.freeze({
   token_error: "token不合法!",
   token_empty: "未携带token!",
   approvaled_error: "此注册申请已经被审批过了",
+  email_code_send_error: "邮箱验证码发送失败，请检查邮箱是否正确!",
+  email_code_error: "邮箱验证码无效!",
+  email_send_error: "发送邮箱失败，请检查邮箱是否正确!",
 });
 
 /**

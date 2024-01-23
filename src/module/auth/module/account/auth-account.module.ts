@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { AuthAccountController } from "@src/module/auth/module/account/controller";
 import { AccountModule } from "@src/module/account/account.module";
@@ -21,10 +22,13 @@ import { EmailModule } from "@src/module/email/email.module";
      * 注入jwt，由于使用环境变量，需要异步注入
      */
     JwtModule.registerAsync({
-      useFactory() {
+      inject: [ConfigService],
+      useFactory(configService: ConfigService) {
         return {
-          secret: process.env.JSON_WEB_TOKEN_ACCOUNT_SECRET,
-          signOptions: { expiresIn: process.env.JSON_WEB_TOKEN_ACCOUNT_TIME },
+          secret: configService.get("JSON_WEB_TOKEN_ACCOUNT_SECRET"),
+          signOptions: {
+            expiresIn: configService.get("JSON_WEB_TOKEN_ACCOUNT_TIME"),
+          },
         };
       },
     }),

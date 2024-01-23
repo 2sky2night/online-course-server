@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from "@nestjs/common";
@@ -103,6 +102,13 @@ export class AuthAccountService {
     description: string,
     role_name: Roles.ADMIN | Roles.TEACHER,
   ) {
+    // 验证邮箱是否有效
+    try {
+      await this.emailService.sendApplyMsg(email);
+    } catch (e) {
+      Logger.error(`${CommonMessage.send_email_error}:${e.toString()}`);
+      throw new BadRequestException(AuthMessage.email_send_error);
+    }
     // 名称是否存在
     const nameExists = await this.accountService.findByName(account_name);
     if (nameExists) {
@@ -235,16 +241,11 @@ export class AuthAccountService {
       apply.role_id,
     );
     // 发送邮件
-    try {
-      await this.emailService.sendApprovalEmail(
-        apply.account_name,
-        apply.email,
-        status,
-      );
-      return null;
-    } catch (error) {
-      Logger.error(error);
-      throw new InternalServerErrorException(CommonMessage.send_email_error);
-    }
+    await this.emailService.sendApprovalEmail(
+      apply.account_name,
+      apply.email,
+      status,
+    );
+    return null;
   }
 }

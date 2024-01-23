@@ -1,13 +1,6 @@
 import { registerAs } from "@nestjs/config";
 
 /**
- * 所有的注册方式
- */
-export const registerTypeConfig = registerAs("register-type", () => {
-  return ["github", "alipay", "gitee", "email"];
-});
-
-/**
  * github第三方登录配置信息
  */
 export const githubConfig = registerAs("github", () => {

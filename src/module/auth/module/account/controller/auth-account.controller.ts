@@ -5,10 +5,9 @@ import {
   ApplyAccountDto,
 } from "@src/module/auth/module/account/dto";
 import { ApprovalAccountDto } from "@src/module/auth/module/account/dto/approval-account.dto";
-import { AccountGuard } from "@src/common/guard";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { AccountToken, Role } from "@src/common/decorator";
 import { Roles } from "@src/module/role/enum";
-import { RoleGuard } from "@src/common/guard/role.guard";
 
 @Controller("/auth/account")
 export class AuthAccountController {
@@ -79,7 +78,7 @@ export class AuthAccountController {
    */
   @UseGuards(AccountGuard)
   @Get("/token")
-  token(@AccountToken() token) {
+  token(@AccountToken() token: any) {
     return token;
   }
 }
