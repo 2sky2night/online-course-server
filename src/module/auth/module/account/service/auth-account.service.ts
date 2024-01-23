@@ -102,13 +102,6 @@ export class AuthAccountService {
     description: string,
     role_name: Roles.ADMIN | Roles.TEACHER,
   ) {
-    // 验证邮箱是否有效
-    try {
-      await this.emailService.sendApplyMsg(email);
-    } catch (e) {
-      Logger.error(`${CommonMessage.send_email_error}:${e.toString()}`);
-      throw new BadRequestException(AuthMessage.email_send_error);
-    }
     // 名称是否存在
     const nameExists = await this.accountService.findByName(account_name);
     if (nameExists) {
@@ -146,6 +139,13 @@ export class AuthAccountService {
         // 申请通过了
         throw new BadRequestException(AuthMessage.account_is_register);
       } else {
+        // 验证邮箱是否有效
+        try {
+          await this.emailService.sendApplyMsg(email);
+        } catch (e) {
+          Logger.error(`${CommonMessage.send_email_error}:${e.toString()}`);
+          throw new BadRequestException(AuthMessage.email_send_error);
+        }
         // 申请未通过，则创建新地注册申请
         return this.createApply(
           account_name,
@@ -156,6 +156,13 @@ export class AuthAccountService {
         );
       }
     } else {
+      // 验证邮箱是否有效
+      try {
+        await this.emailService.sendApplyMsg(email);
+      } catch (e) {
+        Logger.error(`${CommonMessage.send_email_error}:${e.toString()}`);
+        throw new BadRequestException(AuthMessage.email_send_error);
+      }
       // 此用户无申请记录
       return this.createApply(
         account_name,
@@ -233,14 +240,17 @@ export class AuthAccountService {
     const approval = await this.createApproval(account_id, apply_id, status);
     // 获取申请数据
     const apply = await approval.apply;
-    // 将此用户数据保存在账户表中
-    await this.accountService.create(
-      apply.account_name,
-      apply.password,
-      apply.email,
-      apply.role_id,
-    );
-    // 发送邮件
+    if (status) {
+      // 申请通过了，保存用户信息(注册用户)
+      // 将此用户数据保存在账户表中
+      await this.accountService.create(
+        apply.account_name,
+        apply.password,
+        apply.email,
+        apply.role_id,
+      );
+    }
+    // 将审核结果发送邮件
     await this.emailService.sendApprovalEmail(
       apply.account_name,
       apply.email,
