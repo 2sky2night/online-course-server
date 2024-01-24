@@ -5,7 +5,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuthAccountController } from "@src/module/auth/module/account/controller";
 import { AccountModule } from "@src/module/account/account.module";
 import { AuthAccountService } from "@src/module/auth/module/account/service";
-import { RoleModule } from "@src/module/role/role.module";
+import { RoleModule } from "@src/module/account/module/role/role.module";
 import {
   ApplyRegister,
   ApprovalRegister,

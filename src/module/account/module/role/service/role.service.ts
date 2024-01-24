@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import type { Repository } from "typeorm";
-import { Role } from "@src/module/role/entity";
-import { Roles } from "@src/module/role/enum";
+import { Role } from "../entity";
+import { Roles } from "../enum";
 
 @Injectable()
 export class RoleService {

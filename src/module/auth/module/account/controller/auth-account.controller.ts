@@ -7,7 +7,7 @@ import {
 import { ApprovalAccountDto } from "@src/module/auth/module/account/dto/approval-account.dto";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { AccountToken, Role } from "@src/common/decorator";
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "@src/module/account/module/role/enum";
 
 @Controller("/auth/account")
 export class AuthAccountController {

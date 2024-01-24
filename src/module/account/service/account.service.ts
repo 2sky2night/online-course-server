@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import type { Repository } from "typeorm";
 import { Account } from "../entity";
-import { RoleService } from "@src/module/role/service";
+import { RoleService } from "../module/role/service";
 import { AccountMessage, RoleMessage } from "@src/config/message";
 
 @Injectable()

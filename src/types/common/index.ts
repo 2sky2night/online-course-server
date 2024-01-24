@@ -1,4 +1,4 @@
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "@src/module/account/module/role/enum";
 
 /**
  * 事件名称

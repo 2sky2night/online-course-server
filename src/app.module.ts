@@ -3,7 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmConfigService } from "@src/config/database";
 import { AccountModule } from "@src/module/account/account.module";
-import { RoleModule } from "@src/module/role/role.module";
 import { AuthModule } from "@src/module/auth/auth.module";
 import OAuthConfig from "src/config/oauth";
 import { UserModule } from "@src/module/user/user.module";
@@ -33,10 +32,6 @@ import { RedisModule } from "@src/module/redis/redis.module";
      * redis模块
      */
     RedisModule,
-    /**
-     * 角色模块
-     */
-    RoleModule,
     /**
      * 后台账户模块
      */

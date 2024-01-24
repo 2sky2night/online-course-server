@@ -5,7 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "@src/module/account/module/role/enum";
 
 /**
  * 申请账户的表单

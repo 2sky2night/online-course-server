@@ -9,7 +9,7 @@ import {
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import type { Request } from "express";
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "@src/module/account/module/role/enum";
 import { CommonMessage, ServerMessage } from "@src/config/message";
 
 @Injectable()

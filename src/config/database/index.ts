@@ -4,7 +4,7 @@ import type {
   TypeOrmOptionsFactory,
   TypeOrmModuleOptions,
 } from "@nestjs/typeorm";
-import { Role } from "@src/module/role/entity";
+import { Role } from "@src/module/account/module/role/entity";
 import { Account } from "@src/module/account/entity";
 import {
   ApplyRegister,

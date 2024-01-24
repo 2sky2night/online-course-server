@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Account } from "@src/module/account/entity";
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "../enum";
 
 @Entity()
 export class Role {

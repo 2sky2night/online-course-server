@@ -15,8 +15,8 @@ import {
   ApplyRegister,
   ApprovalRegister,
 } from "@src/module/auth/module/account/entity";
-import { Roles } from "@src/module/role/enum";
-import { RoleService } from "@src/module/role/service";
+import { Roles } from "@src/module/account/module/role/enum";
+import { RoleService } from "@src/module/account/module/role/service";
 import { EmailService } from "@src/module/email/email.service";
 
 @Injectable()

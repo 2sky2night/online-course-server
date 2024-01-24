@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { AccountService } from "@src/module/account/service";
-import { Roles } from "@src/module/role/enum";
+import { Roles } from "@src/module/account/module/role/enum";
 import { once } from "@src/utils/events";
 import { ServerMessage } from "@src/config/message";
 import { passwordEncrypt } from "@src/utils/crypto";

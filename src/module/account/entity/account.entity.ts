@@ -9,8 +9,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Role } from "@src/module/role/entity";
-import { ApprovalRegister } from "src/module/auth/module/account/entity";
+import { Role } from "@src/module/account/module/role/entity";
+import { ApprovalRegister } from "@src/module/auth/module/account/entity";
 
 @Entity()
 export class Account {
