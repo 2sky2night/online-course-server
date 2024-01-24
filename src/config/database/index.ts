@@ -12,6 +12,7 @@ import {
 } from "src/module/auth/module/account/entity";
 import { User } from "@src/module/user/entity";
 import { UserRegisterType } from "@src/module/auth/module/user/entity";
+import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 
 /**
  * 所有实体
@@ -23,6 +24,8 @@ export const entities = [
   ApplyRegister,
   User,
   UserRegisterType,
+  UserUpload,
+  AccountUpload,
 ];
 
 /**

@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Role } from "@src/module/account/module/role/entity";
 import { ApprovalRegister } from "@src/module/auth/module/account/entity";
+import { AccountUpload } from "@src/module/upload/entity";
 
 @Entity()
 export class Account {
@@ -74,4 +75,10 @@ export class Account {
    */
   @OneToMany(() => ApprovalRegister, (app) => app.approval_account)
   register_approvals: ApprovalRegister[];
+
+  /**
+   * 一个账户可以上传多个文件
+   */
+  @OneToMany(() => AccountUpload, (upload) => upload.uploader)
+  upload_files: Promise<AccountUpload[]>;
 }

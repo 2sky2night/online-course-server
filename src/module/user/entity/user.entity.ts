@@ -5,10 +5,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { UserRegisterType } from "@src/module/auth/module/user/entity";
+import { UserUpload } from "@src/module/upload/entity";
 
 /**
  * 用户表
@@ -75,4 +77,10 @@ export class User {
   @ManyToOne(() => UserRegisterType, (type) => type.register_users)
   @JoinColumn({ name: "register_id" })
   register_type: Promise<UserRegisterType>;
+
+  /**
+   * 一个用户可以上传多个资源
+   */
+  @OneToMany(() => UserUpload, (upload) => upload.uploader)
+  upload_files: Promise<UserUpload[]>;
 }

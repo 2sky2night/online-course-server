@@ -13,7 +13,7 @@ export const emailProvider: Provider[] = [
         service: "QQ",
         auth: {
           // 发件人邮箱账号
-          user: "1301680879@qq.com",
+          user: process.env.EMAIL_LOCATION,
           //发件人邮箱的授权码 需要在自己的邮箱设置中生成,并不是邮件的登录密码
           pass: process.env.EMAIL_CODE,
         },

@@ -16,6 +16,13 @@ export const CommonMessage = Object.freeze({
   get_token_data_empty: "守卫未解析出token数据!",
   get_token_data_error: "token中无此数据!",
   forbidden: "无权访问此资源!",
+  user_lose_effectiveness: "此用户无效!",
+  form_empty_error: "表单字段不能为空!",
+  form_fields_error: "表单字段错误!",
+  password_error: "密码错误!",
+  password_update_equal_error: "新旧密码不能一致!",
+  upload_file_size_error: "上传的文件大小过大!",
+  upload_file_type_error: "上传的文件类型错误!",
 });
 
 /**
@@ -23,6 +30,15 @@ export const CommonMessage = Object.freeze({
  */
 export const AccountMessage = Object.freeze({
   name_exists: "此账户名已经存在了!",
+  account_not_found: "此账户不存在!",
+});
+
+/**
+ * 用户模块的提示词
+ */
+export const UserMessage = Object.freeze({
+  user_not_found: "此用户不存在!",
+  name_exists: "此用户名已经存在了!",
 });
 
 /**
@@ -55,4 +71,6 @@ export const ServerMessage = Object.freeze({
   init_register_type_success: "初始化注册方式成功!",
   init_register_type_error: "初始化注册方式失败!",
   server_error: "服务器内部错误!",
+  init_upload_folder_success: "初始化创建上传文件夹成功!",
+  init_upload_folder_error: "初始化创建上传文件夹失败!",
 });

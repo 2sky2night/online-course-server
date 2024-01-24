@@ -4,9 +4,11 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmConfigService } from "@src/config/database";
 import { AccountModule } from "@src/module/account/account.module";
 import { AuthModule } from "@src/module/auth/auth.module";
-import OAuthConfig from "src/config/oauth";
 import { UserModule } from "@src/module/user/user.module";
 import { RedisModule } from "@src/module/redis/redis.module";
+import { UploadModule } from "@src/module/upload/upload.module";
+import OAuthConfig from "src/config/oauth";
+import { UploadConfig } from "@src/config/upload";
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { RedisModule } from "@src/module/redis/redis.module";
           : ".env.production",
       ],
       // load中的数据不会加载到env中，只能通过config模块获取
-      load: [...OAuthConfig],
+      load: [...OAuthConfig, UploadConfig],
       isGlobal: true,
     }),
     /**
@@ -32,6 +34,10 @@ import { RedisModule } from "@src/module/redis/redis.module";
      * redis模块
      */
     RedisModule,
+    /**
+     * 文件上传模块
+     */
+    UploadModule,
     /**
      * 后台账户模块
      */
