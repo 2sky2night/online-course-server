@@ -7,22 +7,26 @@ import type { UploadConfig as UploadConfigType } from "./types";
  */
 export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
   // 上传文件的根路径
-  const upload_path = resolve(__dirname, "../../../../upload");
-  // 上传图片的路径
-  const upload_img_path = resolve(upload_path, "./img");
-  // 上传视频的路径
-  const upload_video_path = resolve(upload_path, "./video");
-  // 上传视频的临时路径(切片文件夹)
-  const upload_video_temp_path = resolve(upload_path, "./video-temp");
+  const upload_path = "/upload";
+  // 上传文件的根路径(绝对路径)
+  const upload_root_path = resolve(__dirname, `../../../../${upload_path}`);
+  // 上传图片的路径（一级路径）
+  const upload_img_path = `/img`;
+  // 上传视频的路径（一级路径）
+  const upload_video_path = `/video`;
+  // 上传视频切片的路径（一级路径）
+  const upload_video_temp_path = `/video-temp`;
   // 上传头像的路径
-  const upload_avatar_path = resolve(upload_img_path, "./avatar");
+  const upload_avatar_path = `${upload_img_path}/avatar`;
   // 上传前台用户头像的路径
-  const upload_user_avatar_path = resolve(upload_avatar_path, "./user");
+  const upload_user_avatar_path = `${upload_avatar_path}/user`;
   // 上传后台用户头像的路径
-  const upload_account_avatar_path = resolve(upload_avatar_path, "./account");
+  const upload_account_avatar_path = `${upload_avatar_path}/account`;
   // 上传评论配图的路径
-  const upload_comment_path = resolve(upload_img_path, "./comment");
+  const upload_comment_path = `${upload_img_path}/comment`;
+
   return {
+    upload_root_path,
     upload_path,
     upload_img_path,
     upload_video_path,

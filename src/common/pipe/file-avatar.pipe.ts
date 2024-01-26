@@ -6,11 +6,32 @@ import { CommonMessage } from "@src/config/message";
  */
 @Injectable()
 export class FileAvatarPipe implements PipeTransform {
-  transform(file: Express.Multer.File) {
-    const maxSize = Number(process.env.FILE_AVATAR_SIZE);
-    if (file.size < maxSize) {
+  /**
+   * 上传文件的最大大小(byte)
+   */
+  maxSize: number;
+
+  constructor() {
+    this.maxSize = Number(process.env.FILE_AVATAR_SIZE);
+  }
+
+  transform(file?: Express.Multer.File) {
+    if (file === undefined) {
+      // 此字段未上传文件
+      throw new BadRequestException(CommonMessage.upload_file_empty_error);
+    }
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png" &&
+      file.mimetype !== "image/webp"
+    ) {
+      // 上传的文件类型错误
+      throw new BadRequestException(CommonMessage.upload_file_type_error);
+    }
+    if (file.size < this.maxSize) {
       return file;
     } else {
+      // 上传的文件超出大小
       throw new BadRequestException(CommonMessage.upload_file_size_error);
     }
   }

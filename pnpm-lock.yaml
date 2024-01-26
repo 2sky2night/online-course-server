@@ -55,6 +55,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
+  spark-md5:
+    specifier: ^3.0.2
+    version: 3.0.2
   typeorm:
     specifier: ^0.3.19
     version: 0.3.19(mysql2@3.7.0)(redis@4.6.12)(ts-node@10.9.1)
@@ -96,6 +99,9 @@ devDependencies:
   '@types/nodemailer':
     specifier: ^6.4.14
     version: 6.4.14
+  '@types/spark-md5':
+    specifier: ^3.0.4
+    version: 3.0.4
   '@types/supertest':
     specifier: ^2.0.12
     version: 2.0.12
@@ -1582,6 +1588,10 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
       '@types/node': 20.3.1
+    dev: true
+
+  /@types/spark-md5@3.0.4:
+    resolution: {integrity: sha512-qtOaDz+IXiNndPgYb6t1YoutnGvFRtWSNzpVjkAPCfB2UzTyybuD4Tjgs7VgRawum3JnJNRwNQd4N//SvrHg1Q==}
     dev: true
 
   /@types/stack-utils@2.0.3:
@@ -6033,6 +6043,10 @@ packages:
     resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
     engines: {node: '>= 8'}
     dev: true
+
+  /spark-md5@3.0.2:
+    resolution: {integrity: sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==}
+    dev: false
 
   /spdx-correct@3.2.0:
     resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}

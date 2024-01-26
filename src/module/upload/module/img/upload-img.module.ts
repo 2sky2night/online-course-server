@@ -6,7 +6,12 @@ import { UploadImgController } from "@src/module/upload/module/img/upload-img.co
 import { uploadImgProvider } from "@src/module/upload/module/img/upload-img.provider";
 import { UploadImgService } from "@src/module/upload/module/img/upload-img.service";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
+import { UserModule } from "@src/module/user/user.module";
+import { AccountModule } from "@src/module/account/account.module";
 
+/**
+ * 上传照片模块
+ */
 @Module({
   imports: [
     /**
@@ -17,6 +22,14 @@ import { AccountUpload, UserUpload } from "@src/module/upload/entity";
      * 上传文件模块
      */
     MulterModule.register({ storage: memoryStorage() }),
+    /**
+     * 前台用户模块
+     */
+    UserModule,
+    /**
+     * 后台用户模块
+     */
+    AccountModule,
   ],
   controllers: [UploadImgController],
   providers: [...uploadImgProvider, UploadImgService],

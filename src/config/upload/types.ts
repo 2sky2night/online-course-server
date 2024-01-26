@@ -3,15 +3,19 @@
  */
 export interface UploadConfig {
   /**
-   * 上传资源的根路径
+   * 上传资源的根路径(绝对路径)
+   */
+  upload_root_path: string;
+  /**
+   * 上传资源的根路径（相对路径）
    */
   upload_path: string;
   /**
-   * 上传图片的路径
+   * 上传图片的路径(一级路径)
    */
   upload_img_path: string;
   /**
-   * 上传视频的路径
+   * 上传视频的路径(一级路径)
    */
   upload_video_path: string;
   /**
@@ -27,7 +31,7 @@ export interface UploadConfig {
    */
   upload_account_avatar_path: string;
   /**
-   * 视频切片文件的路径
+   * 视频切片文件的路径(一级路径)
    */
   upload_video_temp_path: string;
   /**

@@ -10,7 +10,7 @@ export const RoleMessage = Object.freeze({
  * 通用的提示词
  */
 export const CommonMessage = Object.freeze({
-  validation_error_with_tips: (tips) => `表单校验失败:${tips}`,
+  validation_error_with_tips: (tips: string) => `表单校验失败:${tips}`,
   validation_error: "表单校验失败!",
   send_email_error: "发送邮箱失败!",
   get_token_data_empty: "守卫未解析出token数据!",
@@ -23,6 +23,7 @@ export const CommonMessage = Object.freeze({
   password_update_equal_error: "新旧密码不能一致!",
   upload_file_size_error: "上传的文件大小过大!",
   upload_file_type_error: "上传的文件类型错误!",
+  upload_file_empty_error: "此字段未上传文件!",
 });
 
 /**
