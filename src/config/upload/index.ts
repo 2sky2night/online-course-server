@@ -1,15 +1,12 @@
 import { registerAs } from "@nestjs/config";
-import { resolve } from "node:path";
 import type { UploadConfig as UploadConfigType } from "./types";
 
 /**
  * 文件上传环境变量配置
  */
 export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
-  // 上传文件的根路径
-  const upload_path = "/upload";
   // 上传文件的根路径(绝对路径)
-  const upload_root_path = resolve(__dirname, `../../../../${upload_path}`);
+  const upload_root_path = process.env.UPLOAD_PATH;
   // 上传图片的路径（一级路径）
   const upload_img_path = `/img`;
   // 上传视频的路径（一级路径）
@@ -27,7 +24,6 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
 
   return {
     upload_root_path,
-    upload_path,
     upload_img_path,
     upload_video_path,
     upload_avatar_path,

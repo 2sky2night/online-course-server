@@ -13,6 +13,7 @@ import {
 import { User } from "@src/module/user/entity";
 import { UserRegisterType } from "@src/module/auth/module/user/entity";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
+import { Video, VideoCollection } from "@src/module/video/entity";
 
 /**
  * 所有实体
@@ -26,6 +27,8 @@ export const entities = [
   UserRegisterType,
   UserUpload,
   AccountUpload,
+  Video,
+  VideoCollection,
 ];
 
 /**

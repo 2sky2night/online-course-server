@@ -63,7 +63,7 @@ export class Folder {
    * @param fileName 文件名
    * @param hash hash值
    * @param buffer 文件数据
-   * @return {string} 文件的相对路径
+   * @return {string} 目标文件基于上传根路径的相对路径
    */
   async addFileWithHash(fileName: string, hash: string, buffer: Buffer) {
     const ext = extname(fileName);
@@ -83,7 +83,7 @@ export class Folder {
    * 查询该目录中是否存在某个文件
    * @param filename 文件名
    * @param ext 是否忽略扩展名
-   * @return {string|null} 目标文件的相对路径
+   * @return {string|null} 目标文件基于上传根路径的相对路径,若不存在，返回null
    */
   inFilename(filename: string, ext = false): string | null {
     const list = readdirSync(this.basePath);

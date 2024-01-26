@@ -6,6 +6,7 @@ import { generateFileHash } from "@src/utils/tools";
 import { UserService } from "@src/module/user/service";
 import { Repository } from "typeorm";
 import { AccountService } from "@src/module/account/service";
+import { FileType } from "@src/module/upload/enum";
 
 @Injectable()
 export class UploadImgService {
@@ -50,38 +51,25 @@ export class UploadImgService {
   async uploadUserAvatar(userId: number, file: Express.Multer.File) {
     // 计算文件的hash
     const hash = generateFileHash(file.buffer);
-    // 查询通过文件hash是否存储了此文件
-    const isExists = await this.UURepository.findOneBy({ hash });
-    // 查询上传用户是否有效
-    const user = await this.userService.findByUID(userId, true);
-    if (isExists === null) {
-      // 不存在此hash的文件 保存文件并记录用户操作
-      const file_path = await this.userAvatarFolder.addFileWithHash(
+    // 查询文件是否存储过
+    const file_path = this.userAvatarFolder.inFilename(hash, true);
+    if (file_path === null) {
+      // 未存储过此文件，存储文件
+      const new_file_path = await this.userAvatarFolder.addFileWithHash(
         file.originalname,
         hash,
         file.buffer,
       );
-      const trace = this.UURepository.create({
-        hash,
-        file_path,
-      });
-      trace.uploader = Promise.resolve(user);
-      await this.UURepository.save(trace);
-      // 上传成功
+      // 保存上传记录
+      await this.createUserTrace(userId, hash, new_file_path);
       return {
-        url: trace.file_path,
+        url: new_file_path,
       };
     } else {
-      // 此文件已经存在，直接记录用户操作
-      const trace = this.UURepository.create({
-        hash,
-        file_path: isExists.file_path,
-      });
-      trace.uploader = Promise.resolve(user);
-      await this.UURepository.save(trace);
-      // 秒传
+      // 存储过此文件了，直接记录上传记录
+      await this.createUserTrace(userId, hash, file_path);
       return {
-        url: isExists.file_path,
+        url: file_path,
       };
     }
   }
@@ -94,35 +82,59 @@ export class UploadImgService {
   async uploadAccountAvatar(accountId: number, file: Express.Multer.File) {
     // 生成文件的hash
     const hash = generateFileHash(file.buffer);
-    // 在数据库中查询此hash的文件是否上传过
-    const isExists = await this.AURepository.findOneBy({ hash });
-    // 查询上传者
-    const account = await this.accountService.findById(accountId, true);
-    if (isExists) {
-      // 上传过，则增加上传记录
-      const trace = this.AURepository.create({
-        hash,
-        file_path: isExists.file_path,
-      });
-      trace.uploader = Promise.resolve(account);
-      await this.AURepository.save(trace);
-      return {
-        url: isExists.file_path,
-      };
-    } else {
-      // 未上传过，则保存文件
-      const file_path = await this.accountAvatarFolder.addFileWithHash(
+    // 查询此文件是否存储过了
+    const file_path = this.accountAvatarFolder.inFilename(hash, true);
+    if (file_path === null) {
+      // 未存储过此文件，存储文件
+      const new_file_path = await this.accountAvatarFolder.addFileWithHash(
         file.originalname,
         hash,
         file.buffer,
       );
-      // 增加上传记录
-      const trace = this.AURepository.create({ hash, file_path });
-      trace.uploader = Promise.resolve(account);
-      await this.AURepository.save(trace);
+      // 保存上传记录
+      await this.createAccountTrace(accountId, hash, new_file_path);
+      return {
+        url: new_file_path,
+      };
+    } else {
+      // 存储过文件，直接保存上传记录
+      await this.createAccountTrace(accountId, hash, file_path);
       return {
         url: file_path,
       };
     }
+  }
+
+  /**
+   * 创建后台用户上传资源追踪记录
+   * @param accountId 账户id
+   * @param hash 文件哈希
+   * @param file_path 文件路径
+   */
+  async createAccountTrace(accountId: number, hash: string, file_path: string) {
+    const account = await this.accountService.findById(accountId, true);
+    const trace = this.AURepository.create({
+      hash,
+      file_path,
+      file_type: FileType.IMAGE,
+    });
+    trace.uploader = Promise.resolve(account);
+    return this.AURepository.save(trace);
+  }
+
+  /**
+   * 创建前台用户上传资源追踪记录
+   * @param userId 用户id
+   * @param hash 文件哈希
+   * @param file_path 文件路径
+   */
+  async createUserTrace(userId: number, hash: string, file_path: string) {
+    const user = await this.userService.findByUID(userId);
+    const trace = this.UURepository.create({
+      hash,
+      file_path,
+    });
+    trace.uploader = Promise.resolve(user);
+    return this.UURepository.save(trace);
   }
 }

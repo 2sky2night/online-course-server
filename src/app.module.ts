@@ -9,6 +9,8 @@ import { RedisModule } from "@src/module/redis/redis.module";
 import { UploadModule } from "@src/module/upload/upload.module";
 import OAuthConfig from "src/config/oauth";
 import { UploadConfig } from "@src/config/upload";
+import { RoleModule } from "@src/module/account/module/role/role.module";
+import { VideoModule } from "@src/module/video/video.module";
 
 @Module({
   imports: [
@@ -50,6 +52,14 @@ import { UploadConfig } from "@src/config/upload";
      * 前台用户模块
      */
     UserModule,
+    /**
+     * 角色模块
+     */
+    RoleModule,
+    /**
+     * 视频模块
+     */
+    VideoModule,
   ],
 })
 export class AppModule {}

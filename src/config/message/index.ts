@@ -75,3 +75,19 @@ export const ServerMessage = Object.freeze({
   init_upload_folder_success: "初始化创建上传文件夹成功!",
   init_upload_folder_error: "初始化创建上传文件夹失败!",
 });
+
+/**
+ * 上传提示词
+ */
+export const UploadMessage = Object.freeze({
+  trace_not_exists: "此上传记录不存在!",
+});
+
+/**
+ * 视频提示词
+ */
+export const VideoMessage = Object.freeze({
+  file_type_error: "选择的文件类型错误!",
+  file_is_not_owner: "选择的文件非本人上传!",
+  file_is_already_publish: "选择的文件已经被发布了，请重新上传一个新文件!",
+});

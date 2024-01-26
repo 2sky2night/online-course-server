@@ -12,6 +12,7 @@ import {
 import { Role } from "@src/module/account/module/role/entity";
 import { ApprovalRegister } from "@src/module/auth/module/account/entity";
 import { AccountUpload } from "@src/module/upload/entity";
+import { Video } from "@src/module/video/entity";
 
 @Entity()
 export class Account {
@@ -74,11 +75,17 @@ export class Account {
    * 一个账户可以审核多个申请注册的记录
    */
   @OneToMany(() => ApprovalRegister, (app) => app.approval_account)
-  register_approvals: ApprovalRegister[];
+  register_approvals: Promise<ApprovalRegister[]>;
 
   /**
    * 一个账户可以上传多个文件
    */
   @OneToMany(() => AccountUpload, (upload) => upload.uploader)
   upload_files: Promise<AccountUpload[]>;
+
+  /**
+   * 一个用户可以上传多个视频
+   */
+  @OneToMany(() => Video, (video) => video.uploader)
+  upload_videos: Promise<Video[]>;
 }

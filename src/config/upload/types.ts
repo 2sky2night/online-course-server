@@ -7,10 +7,6 @@ export interface UploadConfig {
    */
   upload_root_path: string;
   /**
-   * 上传资源的根路径（相对路径）
-   */
-  upload_path: string;
-  /**
    * 上传图片的路径(一级路径)
    */
   upload_img_path: string;

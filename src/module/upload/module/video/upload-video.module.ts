@@ -28,5 +28,6 @@ import { UploadVideoController } from "@src/module/upload/module/video/upload-vi
   ],
   controllers: [UploadVideoController],
   providers: [...uploadVideoProvider, UploadVideoService],
+  exports: [UploadVideoService],
 })
 export class UploadVideoModule {}
