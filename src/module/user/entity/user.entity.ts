@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserRegisterType } from "@src/module/auth/module/user/entity";
+import { UserRegisterType } from "@src/module/auth/user/entity";
 import { UserUpload } from "@src/module/upload/entity";
 
 /**

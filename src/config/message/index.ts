@@ -88,6 +88,16 @@ export const UploadMessage = Object.freeze({
  */
 export const VideoMessage = Object.freeze({
   file_type_error: "选择的文件类型错误!",
-  file_is_not_owner: "选择的文件非本人上传!",
-  file_is_already_publish: "选择的文件已经被发布了，请重新上传一个新文件!",
+  file_is_not_owner: "选择的文件非当前用户上传!",
+  video_not_exist: "此视频不存在!",
+  collection_not_exist: "此视频合集不存在!",
+  video_is_not_owner: "此视频非当前用户上传!",
+  collection_is_not_owner: "此视频合集非当前用户上传!",
+});
+
+/**
+ * 文件模块提示词
+ */
+export const FileMessage = Object.freeze({
+  file_not_exist: "此文件不存在!",
 });

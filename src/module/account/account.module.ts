@@ -5,6 +5,9 @@ import { Account } from "./entity";
 import { AccountService } from "./service";
 import { AccountController } from "./controller";
 
+/**
+ * 账户模块(后台)
+ */
 @Module({
   imports: [
     /**

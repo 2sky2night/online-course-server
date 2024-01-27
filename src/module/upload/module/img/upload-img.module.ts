@@ -8,6 +8,7 @@ import { UploadImgService } from "@src/module/upload/module/img/upload-img.servi
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 import { UserModule } from "@src/module/user/user.module";
 import { AccountModule } from "@src/module/account/account.module";
+import { FileModule } from "@src/module/file/file.module";
 
 /**
  * 上传照片模块
@@ -30,6 +31,10 @@ import { AccountModule } from "@src/module/account/account.module";
      * 后台用户模块
      */
     AccountModule,
+    /**
+     * 文件模块
+     */
+    FileModule,
   ],
   controllers: [UploadImgController],
   providers: [...uploadImgProvider, UploadImgService],

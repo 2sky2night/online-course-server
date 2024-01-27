@@ -3,14 +3,17 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmConfigService } from "@src/config/database";
 import { AccountModule } from "@src/module/account/account.module";
-import { AuthModule } from "@src/module/auth/auth.module";
+import { AuthUserModule } from "@src/module/auth/user/auth-user.module";
+import { AuthAccountModule } from "@src/module/auth/account/auth-account.module";
 import { UserModule } from "@src/module/user/user.module";
 import { RedisModule } from "@src/module/redis/redis.module";
 import { UploadModule } from "@src/module/upload/upload.module";
 import OAuthConfig from "src/config/oauth";
 import { UploadConfig } from "@src/config/upload";
 import { RoleModule } from "@src/module/account/module/role/role.module";
-import { VideoModule } from "@src/module/video/video.module";
+import { VideoModule } from "@src/module/video/video/video.module";
+import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
+import { FileModule } from "@src/module/file/file.module";
 
 @Module({
   imports: [
@@ -28,38 +31,17 @@ import { VideoModule } from "@src/module/video/video.module";
       load: [...OAuthConfig, UploadConfig],
       isGlobal: true,
     }),
-    /**
-     * 建立数据库连接
-     */
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
-    /**
-     * redis模块
-     */
     RedisModule,
-    /**
-     * 文件上传模块
-     */
     UploadModule,
-    /**
-     * 后台账户模块
-     */
     AccountModule,
-    /**
-     * 鉴权模块
-     */
-    AuthModule,
-    /**
-     * 前台用户模块
-     */
+    AuthUserModule,
+    AuthAccountModule,
     UserModule,
-    /**
-     * 角色模块
-     */
     RoleModule,
-    /**
-     * 视频模块
-     */
     VideoModule,
+    FileModule,
+    VideoCollectionModule,
   ],
 })
 export class AppModule {}

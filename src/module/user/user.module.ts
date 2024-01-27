@@ -4,6 +4,9 @@ import { User } from "@src/module/user/entity";
 import { UserService } from "@src/module/user/service";
 import { UserController } from "@src/module/user/controller";
 
+/**
+ * 用户模块（前台）
+ */
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],

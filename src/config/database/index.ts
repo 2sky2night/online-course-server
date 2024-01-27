@@ -9,11 +9,13 @@ import { Account } from "@src/module/account/entity";
 import {
   ApplyRegister,
   ApprovalRegister,
-} from "src/module/auth/module/account/entity";
+} from "src/module/auth/account/entity";
 import { User } from "@src/module/user/entity";
-import { UserRegisterType } from "@src/module/auth/module/user/entity";
+import { UserRegisterType } from "@src/module/auth/user/entity";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
-import { Video, VideoCollection } from "@src/module/video/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { File } from "@src/module/file/entity";
 
 /**
  * 所有实体
@@ -29,6 +31,7 @@ export const entities = [
   AccountUpload,
   Video,
   VideoCollection,
+  File,
 ];
 
 /**

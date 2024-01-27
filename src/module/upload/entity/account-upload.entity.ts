@@ -1,15 +1,14 @@
 import {
-  Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Account } from "@src/module/account/entity";
-import { FileType } from "@src/module/upload/enum";
-import { Video } from "@src/module/video/entity";
+import { File } from "@src/module/file/entity";
 
 /**
  * 前台账户上传资源追踪表
@@ -22,33 +21,22 @@ export class AccountUpload {
   @PrimaryGeneratedColumn({ comment: "上传记录的id" })
   trace_id: number;
   /**
-   * 文件的hash
-   */
-  @Column({ comment: "文件的hash" })
-  hash: string;
-
-  /**
-   * 文件的相对路径，基于存储的根路径
-   */
-  @Column({ comment: "文件存储的相对路径" })
-  file_path: string;
-
-  /**
-   * 文件的类型
-   */
-  @Column({
-    comment: "文件类型",
-    nullable: true,
-    enum: FileType,
-    type: "enum",
-  })
-  file_type: FileType | null;
-
-  /**
    * 创建时间
    */
   @CreateDateColumn({ type: "datetime", comment: "创建时间" })
   created_time: Date;
+
+  /**
+   * 修改时间
+   */
+  @UpdateDateColumn({ type: "datetime", comment: "修改时间" })
+  updated_time: Date | null;
+
+  /**
+   * 删除时间
+   */
+  @DeleteDateColumn({ type: "datetime", comment: "删除时间" })
+  deleted_time: Date | null;
 
   /**
    * 上传资源的用户
@@ -58,8 +46,9 @@ export class AccountUpload {
   uploader: Promise<Account>;
 
   /**
-   * 一个上传记录只能绑定一个视频
+   * 一个上传记录对应一个文件
    */
-  @OneToOne(() => Video, (video) => video.file)
-  video: Promise<Video>;
+  @ManyToOne(() => File, (file) => file.trace_accounts)
+  @JoinColumn({ name: "file_id" })
+  file: Promise<File>;
 }

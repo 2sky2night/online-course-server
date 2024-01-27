@@ -10,9 +10,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Role } from "@src/module/account/module/role/entity";
-import { ApprovalRegister } from "@src/module/auth/module/account/entity";
+import { ApprovalRegister } from "@src/module/auth/account/entity";
 import { AccountUpload } from "@src/module/upload/entity";
-import { Video } from "@src/module/video/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
 
 @Entity()
 export class Account {
@@ -86,6 +87,12 @@ export class Account {
   /**
    * 一个用户可以上传多个视频
    */
-  @OneToMany(() => Video, (video) => video.uploader)
-  upload_videos: Promise<Video[]>;
+  @OneToMany(() => Video, (video) => video.publisher)
+  publish_videos: Promise<Video[]>;
+
+  /**
+   * 一个用户可以创建多个视频合集
+   */
+  @OneToMany(() => VideoCollection, (vc) => vc.creator)
+  collections: Promise<VideoCollection[]>;
 }
