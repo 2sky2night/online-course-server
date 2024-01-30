@@ -66,7 +66,7 @@ export class AuthAccountService {
    */
   async login(account_name: string, password: string) {
     // 查询此账户名是否存在
-    const account = await this.accountService.findByName(account_name);
+    const account = await this.accountService.findByName(account_name, true);
     if (account === null) {
       // 账户名不存在
       throw new BadRequestException(AuthMessage.username_or_password_error);

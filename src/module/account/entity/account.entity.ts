@@ -32,7 +32,7 @@ export class Account {
   /**
    * 账户密码
    */
-  @Column({ comment: "账户密码" })
+  @Column({ comment: "账户密码", select: false })
   password: string;
 
   /**

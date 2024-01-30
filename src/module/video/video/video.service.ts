@@ -68,8 +68,6 @@ export class VideoService {
       // 此用户未上传此文件，不允许发布
       throw new BadRequestException(VideoMessage.file_is_not_owner);
     }
-    // 增加视频
-    const video = await this.create(account, file, video_name, description);
     if (collection_id_list && collection_id_list.length) {
       // 若需要将视频添加到视频合集中
       const collections = await Promise.all(
@@ -84,12 +82,74 @@ export class VideoService {
         // 视频合集中存在非当前用户创建的
         throw new BadRequestException(VideoMessage.collection_is_not_owner);
       }
+      // 增加视频
+      const video = await this.create(account, file, video_name, description);
       // 添加视频和视频合集的关系
       await Promise.all(
-        collections.map((c) => this.VCService.addVideo(c, video)),
+        collections.map((c) => this.VCService.addVideosRelation(c, [video])),
       );
+    } else {
+      // 直接发布视频
+      await this.create(account, file, video_name, description);
     }
+
     return null;
+  }
+
+  /**
+   * 更新视频信息
+   * @param account_id 账户id
+   * @param video_id 视频id
+   * @param video_name 视频名称
+   * @param description 视频描述
+   */
+  async updateInfo(
+    account_id: number,
+    video_id: number,
+    video_name?: string,
+    description?: string,
+  ) {
+    const video = await this.findById(video_id, true);
+    const account = await this.accountService.findById(account_id, true);
+    // 校验视频是否为当前用户发布？
+    if ((await this.isVideoOwner(account, video)) === false) {
+      throw new BadRequestException(VideoMessage.video_is_not_owner);
+    }
+    const updateInfo: Record<string, unknown> = {};
+    if (video_name) updateInfo.video_name = video_name;
+    if (description) updateInfo.description = description;
+    await this.videoRepository.update(video.video_id, updateInfo);
+    return null;
+  }
+
+  /**
+   * 查询视频详情信息
+   * @param video_id 视频id
+   */
+  async info(video_id: number) {
+    const video = await this.findById(video_id, true);
+    return {
+      ...video,
+      publisher: await video.publisher,
+      file: await video.file,
+    };
+  }
+
+  /**
+   * 获取视频列表
+   * @param offset 偏移量
+   * @param limit 长度
+   */
+  async list(offset: number, limit: number) {
+    const [list, total] = await this.videoRepository.findAndCount({
+      skip: offset,
+      take: limit,
+    });
+    return {
+      list,
+      total,
+      has_more: total > offset + limit,
+    };
   }
 
   /**

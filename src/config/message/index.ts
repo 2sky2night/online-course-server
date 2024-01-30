@@ -24,6 +24,10 @@ export const CommonMessage = Object.freeze({
   upload_file_size_error: "上传的文件大小过大!",
   upload_file_type_error: "上传的文件类型错误!",
   upload_file_empty_error: "此字段未上传文件!",
+  int_pipe_type_error: (field?: string) =>
+    field ? `${field}的类型必须是数值型!` : "字段校验失败!",
+  int_pipe_empty_error: (field?: string) =>
+    field ? `${field}的不能为空!` : "字段校验失败!",
 });
 
 /**
@@ -92,7 +96,9 @@ export const VideoMessage = Object.freeze({
   video_not_exist: "此视频不存在!",
   collection_not_exist: "此视频合集不存在!",
   video_is_not_owner: "此视频非当前用户上传!",
-  collection_is_not_owner: "此视频合集非当前用户上传!",
+  collection_is_not_owner: "此视频合集非当前用户创建!",
+  collection_has_video: "视频合集中存在此视频了!",
+  collection_has_not_video: "视频合集中不存在此视频!",
 });
 
 /**

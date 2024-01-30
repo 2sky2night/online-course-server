@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import { ArrayBuffer } from "spark-md5";
+import { BadRequestException } from "@nestjs/common";
+import { CommonMessage } from "@src/config/message";
 
 /**
  * 生成验证码
@@ -34,5 +36,29 @@ export function generateFileHash(buffer: Buffer, spark = false) {
     const hashInst = createHash("md5");
     hashInst.update(buffer);
     return hashInst.digest("hex");
+  }
+}
+
+/**
+ * 请求体可选参数检查器（场景：请求体中的参数全是可选的情况下使用）
+ * @param o 请求体
+ * @param optionKeys 定义的可选参数
+ */
+export function bodyOptionCatcher(
+  o: NonNullable<unknown>,
+  optionKeys: string[],
+) {
+  const keys = Object.keys(o);
+  if (keys.length === 0) {
+    throw new BadRequestException(CommonMessage.form_empty_error);
+  }
+  // 判断传入的请求体是否有一项包含了定义的参数？
+  const flag = keys.some((key) => {
+    return optionKeys.includes(key);
+  });
+  if (flag) {
+    return true;
+  } else {
+    throw new BadRequestException(CommonMessage.form_fields_error);
   }
 }

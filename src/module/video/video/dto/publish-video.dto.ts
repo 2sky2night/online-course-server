@@ -15,6 +15,8 @@ export class PublishVideoDto {
    * 视频名称
    */
   @IsString({ message: "视频名称必须是字符型!" })
+  @MinLength(1, { message: "视频名称最少为1位!" })
+  @MaxLength(20, { message: "视频名称最长为20位!" })
   video_name: string;
   /**
    * 视频的描述

@@ -66,10 +66,27 @@ export class AccountService {
   /**
    * 根据账户名查询账户是否存在
    * @param account_name 账户名
+   * @param password 是否显示密码
    * @return {Account|null} 账户实例
    */
-  findByName(account_name: string): Promise<Account | null> {
-    return this.accountRepository.findOneBy({ account_name });
+  findByName(account_name: string, password = false): Promise<Account | null> {
+    if (password) {
+      return this.accountRepository.findOne({
+        where: { account_name },
+        select: [
+          "account_name",
+          "account_id",
+          "avatar",
+          "email",
+          "password",
+          "created_time",
+          "updated_time",
+          "deleted_time",
+        ],
+      });
+    } else {
+      return this.accountRepository.findOneBy({ account_name });
+    }
   }
 
   /**

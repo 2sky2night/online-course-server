@@ -2,16 +2,26 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
+  Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
-import { CreateVideoCollectionDto } from "@src/module/video/video-collection/dto";
+import {
+  AddVideosDto,
+  CreateVideoCollectionDto,
+  DeleteVideosDto,
+  UpdateVideoCollectionDto,
+} from "@src/module/video/video-collection/dto";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { AccountToken, Role } from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { bodyOptionCatcher } from "@src/utils/tools";
 
 @Controller("/video/collection")
 export class VideoCollectionController {
@@ -36,15 +46,91 @@ export class VideoCollectionController {
     return this.VCService.publishCollection(accountId, videoCollectionDto);
   }
 
-  // TODO 在合集中添加视频
+  /**
+   * 在合集中添加视频
+   * @param accountId 账户id
+   * @param collectionId 合集id
+   * @param videosDto 视频列表
+   */
   @Post(":cid/videos")
-  addVideos() {}
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  addVideos(
+    @AccountToken("sub") accountId: number,
+    @Param("cid", new IntPipe("cid")) collectionId: number,
+    @Body() videosDto: AddVideosDto,
+  ) {
+    return this.VCService.addVideos(
+      accountId,
+      videosDto.video_id_list,
+      collectionId,
+    );
+  }
 
-  // TODO 在合集中移除视频
+  /**
+   * 在合集中移除视频
+   * @param accountId 账户id
+   * @param collectionId 合集id
+   * @param videosDto 视频列表
+   */
   @Delete(":cid/videos")
-  removeVideos() {}
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  removeVideos(
+    @AccountToken("sub") accountId: number,
+    @Param("cid", new IntPipe("cid")) collectionId: number,
+    @Body() videosDto: DeleteVideosDto,
+  ) {
+    return this.VCService.deleteVideos(
+      accountId,
+      videosDto.video_id_list,
+      collectionId,
+    );
+  }
 
-  // TODO 更新视频信息
-  @Patch(":collection_id")
-  updateInfo() {}
+  /**
+   * 更新视频合集的信息
+   * @param accountId 账户id
+   * @param collectionId 合集id
+   * @param videosDto 表单
+   */
+  @Patch(":cid")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  updateInfo(
+    @AccountToken("sub") accountId: number,
+    @Param("cid", new IntPipe("cid")) collectionId: number,
+    @Body() videosDto: UpdateVideoCollectionDto,
+  ) {
+    // 校验请求体
+    bodyOptionCatcher(videosDto, ["collection_name", "description"]);
+    return this.VCService.updateInfo(
+      accountId,
+      collectionId,
+      videosDto.collection_name,
+      videosDto.description,
+    );
+  }
+
+  /**
+   * 获取合集信息
+   * @param collectionId 合集id
+   */
+  @Get(":cid")
+  info(@Param("cid", new IntPipe("cid")) collectionId: number) {
+    return this.VCService.info(collectionId);
+  }
+
+  /**
+   * 合集列表
+   * @param offset 偏移量
+   * @param limit 长度
+   */
+  @Get()
+  list(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+  ) {
+    return this.VCService.list(offset, limit);
+  }
 }

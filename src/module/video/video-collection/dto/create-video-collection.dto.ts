@@ -15,6 +15,8 @@ export class CreateVideoCollectionDto {
    * 合集名称
    */
   @IsString({ message: "视频合集必须是字符型!" })
+  @MinLength(1, { message: "视频合集的名称最少为1位!" })
+  @MaxLength(20, { message: "视频合集的名称最长为20位!" })
   collection_name: string;
   /**
    * 合集描述
