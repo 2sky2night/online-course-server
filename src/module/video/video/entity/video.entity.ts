@@ -26,6 +26,11 @@ export class Video {
   @Column({ comment: "视频名称" })
   video_name: string;
   /**
+   * 视频封面
+   */
+  @Column({ comment: "视频封面", nullable: true })
+  video_cover: string | null;
+  /**
    * 视频描述
    */
   @Column({ comment: "视频描述", nullable: true })
@@ -50,16 +55,16 @@ export class Video {
    */
   @ManyToOne(() => Account, (account) => account.publish_videos)
   @JoinColumn({ name: "account_id" })
-  publisher: Promise<Account>;
+  publisher: Account;
   /**
    * 多个发布的视频可以来自与同一个文件
    */
   @ManyToOne(() => File, (file) => file.videos)
   @JoinColumn({ name: "file_id" })
-  file: Promise<File>;
+  file: File;
   /**
    * 一个视频可以来自多个视频合集夹
    */
   @ManyToMany(() => VideoCollection, (vc) => vc.videos)
-  collections: Promise<VideoCollection[]>;
+  collections: VideoCollection[];
 }

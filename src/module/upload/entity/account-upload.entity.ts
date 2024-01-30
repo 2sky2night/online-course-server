@@ -43,12 +43,12 @@ export class AccountUpload {
    */
   @ManyToOne(() => Account, (account) => account.upload_files)
   @JoinColumn({ name: "account_id" })
-  uploader: Promise<Account>;
+  uploader: Account;
 
   /**
    * 一个上传记录对应一个文件
    */
   @ManyToOne(() => File, (file) => file.trace_accounts)
   @JoinColumn({ name: "file_id" })
-  file: Promise<File>;
+  file: File;
 }

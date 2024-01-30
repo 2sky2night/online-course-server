@@ -21,7 +21,10 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
   const upload_account_avatar_path = `${upload_avatar_path}/account`;
   // 上传评论配图的路径
   const upload_comment_path = `${upload_img_path}/comment`;
-
+  // 上传视频封面的路径
+  const upload_video_cover_path = `${upload_img_path}/video-cover`;
+  // 自动生成的视频封面的路径
+  const auto_video_cover_path = `${upload_img_path}/auto-video-cover`;
   return {
     upload_root_path,
     upload_img_path,
@@ -31,5 +34,7 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
     upload_account_avatar_path,
     upload_video_temp_path,
     upload_comment_path,
+    upload_video_cover_path,
+    auto_video_cover_path,
   };
 });

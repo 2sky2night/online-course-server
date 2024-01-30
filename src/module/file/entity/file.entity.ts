@@ -63,17 +63,17 @@ export class File {
    * 一个文件对应多个后台用户上传记录
    */
   @OneToMany(() => AccountUpload, (upload) => upload.file)
-  trace_accounts: Promise<AccountUpload[]>;
+  trace_accounts: AccountUpload[];
 
   /**
    * 一个文件对应多个前台用户上传记录
    */
   @OneToMany(() => UserUpload, (upload) => upload.file)
-  trace_users: Promise<UserUpload[]>;
+  trace_users: UserUpload[];
 
   /**
    * 一个文件可以对应多个发布的视频
    */
   @OneToMany(() => Video, (video) => video.file)
-  videos: Promise<Video[]>;
+  videos: Video[];
 }

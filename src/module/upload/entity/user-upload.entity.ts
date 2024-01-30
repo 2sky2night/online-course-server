@@ -41,12 +41,12 @@ export class UserUpload {
    */
   @ManyToOne(() => User, (user) => user.upload_files)
   @JoinColumn({ name: "user_id" })
-  uploader: Promise<User>;
+  uploader: User;
 
   /**
    * 一个上传记录对应一个文件
    */
   @ManyToOne(() => File, (file) => file.trace_users)
   @JoinColumn({ name: "file_id" })
-  file: Promise<File>;
+  file: File;
 }

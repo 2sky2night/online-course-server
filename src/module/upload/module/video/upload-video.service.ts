@@ -103,8 +103,8 @@ export class UploadVideoService {
   async createTrace(accountId: number, file: File) {
     const account = await this.accountService.findById(accountId, true);
     const trace = this.AURepository.create();
-    trace.uploader = Promise.resolve(account);
-    trace.file = Promise.resolve(file);
+    trace.uploader = account;
+    trace.file = file;
     return this.AURepository.save(trace);
   }
 

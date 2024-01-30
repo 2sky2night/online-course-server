@@ -15,7 +15,7 @@ import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { PublishVideoDto, UpdateVideoDto } from "@src/module/video/video/dto";
 import { bodyOptionCatcher } from "@src/utils/tools";
-import { IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 
 @Controller("/video")
 export class VideoController {
@@ -67,7 +67,7 @@ export class VideoController {
    * 查询视频信息
    * @param videoId 视频id
    */
-  @Get(":vid")
+  @Get("/info/:vid")
   info(@Param("vid", new IntPipe("vid")) videoId: number) {
     return this.videoService.info(videoId);
   }
@@ -76,12 +76,14 @@ export class VideoController {
    * 查询视频列表
    * @param offset 偏移量
    * @param limit 长度
+   * @param desc 是否按照时间降序
    */
-  @Get()
+  @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,
     @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
   ) {
-    return this.videoService.list(offset, limit);
+    return this.videoService.list(offset, limit, desc);
   }
 }

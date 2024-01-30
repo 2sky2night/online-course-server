@@ -109,9 +109,12 @@ export class VideoCollectionService {
       throw new BadRequestException(VideoMessage.video_is_not_owner);
     }
     // 3.校验视频合集中是否存在这些视频
-    const dbVideos = await collection.videos;
+    const rawCollection = await this.VCRepository.findOne({
+      where: { collection_id: collection.collection_id },
+      relations: ["videos"],
+    });
     const flag = videos.some((item) => {
-      return dbVideos.some((v) => v.video_id === item.video_id);
+      return rawCollection.videos.some((v) => v.video_id === item.video_id);
     });
     if (flag) {
       throw new BadRequestException(VideoMessage.collection_has_video);
@@ -181,22 +184,30 @@ export class VideoCollectionService {
    * @param collection_id 合集id
    */
   async info(collection_id: number) {
-    const collection = await this.findById(collection_id, true);
-    return {
-      ...collection,
-      creator: await collection.creator,
-    };
+    const collection = await this.VCRepository.findOne({
+      relations: ["creator"],
+      where: { collection_id },
+    });
+    if (collection === null) {
+      throw new NotFoundException(VideoMessage.collection_not_exist);
+    }
+    return collection;
   }
 
   /**
    * 视频合集列表
    * @param offset 偏移量
    * @param limit 长度
+   * @param desc 是否按照创建时间降序
    */
-  async list(offset: number, limit: number) {
+  async list(offset: number, limit: number, desc: boolean) {
     const [list, total] = await this.VCRepository.findAndCount({
       skip: offset,
       take: limit,
+      relations: ["creator"],
+      order: {
+        created_time: desc ? "desc" : "asc",
+      },
     });
     return {
       list,
@@ -227,14 +238,14 @@ export class VideoCollectionService {
    * @param videos 视频
    */
   async removeVideosRelation(collection: VideoCollection, videos: Video[]) {
-    const dbVideos = await collection.videos;
-    collection.videos = Promise.resolve(
-      dbVideos.filter((video) => {
-        return (
-          videos.some((item) => item.video_id === video.video_id) === false
-        );
-      }),
-    );
+    const rawCollection = await this.VCRepository.findOne({
+      where: { collection_id: collection.collection_id },
+      relations: ["videos"],
+    });
+    collection.videos = rawCollection.videos.filter((video) => {
+      return videos.some((item) => item.video_id === video.video_id) === false;
+    });
+
     return this.VCRepository.save(collection);
   }
 
@@ -244,8 +255,11 @@ export class VideoCollectionService {
    * @param videos 视频
    */
   async addVideosRelation(collection: VideoCollection, videos: Video[]) {
-    const dbVideos = await collection.videos;
-    collection.videos = Promise.resolve([...dbVideos, ...videos]);
+    const rawCollection = await this.VCRepository.findOne({
+      where: { collection_id: collection.collection_id },
+      relations: ["videos"],
+    });
+    collection.videos = [...rawCollection.videos, ...videos];
     return this.VCRepository.save(collection);
   }
 
@@ -270,10 +284,10 @@ export class VideoCollectionService {
           }
         : { collection_name },
     );
-    collection.creator = Promise.resolve(account);
+    collection.creator = account;
     if (videos && videos.length) {
       // 在合集中添加视频
-      collection.videos = Promise.resolve(videos);
+      collection.videos = videos;
     }
     return this.VCRepository.save(collection);
   }
@@ -284,8 +298,11 @@ export class VideoCollectionService {
    * @param collection 合集
    */
   async isCollectionOwner(account: Account, collection: VideoCollection) {
-    const creator = await collection.creator;
-    return creator.account_id === account.account_id;
+    const rawCollection = await this.VCRepository.findOne({
+      where: { collection_id: collection.collection_id },
+      relations: ["creator"],
+    });
+    return rawCollection.creator.account_id === account.account_id;
   }
 
   /**
@@ -294,11 +311,12 @@ export class VideoCollectionService {
    * @param videos 视频
    */
   async hasVideos(collection: VideoCollection, videos: Video[]) {
-    const dbVideos = await collection.videos;
-    return videos.every((video) => {
-      return dbVideos.some((item) => {
-        return item.video_id === video.video_id;
-      });
+    const rawCollection = await this.VCRepository.findOne({
+      where: { collection_id: collection.collection_id },
+      relations: ["videos"],
     });
+    return videos.every((video) =>
+      rawCollection.videos.some((i) => i.video_id === video.video_id),
+    );
   }
 }

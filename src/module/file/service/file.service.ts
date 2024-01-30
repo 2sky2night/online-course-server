@@ -51,18 +51,19 @@ export class FileService {
   }
 
   /**
-   * 该账户是否上传过此文件
+   * 该后台账户是否上传过此文件
    * @param file 文件
    * @param account 账户
    */
-  async fileUploader(file: File, account: Account) {
-    const traces = await file.trace_accounts;
-    for (let i = 0; i < traces.length; i++) {
-      const uploader = await traces[i].uploader;
-      if (uploader.account_id === account.account_id) {
-        return true;
-      }
-    }
-    return false;
+  async fileAccountUploader(file: File, account: Account) {
+    const rawFile = await this.fileRepository
+      .createQueryBuilder("file")
+      .where("file.file_id = :file_id", { file_id: file.file_id })
+      .leftJoinAndSelect("file.trace_accounts", "account_upload")
+      .leftJoinAndSelect("account_upload.uploader", "uploader")
+      .getOne();
+    return rawFile.trace_accounts.some(
+      (trace) => trace.uploader.account_id === account.account_id,
+    );
   }
 }

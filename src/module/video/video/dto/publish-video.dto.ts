@@ -38,4 +38,6 @@ export class PublishVideoDto {
   @IsArray({ message: "视频合集id列表必须是数组型!" })
   @IsNumber({}, { each: true, message: "视频合集id必须是数字型" })
   collection_id_list?: number[];
+
+  // TODO 视频封面
 }

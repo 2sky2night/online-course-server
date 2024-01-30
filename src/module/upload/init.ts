@@ -15,6 +15,8 @@ export const initLoader = ({
   upload_avatar_path,
   upload_user_avatar_path,
   upload_account_avatar_path,
+  upload_video_cover_path,
+  auto_video_cover_path,
 }: UploadConfig) => {
   // 上传文件根路径
   const rootPath = resolve(upload_root_path);
@@ -43,6 +45,12 @@ export const initLoader = ({
   // 上传评论配图的路径
   const commentPath = resolve(rootPath, `./${upload_comment_path}`);
   mkdirIfNotFound(commentPath);
+  // 上传视频封面的路径
+  const videoCoverPath = resolve(rootPath, `./${upload_video_cover_path}`);
+  mkdirIfNotFound(videoCoverPath);
+  // 内置视频封面路径
+  const videoAutoCoverPath = resolve(rootPath, `./${auto_video_cover_path}`);
+  mkdirIfNotFound(videoAutoCoverPath);
 };
 
 const mkdirIfNotFound = (path: string) => {

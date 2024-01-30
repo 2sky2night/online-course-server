@@ -53,7 +53,7 @@ export class VideoCollection {
    */
   @ManyToOne(() => Account, (account) => account.collections)
   @JoinColumn({ name: "account_id" })
-  creator: Promise<Account>;
+  creator: Account;
   /**
    * 一个视频合集有多个视频
    */
@@ -70,5 +70,5 @@ export class VideoCollection {
       referencedColumnName: "video_id",
     },
   })
-  videos: Promise<Video[]>;
+  videos: Video[];
 }

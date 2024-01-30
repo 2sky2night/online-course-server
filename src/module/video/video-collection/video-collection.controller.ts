@@ -20,7 +20,7 @@ import { VideoCollectionService } from "@src/module/video/video-collection/video
 import { AccountToken, Role } from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { bodyOptionCatcher } from "@src/utils/tools";
 
 @Controller("/video/collection")
@@ -116,7 +116,7 @@ export class VideoCollectionController {
    * 获取合集信息
    * @param collectionId 合集id
    */
-  @Get(":cid")
+  @Get("/info/:cid")
   info(@Param("cid", new IntPipe("cid")) collectionId: number) {
     return this.VCService.info(collectionId);
   }
@@ -125,12 +125,14 @@ export class VideoCollectionController {
    * 合集列表
    * @param offset 偏移量
    * @param limit 长度
+   * @param desc 是否按照创建时间降序
    */
-  @Get()
+  @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,
     @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
   ) {
-    return this.VCService.list(offset, limit);
+    return this.VCService.list(offset, limit, desc);
   }
 }

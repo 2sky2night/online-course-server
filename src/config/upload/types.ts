@@ -34,4 +34,12 @@ export interface UploadConfig {
    * 上传评论的路径
    */
   upload_comment_path: string;
+  /**
+   * 上传视频封面的路径
+   */
+  upload_video_cover_path: string;
+  /**
+   * 自动生成的视频封面路径
+   */
+  auto_video_cover_path: string;
 }

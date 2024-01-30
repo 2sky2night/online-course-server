@@ -174,8 +174,8 @@ export class UploadImgService {
   async createAccountTrace(accountId: number, file: File) {
     const account = await this.accountService.findById(accountId, true);
     const trace = this.AURepository.create();
-    trace.file = Promise.resolve(file);
-    trace.uploader = Promise.resolve(account);
+    trace.file = file;
+    trace.uploader = account;
     return this.AURepository.save(trace);
   }
 
@@ -187,8 +187,8 @@ export class UploadImgService {
   async createUserTrace(userId: number, file: File) {
     const user = await this.userService.findByUID(userId, true);
     const trace = this.UURepository.create();
-    trace.file = Promise.resolve(file);
-    trace.uploader = Promise.resolve(user);
+    trace.file = file;
+    trace.uploader = user;
     return this.UURepository.save(trace);
   }
 

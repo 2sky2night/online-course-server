@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Video } from "@src/module/video/video/entity";
 import { AccountService } from "@src/module/account/service";
 import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
@@ -63,8 +63,7 @@ export class VideoService {
       throw new BadRequestException(VideoMessage.file_type_error);
     }
     // 判断此文件用户是否上传过？
-    const flag = await this.fileService.fileUploader(file, account);
-    if (flag === false) {
+    if ((await this.fileService.fileAccountUploader(file, account)) === false) {
       // 此用户未上传此文件，不允许发布
       throw new BadRequestException(VideoMessage.file_is_not_owner);
     }
@@ -90,6 +89,7 @@ export class VideoService {
       );
     } else {
       // 直接发布视频
+      // TODO 视频封面自动生成？
       await this.create(account, file, video_name, description);
     }
 
@@ -127,23 +127,30 @@ export class VideoService {
    * @param video_id 视频id
    */
   async info(video_id: number) {
-    const video = await this.findById(video_id, true);
-    return {
-      ...video,
-      publisher: await video.publisher,
-      file: await video.file,
-    };
+    const video = await this.videoRepository.findOne({
+      where: { video_id },
+      relations: ["publisher", "file", "collections"],
+    });
+    if (video === null) {
+      throw new NotFoundException(VideoMessage.video_not_exist);
+    }
+    return video;
   }
 
   /**
    * 获取视频列表
    * @param offset 偏移量
    * @param limit 长度
+   * @param desc 是否按照时间降序
    */
-  async list(offset: number, limit: number) {
+  async list(offset: number, limit: number, desc: boolean) {
     const [list, total] = await this.videoRepository.findAndCount({
+      relations: ["publisher", "file", "collections"],
       skip: offset,
       take: limit,
+      order: {
+        created_time: desc ? "desc" : "asc",
+      },
     });
     return {
       list,
@@ -158,13 +165,15 @@ export class VideoService {
    * @param videos 视频列表
    */
   async isVideosOwner(account: Account, videos: Video[]) {
-    for (let i = 0; i < videos.length; i++) {
-      const flag = await this.isVideoOwner(account, videos[i]);
-      if (flag === false) {
-        return false;
-      }
-    }
-    return true;
+    const rawVideos = await this.videoRepository.find({
+      where: {
+        video_id: In(videos.map((item) => item.video_id)),
+      },
+      relations: ["publisher"],
+    });
+    return rawVideos.every(
+      (video) => video.publisher.account_id === account.account_id,
+    );
   }
 
   /**
@@ -196,8 +205,8 @@ export class VideoService {
     const video = this.videoRepository.create(
       description ? { video_name, description } : { video_name },
     );
-    video.publisher = Promise.resolve(account);
-    video.file = Promise.resolve(file);
+    video.publisher = account;
+    video.file = file;
     return this.videoRepository.save(video);
   }
 
@@ -207,7 +216,12 @@ export class VideoService {
    * @param video 目标视频
    */
   async isVideoOwner(account: Account, video: Video) {
-    const publisher = await video.publisher;
-    return publisher.account_id === account.account_id;
+    const rawVideo = await this.videoRepository
+      .createQueryBuilder("video")
+      .leftJoinAndSelect("video.publisher", "publisher")
+      .where({ video_id: video.video_id })
+      .getOne();
+    console.log(rawVideo);
+    return rawVideo.publisher.account_id === account.account_id;
   }
 }
