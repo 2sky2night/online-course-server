@@ -25,6 +25,8 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
   const upload_video_cover_path = `${upload_img_path}/video-cover`;
   // 自动生成的视频封面的路径
   const auto_video_cover_path = `${upload_img_path}/auto-video-cover`;
+  // 视频合集封面的路径
+  const upload_video_collection_cover_path = `${upload_img_path}/video-collection-cover`;
   return {
     upload_root_path,
     upload_img_path,
@@ -36,5 +38,6 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
     upload_comment_path,
     upload_video_cover_path,
     auto_video_cover_path,
+    upload_video_collection_cover_path,
   };
 });

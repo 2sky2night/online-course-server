@@ -103,12 +103,17 @@ export class VideoCollectionController {
     @Body() videosDto: UpdateVideoCollectionDto,
   ) {
     // 校验请求体
-    bodyOptionCatcher(videosDto, ["collection_name", "description"]);
+    bodyOptionCatcher(videosDto, [
+      "collection_name",
+      "description",
+      "collection_cover",
+    ]);
     return this.VCService.updateInfo(
       accountId,
       collectionId,
       videosDto.collection_name,
       videosDto.description,
+      videosDto.collection_cover,
     );
   }
 

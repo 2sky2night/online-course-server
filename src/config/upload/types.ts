@@ -42,4 +42,8 @@ export interface UploadConfig {
    * 自动生成的视频封面路径
    */
   auto_video_cover_path: string;
+  /**
+   * 上传视频合集封面路径
+   */
+  upload_video_collection_cover_path: string;
 }

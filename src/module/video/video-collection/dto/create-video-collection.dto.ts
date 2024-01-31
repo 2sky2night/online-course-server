@@ -36,4 +36,10 @@ export class CreateVideoCollectionDto {
   // 对数组中每一个元素进行验证
   @IsNumber({}, { each: true, message: "视频id必须是数值型!" })
   video_id_list?: number[];
+  /**
+   * 视频合集封面
+   */
+  @IsOptional()
+  @IsString({ message: "视频合集的封面必须是字符型!" })
+  collection_cover?: string;
 }

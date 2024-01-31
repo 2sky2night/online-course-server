@@ -54,12 +54,13 @@ export class VideoController {
     @Param("vid", new IntPipe("vid")) videoId: number,
     @Body() videoDto: UpdateVideoDto,
   ) {
-    bodyOptionCatcher(videoDto, ["video_name", "description"]);
+    bodyOptionCatcher(videoDto, ["video_name", "description", "video_cover"]);
     return this.videoService.updateInfo(
       accountId,
       videoId,
       videoDto.video_name,
       videoDto.description,
+      videoDto.video_cover,
     );
   }
 

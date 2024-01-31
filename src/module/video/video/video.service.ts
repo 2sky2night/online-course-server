@@ -3,8 +3,10 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
+import { basename } from "node:path";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import { Video } from "@src/module/video/video/entity";
@@ -17,6 +19,7 @@ import { FileType } from "@src/module/file/enum";
 import { Account } from "@src/module/account/entity";
 import { File } from "@src/module/file/entity";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
+import { FfmpegFolder, Folder } from "@src/lib/folder";
 
 @Injectable()
 export class VideoService {
@@ -46,6 +49,18 @@ export class VideoService {
    */
   @Inject(forwardRef(() => VideoCollectionService))
   private VCService: VideoCollectionService;
+  /**
+   * 目录API：自动生成视频封面
+   * @private
+   */
+  @Inject("AUTO_VIDEO_COVER")
+  private VCFolder: FfmpegFolder;
+  /**
+   * 目录API：视频
+   * @private
+   */
+  @Inject("UPLOAD_VIDEO")
+  private videoFolder: Folder;
 
   /**
    * 发布视频
@@ -54,7 +69,13 @@ export class VideoService {
    */
   async publishVideo(
     account_id: number,
-    { file_id, description, video_name, collection_id_list }: PublishVideoDto,
+    {
+      file_id,
+      description,
+      video_name,
+      collection_id_list,
+      video_cover,
+    }: PublishVideoDto,
   ) {
     const account = await this.accountService.findById(account_id, true);
     const file = await this.fileService.findById(file_id, true);
@@ -82,17 +103,55 @@ export class VideoService {
         throw new BadRequestException(VideoMessage.collection_is_not_owner);
       }
       // 增加视频
-      const video = await this.create(account, file, video_name, description);
+      const video = await this.create(
+        account,
+        file,
+        video_name,
+        description,
+        video_cover,
+      );
+      if (video_cover === undefined) {
+        // 未上传视频封面，则后台静默生成视频封面
+        this.generateVideoCover(file).then(
+          (file_path) => {
+            this.videoRepository.update(video.video_id, {
+              video_cover: file_path,
+            });
+          },
+          (e) => {
+            // 出错了，则不设置视频封面
+            Logger.error(e);
+          },
+        );
+      }
       // 添加视频和视频合集的关系
       await Promise.all(
         collections.map((c) => this.VCService.addVideosRelation(c, [video])),
       );
     } else {
       // 直接发布视频
-      // TODO 视频封面自动生成？
-      await this.create(account, file, video_name, description);
+      const video = await this.create(
+        account,
+        file,
+        video_name,
+        description,
+        video_cover,
+      );
+      if (video_cover === undefined) {
+        // 未上传视频封面，则后台静默生成视频封面
+        this.generateVideoCover(file).then(
+          (file_path) => {
+            this.videoRepository.update(video.video_id, {
+              video_cover: file_path,
+            });
+          },
+          (e) => {
+            // 出错了，则不设置视频封面
+            Logger.error(e);
+          },
+        );
+      }
     }
-
     return null;
   }
 
@@ -102,12 +161,14 @@ export class VideoService {
    * @param video_id 视频id
    * @param video_name 视频名称
    * @param description 视频描述
+   * @param video_cover 视频封面
    */
   async updateInfo(
     account_id: number,
     video_id: number,
     video_name?: string,
     description?: string,
+    video_cover?: string,
   ) {
     const video = await this.findById(video_id, true);
     const account = await this.accountService.findById(account_id, true);
@@ -118,6 +179,7 @@ export class VideoService {
     const updateInfo: Record<string, unknown> = {};
     if (video_name) updateInfo.video_name = video_name;
     if (description) updateInfo.description = description;
+    if (video_cover) updateInfo.video_cover = video_cover;
     await this.videoRepository.update(video.video_id, updateInfo);
     return null;
   }
@@ -145,7 +207,7 @@ export class VideoService {
    */
   async list(offset: number, limit: number, desc: boolean) {
     const [list, total] = await this.videoRepository.findAndCount({
-      relations: ["publisher", "file", "collections"],
+      relations: ["publisher"],
       skip: offset,
       take: limit,
       order: {
@@ -195,18 +257,20 @@ export class VideoService {
    * @param file 文件
    * @param video_name 视频名称
    * @param description 视频描述
+   * @param video_cover 视频封面
    */
   create(
     account: Account,
     file: File,
     video_name: string,
-    description: string | undefined,
+    description?: string,
+    video_cover?: string,
   ) {
-    const video = this.videoRepository.create(
-      description ? { video_name, description } : { video_name },
-    );
+    const video = this.videoRepository.create({ video_name });
     video.publisher = account;
     video.file = file;
+    if (description) video.description = description;
+    if (video_cover) video.video_cover = video_cover;
     return this.videoRepository.save(video);
   }
 
@@ -223,5 +287,16 @@ export class VideoService {
       .getOne();
     console.log(rawVideo);
     return rawVideo.publisher.account_id === account.account_id;
+  }
+
+  /**
+   * 生成视频封面
+   * @param file 文件实例
+   */
+  generateVideoCover(file: File) {
+    // 生成文件的绝对路径
+    const filepath = this.videoFolder.getAbsolutePath(basename(file.file_path));
+    // 截取并生成视频封面
+    return this.VCFolder.setVideoFirstFrame(filepath);
   }
 }

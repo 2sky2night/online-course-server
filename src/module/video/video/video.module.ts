@@ -7,6 +7,7 @@ import { UploadVideoModule } from "@src/module/upload/module/video/upload-video.
 import { AccountModule } from "@src/module/account/account.module";
 import { FileModule } from "@src/module/file/file.module";
 import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
+import { VideoProvider } from "@src/module/video/video/video.provider";
 
 /**
  * 视频模块
@@ -19,7 +20,7 @@ import { VideoCollectionModule } from "@src/module/video/video-collection/video-
     FileModule,
     forwardRef(() => VideoCollectionModule),
   ],
-  providers: [VideoService],
+  providers: [VideoService, ...VideoProvider],
   controllers: [VideoController],
   exports: [VideoService],
 })

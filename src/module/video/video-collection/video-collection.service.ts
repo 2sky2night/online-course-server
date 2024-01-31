@@ -53,11 +53,17 @@ export class VideoCollectionService {
    * @param accountId
    * @param collection_name
    * @param description
+   * @param collection_cover
    * @param video_id_list
    */
   async publishCollection(
     accountId: number,
-    { collection_name, description, video_id_list }: CreateVideoCollectionDto,
+    {
+      collection_name,
+      description,
+      video_id_list,
+      collection_cover,
+    }: CreateVideoCollectionDto,
   ) {
     const account = await this.accountService.findById(accountId, true);
     if (video_id_list) {
@@ -72,11 +78,22 @@ export class VideoCollectionService {
         throw new BadRequestException(VideoMessage.video_is_not_owner);
       }
       // 创建合集
-      await this.create(account, collection_name, description, videos);
+      await this.create(
+        account,
+        collection_name,
+        description,
+        collection_cover,
+        videos,
+      );
       return null;
     } else {
       // 未添加视频
-      await this.create(account, collection_name, description);
+      await this.create(
+        account,
+        collection_name,
+        description,
+        collection_cover,
+      );
       return null;
     }
   }
@@ -158,12 +175,14 @@ export class VideoCollectionService {
    * @param collectionId 合集id
    * @param name 合集名称
    * @param description 合集描述
+   * @param collection_cover 合集封面
    */
   async updateInfo(
     accountId: number,
     collectionId: number,
     name?: string,
     description?: string,
+    collection_cover?: string,
   ) {
     const account = await this.accountService.findById(accountId, true);
     const collection = await this.findById(collectionId, true);
@@ -175,6 +194,7 @@ export class VideoCollectionService {
     const updateData: Record<string, string> = {};
     if (name) updateData.collection_name = name;
     if (description) updateData.description = description;
+    if (collection_cover) updateData.collection_cover = collection_cover;
     await this.VCRepository.update(collection.collection_id, updateData);
     return null;
   }
@@ -185,7 +205,7 @@ export class VideoCollectionService {
    */
   async info(collection_id: number) {
     const collection = await this.VCRepository.findOne({
-      relations: ["creator"],
+      relations: ["creator", "videos"],
       where: { collection_id },
     });
     if (collection === null) {
@@ -267,28 +287,25 @@ export class VideoCollectionService {
    * 创建视频合集
    * @param account 发布者
    * @param collection_name 合集名称
-   * @param videos 视频列表，在创建时就会建立关系
    * @param description 合集描述
+   * @param collection_cover 视频封面
+   * @param videos 视频列表，在创建时就会建立关系
    */
   async create(
     account: Account,
     collection_name: string,
     description?: string,
+    collection_cover?: string,
     videos?: Video[],
   ) {
-    const collection = this.VCRepository.create(
-      description
-        ? {
-            collection_name,
-            description,
-          }
-        : { collection_name },
-    );
+    const collection = this.VCRepository.create({ collection_name });
     collection.creator = account;
     if (videos && videos.length) {
       // 在合集中添加视频
       collection.videos = videos;
     }
+    if (description) collection.description = description;
+    if (collection_cover) collection.collection_cover = collection_cover;
     return this.VCRepository.save(collection);
   }
 

@@ -39,5 +39,10 @@ export class PublishVideoDto {
   @IsNumber({}, { each: true, message: "视频合集id必须是数字型" })
   collection_id_list?: number[];
 
-  // TODO 视频封面
+  /**
+   * 视频封面
+   */
+  @IsOptional()
+  @IsString({ message: "视频封面必须是字符型" })
+  video_cover?: string;
 }

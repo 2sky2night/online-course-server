@@ -104,5 +104,13 @@ declare namespace NodeJS {
      * 上传文件的存储路径（绝对路径）所有上传的文件会分类保存
      */
     UPLOAD_PATH: string;
+    /**
+     * 生成视频封面的临时路径
+     */
+    AUTO_VIDEO_COVER_TEMP: string;
+    /**
+     * 封面最大大小
+     */
+    FILE_COVER_SIZE: string;
   }
 }

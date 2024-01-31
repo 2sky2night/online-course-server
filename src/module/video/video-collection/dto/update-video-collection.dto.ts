@@ -20,4 +20,10 @@ export class UpdateVideoCollectionDto {
   @MinLength(1, { message: "视频合集描述最少为1位!" })
   @MaxLength(255, { message: "视频合集描述最长为255位!" })
   description?: string;
+  /**
+   * 视频合集封面
+   */
+  @IsOptional()
+  @IsString({ message: "视频合集的封面必须是字符型!" })
+  collection_cover?: string;
 }

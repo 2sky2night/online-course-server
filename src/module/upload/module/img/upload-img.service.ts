@@ -23,6 +23,16 @@ export class UploadImgService {
   @Inject("UPLOAD_ACCOUNT_AVATAR")
   accountAvatarFolder: Folder;
   /**
+   * 目录API:上传视频封面目录
+   */
+  @Inject("UPLOAD_VIDEO_COVER")
+  videoCoverFolder: Folder;
+  /**
+   * 目录API:上传视频合集封面目录
+   */
+  @Inject("UPLOAD_VIDEO_COLLECTION_COVER")
+  VCCFolder: Folder;
+  /**
    * 前台账户追踪表
    * @private
    */
@@ -55,56 +65,13 @@ export class UploadImgService {
    * @param userId 上传者
    * @param uploadFile 上传的文件数据
    */
-  async uploadUserAvatar(userId: number, uploadFile: Express.Multer.File) {
-    // 计算文件hash
-    const hash = generateFileHash(uploadFile.buffer);
-    // 文件系统中是否存在保存此文件
-    const fsFilePath = this.userAvatarFolder.inFilename(hash, true);
-    if (fsFilePath) {
-      // 文件系统保存过此文件了
-      // 数据库中是否存在此文件的路径
-      const dbFile = await this.fileService.findByPath(fsFilePath);
-      if (dbFile === null) {
-        // 数据库中未保存此文件，则添加新文件
-        const file = await this.fileService.create(
-          hash,
-          fsFilePath,
-          FileType.IMAGE,
-        );
-        // 增加上传记录
-        const trace = await this.createUserTrace(userId, file);
-        return this.formatTrace(trace, file);
-      } else {
-        // 数据库中存储了此文件记录，增加上传记录
-        const trace = await this.createUserTrace(userId, dbFile);
-        return this.formatTrace(trace, dbFile);
-      }
-    } else {
-      // 文件系统未保存此文件
-      // 保存文件
-      const fsNewFilePath = await this.userAvatarFolder.addFileWithHash(
-        uploadFile.originalname,
-        hash,
-        uploadFile.buffer,
-      );
-      // 查询数据库中是否存储了
-      const dbFile = await this.fileService.findByPath(fsNewFilePath);
-      if (dbFile === null) {
-        // 数据库中未存储此文件,增加文件
-        const file = await this.fileService.create(
-          hash,
-          fsNewFilePath,
-          FileType.IMAGE,
-        );
-        // 增加上传记录
-        const trace = await this.createUserTrace(userId, file);
-        return this.formatTrace(trace, file);
-      } else {
-        // 数据库中存储过此文件了，则直接增加上传记录
-        const trace = await this.createUserTrace(userId, dbFile);
-        return this.formatTrace(trace, dbFile);
-      }
-    }
+  uploadUserAvatar(userId: number, uploadFile: Express.Multer.File) {
+    return this.userTrace(
+      userId,
+      uploadFile,
+      this.userAvatarFolder,
+      FileType.IMAGE,
+    );
   }
 
   /**
@@ -112,56 +79,172 @@ export class UploadImgService {
    * @param accountId 上传者
    * @param uploadFile 文件
    */
-  async uploadAccountAvatar(
+  uploadAccountAvatar(accountId: number, uploadFile: Express.Multer.File) {
+    return this.accountTrace(
+      accountId,
+      uploadFile,
+      this.accountAvatarFolder,
+      FileType.IMAGE,
+    );
+  }
+
+  /**
+   * 后台老师上传视频封面
+   * @param accountId 账号id
+   * @param uploadFile 文件
+   */
+  uploadVideoCover(accountId: number, uploadFile: Express.Multer.File) {
+    return this.accountTrace(
+      accountId,
+      uploadFile,
+      this.videoCoverFolder,
+      FileType.IMAGE,
+    );
+  }
+
+  /**
+   * 老师上传视频合集封面
+   * @param accountId 账号id
+   * @param uploadFile 文件
+   */
+  uploadVideoCollectionCover(
     accountId: number,
     uploadFile: Express.Multer.File,
   ) {
-    // 计算文件hash
+    return this.accountTrace(
+      accountId,
+      uploadFile,
+      this.VCCFolder,
+      FileType.IMAGE,
+    );
+  }
+
+  /**
+   * 增加后台上传记录
+   * @param accountId 账户id
+   * @param uploadFile 上传的文件
+   * @param folder 目录API
+   * @param fileType 文件类型
+   */
+  async accountTrace(
+    accountId: number,
+    uploadFile: Express.Multer.File,
+    folder: Folder,
+    fileType: FileType | null,
+  ) {
+    await this.accountService.findById(accountId, true);
     const hash = generateFileHash(uploadFile.buffer);
-    // 查询目录中是否存在此文件
-    const fsFilePath = this.accountAvatarFolder.inFilename(hash, true);
+    const fsFilePath = folder.inFilename(hash, true);
     if (fsFilePath) {
-      // 文件系统保存了此文件
-      // 查询数据库中是否有此记录
+      // 1.文件系统存储了此文件
       const dbFile = await this.fileService.findByPath(fsFilePath);
       if (dbFile) {
-        // 数据库中有此文件记录，直接添加上传记录
+        // 1.1数据库存储了此文件记录
+        // 增加上传追踪记录
         const trace = await this.createAccountTrace(accountId, dbFile);
         return this.formatTrace(trace, dbFile);
       } else {
-        // 数据库中无此文件记录，添加记录
-        const file = await this.fileService.create(
+        // 1.2数据库未存储此文件记录
+        // 增加文件
+        const newDbFile = await this.fileService.create(
           hash,
           fsFilePath,
-          FileType.IMAGE,
+          fileType,
         );
-        // 增加上传记录
-        const trace = await this.createAccountTrace(accountId, file);
-        return this.formatTrace(trace, file);
+        // 增加上传追踪记录
+        const trace = await this.createAccountTrace(accountId, newDbFile);
+        return this.formatTrace(trace, newDbFile);
       }
     } else {
-      // 文件系统未保存此文件，保存新文件
-      const fsNewFilePath = await this.accountAvatarFolder.addFileWithHash(
+      // 2.文件系统未存储此文件
+      // 保存此文件
+      const fsNewfilePath = await folder.addFileWithHash(
         uploadFile.originalname,
         hash,
         uploadFile.buffer,
       );
-      // 查询数据库中是否保存了此文件
-      const dbFile = await this.fileService.findByPath(fsNewFilePath);
+      const dbFile = await this.fileService.findByPath(fsNewfilePath);
       if (dbFile) {
-        // 保存了，直接添加上传记录
+        // 2.1 数据库中保存了文件记录
+        // 增加上传记录
         const trace = await this.createAccountTrace(accountId, dbFile);
         return this.formatTrace(trace, dbFile);
       } else {
-        // 未保存，增加记录
-        const file = await this.fileService.create(
+        // 2.2 数据库中未保存文件记录
+        // 增加文件记录
+        const dbNewFile = await this.fileService.create(
           hash,
-          fsNewFilePath,
-          FileType.IMAGE,
+          fsNewfilePath,
+          fileType,
         );
-        // 添加上传记录
-        const trace = await this.createAccountTrace(accountId, file);
-        return this.formatTrace(trace, file);
+        // 增加上传记录
+        const trace = await this.createAccountTrace(accountId, dbNewFile);
+        return this.formatTrace(trace, dbNewFile);
+      }
+    }
+  }
+
+  /**
+   * 增加前台上传记录
+   * @param userId 用户id
+   * @param uploadFile 上传的文件
+   * @param folder 目录API
+   * @param fileType 文件类型
+   */
+  async userTrace(
+    userId: number,
+    uploadFile: Express.Multer.File,
+    folder: Folder,
+    fileType: FileType | null,
+  ) {
+    await this.userService.findByUID(userId, true);
+    const hash = generateFileHash(uploadFile.buffer);
+    const fsFilePath = folder.inFilename(hash, true);
+    if (fsFilePath) {
+      // 1.文件系统存储了此文件
+      const dbFile = await this.fileService.findByPath(fsFilePath);
+      if (dbFile) {
+        // 1.1数据库存储了此文件记录
+        // 增加上传追踪记录
+        const trace = await this.createUserTrace(userId, dbFile);
+        return this.formatTrace(trace, dbFile);
+      } else {
+        // 1.2数据库未存储此文件记录
+        // 增加文件
+        const newDbFile = await this.fileService.create(
+          hash,
+          fsFilePath,
+          fileType,
+        );
+        // 增加上传追踪记录
+        const trace = await this.createUserTrace(userId, newDbFile);
+        return this.formatTrace(trace, newDbFile);
+      }
+    } else {
+      // 2.文件系统未存储此文件
+      // 保存此文件
+      const fsNewfilePath = await folder.addFileWithHash(
+        uploadFile.originalname,
+        hash,
+        uploadFile.buffer,
+      );
+      const dbFile = await this.fileService.findByPath(fsNewfilePath);
+      if (dbFile) {
+        // 2.1 数据库中保存了文件记录
+        // 增加上传记录
+        const trace = await this.createUserTrace(userId, dbFile);
+        return this.formatTrace(trace, dbFile);
+      } else {
+        // 2.2 数据库中未保存文件记录
+        // 增加文件记录
+        const dbNewFile = await this.fileService.create(
+          hash,
+          fsNewfilePath,
+          fileType,
+        );
+        // 增加上传记录
+        const trace = await this.createUserTrace(userId, dbNewFile);
+        return this.formatTrace(trace, dbNewFile);
       }
     }
   }

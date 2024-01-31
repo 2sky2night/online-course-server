@@ -17,6 +17,7 @@ export const initLoader = ({
   upload_account_avatar_path,
   upload_video_cover_path,
   auto_video_cover_path,
+  upload_video_collection_cover_path,
 }: UploadConfig) => {
   // 上传文件根路径
   const rootPath = resolve(upload_root_path);
@@ -51,6 +52,12 @@ export const initLoader = ({
   // 内置视频封面路径
   const videoAutoCoverPath = resolve(rootPath, `./${auto_video_cover_path}`);
   mkdirIfNotFound(videoAutoCoverPath);
+  // 视频合集封面路径
+  const videoCollectionCoverPath = resolve(
+    rootPath,
+    `./${upload_video_collection_cover_path}`,
+  );
+  mkdirIfNotFound(videoCollectionCoverPath);
 };
 
 const mkdirIfNotFound = (path: string) => {

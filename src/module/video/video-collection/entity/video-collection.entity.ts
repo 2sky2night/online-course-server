@@ -34,6 +34,11 @@ export class VideoCollection {
   @Column({ comment: "合集的描述", nullable: true })
   description: string | null;
   /**
+   * 合集的封面
+   */
+  @Column({ comment: "合集的封面", nullable: true })
+  collection_cover: string | null;
+  /**
    * 创建时间
    */
   @CreateDateColumn({ type: "datetime", comment: "创建时间" })

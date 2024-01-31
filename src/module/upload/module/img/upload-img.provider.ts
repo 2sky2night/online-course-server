@@ -35,4 +35,31 @@ export const uploadImgProvider: Provider[] = [
       );
     },
   },
+  {
+    // 后台上传视频封面目录模块
+    provide: "UPLOAD_VIDEO_COVER",
+    inject: [ConfigService],
+    useFactory(configService: ConfigService) {
+      const config = configService.get<UploadConfig>("upload");
+      return new Folder(
+        resolve(config.upload_root_path, `./${config.upload_video_cover_path}`),
+        config.upload_video_cover_path,
+      );
+    },
+  },
+  {
+    // 后台上传视频封面目录模块
+    provide: "UPLOAD_VIDEO_COLLECTION_COVER",
+    inject: [ConfigService],
+    useFactory(configService: ConfigService) {
+      const config = configService.get<UploadConfig>("upload");
+      return new Folder(
+        resolve(
+          config.upload_root_path,
+          `./${config.upload_video_collection_cover_path}`,
+        ),
+        config.upload_video_collection_cover_path,
+      );
+    },
+  },
 ];

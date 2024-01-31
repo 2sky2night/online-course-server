@@ -20,4 +20,10 @@ export class UpdateVideoDto {
   @MinLength(1, { message: "视频的描述最少为1位!" })
   @MaxLength(255, { message: "视频的描述最长为255位!" })
   description?: string;
+  /**
+   * 视频封面
+   */
+  @IsOptional()
+  @IsString({ message: "视频封面必须是字符型" })
+  video_cover?: string;
 }

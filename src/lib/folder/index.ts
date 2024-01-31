@@ -1,5 +1,6 @@
 import { existsSync, createWriteStream, mkdirSync, readdirSync } from "node:fs";
 import { resolve, extname } from "node:path";
+import { Logger } from "@nestjs/common";
 
 /**
  * 封装操作某个目录的API
@@ -75,8 +76,13 @@ export class Folder {
       // 若文件的后缀名有效，则文件为hash拼接后缀名
       hashFileName = hash + ext;
     }
-    await this.addFile(hashFileName, buffer);
-    return this.rootPath + `/${hashFileName}`;
+    try {
+      await this.addFile(hashFileName, buffer);
+      return this.rootPath + `/${hashFileName}`;
+    } catch (e) {
+      Logger.error(`FolderAPI Error: 存储文件失败!`);
+      throw new Error(`FolderAPI Error: 存储文件失败!`);
+    }
   }
 
   /**
@@ -114,4 +120,14 @@ export class Folder {
       }
     }
   }
+
+  /**
+   * 输入文件名输出其在对应目录中的绝对路径
+   * @param filename 文件名称
+   */
+  getAbsolutePath(filename: string) {
+    return resolve(this.basePath, `./${filename}`);
+  }
 }
+
+export { FfmpegFolder } from "./ffmpeg";
