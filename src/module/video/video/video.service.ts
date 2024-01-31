@@ -20,6 +20,7 @@ import { Account } from "@src/module/account/entity";
 import { File } from "@src/module/file/entity";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { FfmpegFolder, Folder } from "@src/lib/folder";
+import { getVideoDuration } from "@src/utils/ffmpeg";
 
 @Injectable()
 export class VideoService {
@@ -259,14 +260,17 @@ export class VideoService {
    * @param description 视频描述
    * @param video_cover 视频封面
    */
-  create(
+  async create(
     account: Account,
     file: File,
     video_name: string,
     description?: string,
     video_cover?: string,
   ) {
-    const video = this.videoRepository.create({ video_name });
+    const duration = await getVideoDuration(
+      this.videoFolder.getAbsolutePath(basename(file.file_path)),
+    );
+    const video = this.videoRepository.create({ video_name, duration });
     video.publisher = account;
     video.file = file;
     if (description) video.description = description;

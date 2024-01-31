@@ -36,6 +36,11 @@ export class Video {
   @Column({ comment: "视频描述", nullable: true })
   description: string | null;
   /**
+   * 视频时长
+   */
+  @Column({ comment: "视频时长", type: "float" })
+  duration: number;
+  /**
    * 创建时间
    */
   @CreateDateColumn({ type: "datetime", comment: "创建时间" })
