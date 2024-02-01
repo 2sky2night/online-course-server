@@ -8,7 +8,11 @@ import { HttpExceptionFilter, InternalErrorFilter } from "@src/common/filter";
 async function bootstrap() {
   try {
     // APP实例
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(
+      AppModule,
+      // 开发环境开启跨域
+      process.env.NODE_ENV === "development" ? { cors: true } : {},
+    );
     // 全局DTO校验
     app.useGlobalPipes(new ValidationPipe());
     // 接口前缀(必须在端口启动之前设置)

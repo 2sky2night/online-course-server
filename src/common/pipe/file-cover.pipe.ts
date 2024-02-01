@@ -28,7 +28,7 @@ export class FileCoverPipe
       // 上传的文件类型错误
       throw new BadRequestException(CommonMessage.upload_file_type_error);
     }
-    if (file.size < this.maxSize) {
+    if (file.size <= this.maxSize) {
       return file;
     } else {
       // 上传的文件超出大小

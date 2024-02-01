@@ -112,5 +112,13 @@ declare namespace NodeJS {
      * 封面最大大小
      */
     FILE_COVER_SIZE: string;
+    /**
+     * 文件切片的大小
+     */
+    FILE_CHUNK_SIZE: string;
+    /**
+     * 启动环境
+     */
+    NODE_ENV: "development" | "production";
   }
 }

@@ -9,11 +9,11 @@ export class Folder {
   /**
    * 根路径（绝对路径）
    */
-  private readonly basePath: string;
+  protected readonly basePath: string;
   /**
    * 根路径（相对路径，相对于上传根路径的路径）
    */
-  private readonly rootPath: string;
+  protected readonly rootPath: string;
 
   /**
    * @param basePath 绝对路径
@@ -131,3 +131,4 @@ export class Folder {
 }
 
 export { FfmpegFolder } from "./ffmpeg";
+export { ChunkFolder } from "./chunk";

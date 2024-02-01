@@ -85,6 +85,11 @@ export const ServerMessage = Object.freeze({
  */
 export const UploadMessage = Object.freeze({
   trace_not_exists: "此上传记录不存在!",
+  chunk_hash_error: "切片的hash必须是数字且大于等于0!",
+  chunk_folder_not_exists: "未上传过此文件!",
+  chunk_check_error: "校验切片文件错误!",
+  fast_upload_fail: "秒传失败,文件未上传过!",
+  fast_upload_success: "秒传成功!",
 });
 
 /**
