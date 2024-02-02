@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -10,10 +11,14 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { VideoService } from "@src/module/video/video/video.service";
-import { AccountToken, Role } from "@src/common/decorator";
+import { AccountToken, Role, UserToken } from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { PublishVideoDto, UpdateVideoDto } from "@src/module/video/video/dto";
+import { AccountGuard, RoleGuard, UserGuard } from "@src/common/guard";
+import {
+  AddVideoHistoryDto,
+  PublishVideoDto,
+  UpdateVideoDto,
+} from "@src/module/video/video/dto";
 import { bodyOptionCatcher } from "@src/utils/tools";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 
@@ -86,5 +91,77 @@ export class VideoController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.videoService.list(offset, limit, desc);
+  }
+
+  /**
+   * 增加视频浏览量
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Post(":vid/views")
+  @UseGuards(UserGuard)
+  addViews(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.addViews(video_id, user_id);
+  }
+
+  /**
+   * 增加视频浏览历史记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   * @param dto 浏览时长
+   */
+  @Post(":vid/history")
+  @UseGuards(UserGuard)
+  addHistory(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+    @Body() { viewing_time }: AddVideoHistoryDto,
+  ) {
+    return this.videoService.addHistory(video_id, user_id, viewing_time);
+  }
+
+  /**
+   * 点赞视频
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Post(":vid/like")
+  @UseGuards(UserGuard)
+  addLike(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.addLike(video_id, user_id);
+  }
+
+  /**
+   * 取消点赞
+   * @param video_id 视频号
+   * @param user_id 用户id
+   */
+  @Delete(":vid/like")
+  @UseGuards(UserGuard)
+  removeLike(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.removeLike(video_id, user_id);
+  }
+
+  /**
+   * 删除视频历史记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Delete(":vid/history")
+  @UseGuards(UserGuard)
+  removeHistory(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.removeHistory(video_id, user_id);
   }
 }

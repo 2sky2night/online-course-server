@@ -13,9 +13,18 @@ import {
 import { User } from "@src/module/user/entity";
 import { UserRegisterType } from "@src/module/auth/user/entity";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
-import { Video } from "@src/module/video/video/entity";
+import {
+  Video,
+  VideoHistory,
+  VideoLike,
+  VideoView,
+} from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { File } from "@src/module/file/entity";
+import {
+  VideoComment,
+  VideoCommentLike,
+} from "@src/module/video/video-comment/entity";
 
 /**
  * 所有实体
@@ -32,6 +41,11 @@ export const entities = [
   Video,
   VideoCollection,
   File,
+  VideoView,
+  VideoHistory,
+  VideoLike,
+  VideoComment,
+  VideoCommentLike,
 ];
 
 /**

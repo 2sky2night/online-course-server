@@ -10,6 +10,9 @@ import {
 import { Account } from "@src/module/account/entity";
 import { Roles } from "../enum";
 
+/**
+ * 角色表
+ */
 @Entity()
 export class Role {
   /**

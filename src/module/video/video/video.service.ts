@@ -9,7 +9,12 @@ import {
 import { basename } from "node:path";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
-import { Video } from "@src/module/video/video/entity";
+import {
+  Video,
+  VideoHistory,
+  VideoLike,
+  VideoView,
+} from "@src/module/video/video/entity";
 import { AccountService } from "@src/module/account/service";
 import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
 import { FileService } from "@src/module/file/service";
@@ -21,6 +26,8 @@ import { File } from "@src/module/file/entity";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { FfmpegFolder, Folder } from "@src/lib/folder";
 import { getVideoDuration } from "@src/utils/ffmpeg";
+import { UserService } from "@src/module/user/service";
+import { User } from "@src/module/user/entity";
 
 @Injectable()
 export class VideoService {
@@ -29,6 +36,24 @@ export class VideoService {
    */
   @InjectRepository(Video)
   private videoRepository: Repository<Video>;
+  /**
+   * 视频浏览量表
+   * @private
+   */
+  @InjectRepository(VideoView)
+  private VVRespository: Repository<VideoView>;
+  /**
+   * 视频历史记录
+   * @private
+   */
+  @InjectRepository(VideoHistory)
+  private VHRepository: Repository<VideoHistory>;
+  /**
+   * 视频点赞记录
+   * @private
+   */
+  @InjectRepository(VideoLike)
+  private VLRepository: Repository<VideoLike>;
   /**
    * 账户服务层
    */
@@ -39,6 +64,12 @@ export class VideoService {
    */
   @Inject(UploadVideoService)
   private uploadVideoService: UploadVideoService;
+  /**
+   * 用户服务层
+   * @private
+   */
+  @Inject(UserService)
+  private userService: UserService;
   /**
    * 文件服务层
    */
@@ -250,6 +281,173 @@ export class VideoService {
       throw new NotFoundException(VideoMessage.video_not_exist);
     }
     return video;
+  }
+
+  /**
+   * 增加视频浏览量
+   * @param video_id 视频号
+   * @param user_id 用户id
+   */
+  async addViews(video_id: number, user_id: number): Promise<null> {
+    const user = await this.userService.findByUID(user_id, true);
+    const video = await this.findById(video_id, true);
+    await this.createViews(video, user);
+    return null;
+  }
+
+  /**
+   * 创建用户浏览视频历史记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   * @param viewing_time 浏览时长
+   */
+  async addHistory(
+    video_id: number,
+    user_id: number,
+    viewing_time: number,
+  ): Promise<null> {
+    const video = await this.findById(video_id, true);
+    const user = await this.userService.findByUID(user_id, true);
+    if (video.duration < viewing_time) {
+      // 视频时长小于观看时长
+      throw new BadRequestException(VideoMessage.video_history_time_error);
+    }
+    // 查询是否浏览过此视频
+    const flag = await this.findHistory(video_id, user_id);
+    if (flag) {
+      // 浏览过，需要先删除记录
+      await this.deleteHistory(flag.history_id);
+    }
+    // 创建新的历史记录
+    await this.createHistory(video, user, viewing_time);
+    return null;
+  }
+
+  /**
+   * 点赞视频
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  async addLike(video_id: number, user_id: number): Promise<null> {
+    const user = await this.userService.findByUID(user_id, true);
+    const video = await this.findById(video_id, true);
+    // 查询是否已经点赞过了
+    const flag = await this.findLike(video_id, user_id);
+    if (flag) throw new BadRequestException(VideoMessage.like_video_error); // 已经点赞过了!
+    // 增加点赞记录
+    await this.createLike(video, user);
+    return null;
+  }
+
+  /**
+   * 删除视频浏览的历史记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  async removeHistory(video_id: number, user_id: number): Promise<null> {
+    await this.userService.findByUID(user_id, true);
+    await this.findById(video_id, true);
+    const history = await this.findHistory(video_id, user_id);
+    if (history === null)
+      throw new BadRequestException(VideoMessage.remove_video_history_error); // 用户从未浏览过此视频
+    await this.deleteHistory(history.history_id);
+    return null;
+  }
+
+  /**
+   * 取消点赞视频
+   * @param video_id 视频id
+   * @param user_id
+   */
+  async removeLike(video_id: number, user_id: number): Promise<null> {
+    await this.userService.findByUID(user_id, true);
+    await this.findById(video_id, true);
+    // 查询是否点赞过了
+    const like = await this.findLike(video_id, user_id);
+    if (like === null)
+      throw new BadRequestException(VideoMessage.cancel_like_video_error); // 未点赞过
+    // 删除点赞记录
+    await this.deleteLike(like.like_id);
+    return null;
+  }
+
+  /**
+   * 增加视频浏览量
+   * @param video 视频实例
+   * @param user 用户实例
+   */
+  createViews(video: Video, user: User) {
+    const views = this.VVRespository.create();
+    views.user = user;
+    views.video = video;
+    return this.VVRespository.save(views);
+  }
+
+  /**
+   * 增加视频历史记录
+   * @param video 视频实例
+   * @param user 用户实例
+   * @param viewing_time 观看时长
+   */
+  createHistory(video: Video, user: User, viewing_time: number) {
+    const history = this.VHRepository.create({ viewing_time });
+    history.video = video;
+    history.user = user;
+    return this.VHRepository.save(history);
+  }
+
+  /**
+   * 增加点赞记录
+   * @param video 视频实例
+   * @param user 用户实例
+   */
+  createLike(video: Video, user: User) {
+    const like = this.VLRepository.create();
+    like.video = video;
+    like.user = user;
+    return this.VLRepository.save(like);
+  }
+
+  /**
+   * 查询历史记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  findHistory(video_id: number, user_id: number) {
+    return this.VHRepository.createQueryBuilder("history")
+      .where("history.video_id = :video_id", { video_id })
+      .andWhere("history.user_id = :user_id", {
+        user_id,
+      })
+      .getOne();
+  }
+
+  /**
+   * 查询点赞记录
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  findLike(video_id: number, user_id: number) {
+    return this.VLRepository.createQueryBuilder("like")
+      .where("like.user_id = :user_id", { user_id })
+      .andWhere("like.video_id = :video_id", { video_id })
+      .getOne();
+  }
+
+  /**
+   * 删除浏览历史记录
+   * @param history_id 历史记录
+   */
+  deleteHistory(history_id: number) {
+    return this.VHRepository.softDelete(history_id);
+  }
+
+  /**
+   * 删除点赞记录
+   * @param like_id 点赞记录
+   */
+  deleteLike(like_id: number) {
+    return this.VLRepository.softDelete(like_id);
   }
 
   /**

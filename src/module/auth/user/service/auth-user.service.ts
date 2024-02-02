@@ -21,6 +21,7 @@ import { AuthMessage, ServerMessage } from "@src/config/message";
 import { generateCode } from "@src/utils/tools";
 import { EmailService } from "@src/module/email/email.service";
 import { RedisService } from "@src/module/redis/redis.service";
+import * as process from "process";
 
 @Injectable()
 export class AuthUserService {
@@ -240,7 +241,7 @@ export class AuthUserService {
     await this.redisService.setEx(
       `user-email-login-code:${email}`,
       code,
-      60 * 5,
+      Number(process.env.EMAIL_LOGIN_CODE_TIME),
     );
     return null;
   }

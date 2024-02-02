@@ -9,6 +9,9 @@ import {
 } from "typeorm";
 import { ApprovalRegister } from "@src/module/auth/account/entity/approval-register.entity";
 
+/**
+ * 申请注册表
+ */
 @Entity()
 export class ApplyRegister {
   /**

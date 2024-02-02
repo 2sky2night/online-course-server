@@ -31,7 +31,7 @@ export class VideoCollection {
   /**
    * 合集的描述
    */
-  @Column({ comment: "合集的描述", nullable: true })
+  @Column({ comment: "合集的描述", nullable: true, type: "text" })
   description: string | null;
   /**
    * 合集的封面

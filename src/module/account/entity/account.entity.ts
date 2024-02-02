@@ -15,6 +15,9 @@ import { AccountUpload } from "@src/module/upload/entity";
 import { Video } from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 
+/**
+ * 账户表
+ */
 @Entity()
 export class Account {
   /**

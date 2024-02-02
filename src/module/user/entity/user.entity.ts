@@ -11,6 +11,15 @@ import {
 } from "typeorm";
 import { UserRegisterType } from "@src/module/auth/user/entity";
 import { UserUpload } from "@src/module/upload/entity";
+import {
+  VideoHistory,
+  VideoLike,
+  VideoView,
+} from "@src/module/video/video/entity";
+import {
+  VideoComment,
+  VideoCommentLike,
+} from "@src/module/video/video-comment/entity";
 
 /**
  * 用户表
@@ -83,4 +92,29 @@ export class User {
    */
   @OneToMany(() => UserUpload, (upload) => upload.uploader)
   upload_files: Promise<UserUpload[]>;
+  /**
+   * 一个用户可以浏览多次浏览视频
+   */
+  @OneToMany(() => VideoView, (vv) => vv.user)
+  videoViews: VideoView[];
+  /**
+   * 一个用户的视频浏览历史记录
+   */
+  @OneToMany(() => VideoHistory, (vh) => vh.video)
+  videoHistories: VideoHistory[];
+  /**
+   * 一个用户可以点赞多个视频
+   */
+  @OneToMany(() => VideoLike, (vl) => vl.user)
+  videoLikes: VideoLike[];
+  /**
+   * 一个用户可以有发送多个视频评论
+   */
+  @OneToMany(() => VideoComment, (vc) => vc.user)
+  comments: VideoComment[];
+  /**
+   * 一个用户可以产生多个点赞评论记录
+   */
+  @OneToMany(() => VideoCommentLike, (vcl) => vcl.user)
+  like_comments: VideoCommentLike[];
 }

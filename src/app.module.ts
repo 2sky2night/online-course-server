@@ -14,6 +14,7 @@ import { RoleModule } from "@src/module/account/module/role/role.module";
 import { VideoModule } from "@src/module/video/video/video.module";
 import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
 import { FileModule } from "@src/module/file/file.module";
+import { VideoCommentModule } from "@src/module/video/video-comment/video-comment.module";
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { FileModule } from "@src/module/file/file.module";
     VideoModule,
     FileModule,
     VideoCollectionModule,
+    VideoCommentModule,
   ],
 })
 export class AppModule {}

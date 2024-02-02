@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from "@nestjs/common";
@@ -18,6 +19,10 @@ import {
 import { Roles } from "@src/module/account/module/role/enum";
 import { RoleService } from "@src/module/account/module/role/service";
 import { EmailService } from "@src/module/email/email.service";
+import { Account } from "@src/module/account/entity";
+import { generateCode } from "@src/utils/tools";
+import { RedisService } from "@src/module/redis/redis.service";
+import * as process from "process";
 
 @Injectable()
 export class AuthAccountService {
@@ -45,7 +50,12 @@ export class AuthAccountService {
    */
   @Inject(EmailService)
   private emailService: EmailService;
-
+  /**
+   * redis服务层
+   * @private
+   */
+  @Inject(RedisService)
+  private redisService: RedisService;
   /**
    * 申请注册表
    * @private
@@ -78,6 +88,14 @@ export class AuthAccountService {
       throw new BadRequestException(AuthMessage.username_or_password_error);
     }
     // 发放token
+    return this.generationToken(account);
+  }
+
+  /**
+   * 生成token
+   * @param account 账户实例
+   */
+  async generationToken(account: Account) {
     const access_token = this.jwtService.sign({
       sub: account.account_id,
       role_name: (await account.role).role_name,
@@ -257,5 +275,58 @@ export class AuthAccountService {
       status,
     );
     return null;
+  }
+
+  /**
+   * 获取邮箱验证码
+   * @param email 邮箱地址
+   */
+  async getLoginCode(email: string) {
+    const account = await this.accountService.findByEmail(email);
+    if (account === null)
+      throw new BadRequestException(AuthMessage.email_not_exists);
+    // 生成验证码
+    const code = generateCode();
+    // 保存在redis中
+    const redisKey = `account-email-login-code:${email}`;
+    await this.redisService.setEx(
+      redisKey,
+      code,
+      Number(process.env.EMAIL_LOGIN_CODE_TIME),
+    );
+    try {
+      // 发送邮箱
+      await this.emailService.sendCode(email, code);
+      return null;
+    } catch (e) {
+      // 邮箱发送失败，删除redis中的验证码
+      await this.redisService.del(redisKey);
+      throw new InternalServerErrorException(AuthMessage.email_code_send_error);
+    }
+  }
+
+  /**
+   * 邮箱验证码登录
+   * @param email 邮箱地址
+   * @param code 验证码
+   */
+  async emailLogin(email: string, code: string) {
+    const account = await this.accountService.findByEmail(email);
+    if (account === null)
+      throw new BadRequestException(AuthMessage.email_not_exists); // 未注册过
+    // 在redis中查询此key是否存在
+    const redisKey = `account-email-login-code:${email}`;
+    const value = await this.redisService.get(redisKey);
+    if (value === null) {
+      // 此邮箱的验证码失效或未申请
+      throw new BadRequestException(AuthMessage.email_code_error);
+    }
+    if (value !== code) {
+      // 验证码匹配失败
+      throw new BadRequestException(AuthMessage.email_code_error);
+    }
+    await this.redisService.del(redisKey);
+    // 生成token
+    return this.generationToken(account);
   }
 }

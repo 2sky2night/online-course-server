@@ -63,6 +63,7 @@ export const AuthMessage = Object.freeze({
   email_code_send_error: "邮箱验证码发送失败，请检查邮箱是否正确!",
   email_code_error: "邮箱验证码无效!",
   email_send_error: "发送邮箱失败，请检查邮箱是否正确!",
+  email_not_exists: "此邮箱未注册!",
 });
 
 /**
@@ -104,6 +105,13 @@ export const VideoMessage = Object.freeze({
   collection_is_not_owner: "此视频合集非当前用户创建!",
   collection_has_video: "视频合集中存在此视频了!",
   collection_has_not_video: "视频合集中不存在此视频!",
+  video_history_time_error: "观看时长大于视频时长!",
+  like_video_error: "已经点赞过此视频了!",
+  cancel_like_video_error: "未点赞过此视频!",
+  comment_not_exist: "此评论不存在!",
+  like_comment_error: "已经点赞过评论了!",
+  cancel_like_comment_error: "未点赞过此评论!",
+  remove_video_history_error: "未浏览过此视频!",
 });
 
 /**

@@ -120,5 +120,13 @@ declare namespace NodeJS {
      * 启动环境
      */
     NODE_ENV: "development" | "production";
+    /**
+     * 邮箱登录验证码有效时间（秒）
+     */
+    EMAIL_LOGIN_CODE_TIME: string;
+    /**
+     * redis选择的数据库0-15
+     */
+    REDIS_DATABASE_NAME: string;
   }
 }

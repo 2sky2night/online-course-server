@@ -6,13 +6,21 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Account } from "@src/module/account/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { File } from "@src/module/file/entity";
+import { VideoView } from "@src/module/video/video/entity/video-view.entity";
+import { VideoHistory } from "@src/module/video/video/entity/video-history.entity";
+import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
+import { VideoComment } from "@src/module/video/video-comment/entity";
 
+/**
+ * 视频表
+ */
 @Entity()
 export class Video {
   /**
@@ -33,12 +41,12 @@ export class Video {
   /**
    * 视频描述
    */
-  @Column({ comment: "视频描述", nullable: true })
+  @Column({ comment: "视频描述", nullable: true, type: "text" })
   description: string | null;
   /**
    * 视频时长
    */
-  @Column({ comment: "视频时长", type: "float" })
+  @Column({ comment: "视频时长，秒为单位", type: "float" })
   duration: number;
   /**
    * 创建时间
@@ -72,4 +80,24 @@ export class Video {
    */
   @ManyToMany(() => VideoCollection, (vc) => vc.videos)
   collections: VideoCollection[];
+  /**
+   * 一个视频有多个浏览量
+   */
+  @OneToMany(() => VideoView, (vv) => vv.video)
+  views: VideoView[];
+  /**
+   * 一个视频有多个用户产生的历史记录
+   */
+  @OneToMany(() => VideoHistory, (vh) => vh.video)
+  histories: VideoHistory[];
+  /**
+   * 一个视频可以被多个用户点赞
+   */
+  @OneToMany(() => VideoLike, (vl) => vl.video)
+  likes: VideoLike[];
+  /**
+   * 一个视频有多个评论
+   */
+  @OneToMany(() => VideoComment, (vc) => vc.video)
+  comments: VideoComment[];
 }

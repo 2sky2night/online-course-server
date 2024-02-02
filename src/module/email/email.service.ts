@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Transporter, SentMessageInfo } from "nodemailer";
+import * as process from "process";
 
 @Injectable()
 export class EmailService {
@@ -32,7 +33,11 @@ export class EmailService {
     return this.sendMail(
       email,
       `【${process.env.APP_NAME}】登录验证码`,
-      `【${process.env.APP_NAME}】您正在进行登录验证，验证码为${code}。提供给他人会导致账号被盗，若非本人操作，请忽视，验证码在五分钟内有效。`,
+      `【${
+        process.env.APP_NAME
+      }】您正在进行登录验证，验证码为${code}。提供给他人会导致账号被盗，若非本人操作，请忽视，验证码在${
+        Number(process.env.EMAIL_LOGIN_CODE_TIME) / 60
+      }分钟内有效。`,
     );
   }
 

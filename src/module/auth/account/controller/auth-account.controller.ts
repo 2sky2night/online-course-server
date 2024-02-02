@@ -1,7 +1,12 @@
 import { Body, Controller, Inject, Post, UseGuards, Get } from "@nestjs/common";
 import { AuthAccountService } from "@src/module/auth/account/service";
-import { LoginAccountDto, ApplyAccountDto } from "@src/module/auth/account/dto";
-import { ApprovalAccountDto } from "@src/module/auth/account/dto/approval-account.dto";
+import {
+  LoginAccountDto,
+  ApplyAccountDto,
+  ApprovalAccountDto,
+  EmailCodeDto,
+  EmailLoginDto,
+} from "@src/module/auth/account/dto";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { AccountToken, Role } from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
@@ -67,6 +72,24 @@ export class AuthAccountController {
     @Body() { apply_id, status }: ApprovalAccountDto,
   ) {
     return this.authAccountService.approval(account_id, apply_id, status);
+  }
+
+  /**
+   * 获取登录验证码
+   * @param dto 邮箱
+   */
+  @Post("/login/email/code")
+  getLoginCode(@Body() dto: EmailCodeDto) {
+    return this.authAccountService.getLoginCode(dto.email);
+  }
+
+  /**
+   * 邮箱登录
+   * @param dto 表单
+   */
+  @Post("/login/email")
+  emailLogin(@Body() dto: EmailLoginDto) {
+    return this.authAccountService.emailLogin(dto.email, dto.code);
   }
 
   /**
