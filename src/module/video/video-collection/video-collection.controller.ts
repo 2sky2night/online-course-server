@@ -14,6 +14,7 @@ import {
   AddVideosDto,
   CreateVideoCollectionDto,
   DeleteVideosDto,
+  UpdateCollectionPartitionDto,
   UpdateVideoCollectionDto,
 } from "@src/module/video/video-collection/dto";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
@@ -36,7 +37,7 @@ export class VideoCollectionController {
    * @param accountId 发布者
    * @param videoCollectionDto 表单
    */
-  @Post("")
+  @Post()
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
   publishCollection(
@@ -139,5 +140,43 @@ export class VideoCollectionController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.VCService.list(offset, limit, desc);
+  }
+
+  /**
+   * 更新合集的分区
+   * @param collection_id 合集id
+   * @param account_id 账户id
+   * @param dto 分区的id
+   */
+  @Patch(":cid/partition")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  updatePartition(
+    @Param("cid", new IntPipe("cid")) collection_id: number,
+    @AccountToken("sub") account_id: number,
+    @Body() dto: UpdateCollectionPartitionDto,
+  ) {
+    return this.VCService.updatePartition(
+      account_id,
+      collection_id,
+      dto.partition_id,
+    );
+  }
+
+  /**
+   * 获取此分区下的视频合集
+   * @param partition_id 分区id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 是否根据视频创建时间降序
+   */
+  @Get("/list/partition/:pid")
+  partitionList(
+    @Param("pid", new IntPipe("pid")) partition_id: number,
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.VCService.partitionList(partition_id, offset, limit, desc);
   }
 }

@@ -62,4 +62,31 @@ export const uploadImgProvider: Provider[] = [
       );
     },
   },
+  {
+    // 前台上传视频评论配图目录模块
+    provide: "UPLOAD_VIDEO_COMMENT",
+    inject: [ConfigService],
+    useFactory(configService: ConfigService) {
+      const config = configService.get<UploadConfig>("upload");
+      return new Folder(
+        resolve(
+          config.upload_root_path,
+          `./${config.upload_video_comment_path}`,
+        ),
+        config.upload_video_comment_path,
+      );
+    },
+  },
+  {
+    // 前台上传视频回复配图目录模块
+    provide: "UPLOAD_VIDEO_REPLY",
+    inject: [ConfigService],
+    useFactory(configService: ConfigService) {
+      const config = configService.get<UploadConfig>("upload");
+      return new Folder(
+        resolve(config.upload_root_path, `./${config.upload_video_reply_path}`),
+        config.upload_video_reply_path,
+      );
+    },
+  },
 ];

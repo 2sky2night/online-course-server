@@ -7,3 +7,4 @@ export { LimitPipe } from "./limit.pipe";
 export { BooleanPipe } from "./boolean.pipe";
 export { FileCoverPipe } from "./file-cover.pipe";
 export { FileChunkPipe } from "./file-chunk.pipe";
+export { FileImagePipe } from "./file-image.pipe";

@@ -109,9 +109,17 @@ export const VideoMessage = Object.freeze({
   like_video_error: "已经点赞过此视频了!",
   cancel_like_video_error: "未点赞过此视频!",
   comment_not_exist: "此评论不存在!",
-  like_comment_error: "已经点赞过评论了!",
+  like_comment_error: "已经点赞过此评论了!",
   cancel_like_comment_error: "未点赞过此评论!",
   remove_video_history_error: "未浏览过此视频!",
+  reply_not_exist: "此回复不存在!",
+  comment_not_include_reply: "目标评论不包含此回复!",
+  like_reply_error: "已经点赞过此回复了!",
+  cancel_like_reply_error: "未点赞过此回复!",
+  partition_not_exist: "此分区不存在!",
+  partition_name_is_exist: "此名称的分区已经存在!",
+  update_video_partition_error: "目标分区不能为当前视频的分区!",
+  update_video_collection_partition_error: "目标分区不能为当前视频合集的分区!",
 });
 
 /**

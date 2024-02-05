@@ -128,5 +128,9 @@ declare namespace NodeJS {
      * redis选择的数据库0-15
      */
     REDIS_DATABASE_NAME: string;
+    /**
+     * 配图文件的最大大小
+     */
+    FILE_IMAGE_SIZE: string;
   }
 }

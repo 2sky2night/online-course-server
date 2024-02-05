@@ -6,14 +6,16 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, In } from "typeorm";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { Repository } from "typeorm";
 import { VideoMessage } from "@src/config/message";
 import { AccountService } from "@src/module/account/service";
 import { VideoService } from "@src/module/video/video/video.service";
 import { CreateVideoCollectionDto } from "@src/module/video/video-collection/dto";
 import { Account } from "@src/module/account/entity";
 import { Video } from "@src/module/video/video/entity";
+import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
 
 @Injectable()
 export class VideoCollectionService {
@@ -34,6 +36,12 @@ export class VideoCollectionService {
    */
   @Inject(forwardRef(() => VideoService))
   private videoService: VideoService;
+  /**
+   * 视频分区服务层
+   * @private
+   */
+  @Inject(VideoPartitionService)
+  private VPService: VideoPartitionService;
 
   /**
    * 查询视频合集
@@ -55,6 +63,7 @@ export class VideoCollectionService {
    * @param description
    * @param collection_cover
    * @param video_id_list
+   * @param partition_id
    */
   async publishCollection(
     accountId: number,
@@ -63,6 +72,7 @@ export class VideoCollectionService {
       description,
       video_id_list,
       collection_cover,
+      partition_id,
     }: CreateVideoCollectionDto,
   ) {
     const account = await this.accountService.findById(accountId, true);
@@ -77,6 +87,9 @@ export class VideoCollectionService {
         // 有视频非当前用户上传
         throw new BadRequestException(VideoMessage.video_is_not_owner);
       }
+      let partition: VideoPartition | null = null; // 合集所属的分区
+      if (partition_id)
+        partition = await this.VPService.findByIdOrFail(partition_id); // 查询分区信息
       // 创建合集
       await this.create(
         account,
@@ -84,15 +97,21 @@ export class VideoCollectionService {
         description,
         collection_cover,
         videos,
+        partition,
       );
       return null;
     } else {
+      let partition: VideoPartition | null = null; // 合集所属的分区
+      if (partition_id)
+        partition = await this.VPService.findByIdOrFail(partition_id); // 查询分区信息
       // 未添加视频
       await this.create(
         account,
         collection_name,
         description,
         collection_cover,
+        null,
+        partition,
       );
       return null;
     }
@@ -139,6 +158,76 @@ export class VideoCollectionService {
     // 添加视频
     await this.addVideosRelation(collection, videos);
     return null;
+  }
+
+  /**
+   * 更新合集所属的分区
+   * @param account_id 账户id
+   * @param collection_id 合集id
+   * @param partition_id 分区id
+   */
+  async updatePartition(
+    account_id: number,
+    collection_id: number,
+    partition_id: number,
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const partition = await this.VPService.findByIdOrFail(partition_id);
+    const collection = await this.VCRepository.findOne({
+      where: { collection_id },
+      relations: { partition: true, creator: true },
+    });
+    if (collection === null) {
+      // 合集不存在
+      throw new NotFoundException(VideoMessage.collection_not_exist);
+    }
+    if (collection.creator.account_id !== account.account_id) {
+      // 非合集创作者
+      throw new BadRequestException(VideoMessage.collection_is_not_owner);
+    }
+    if (
+      collection.partition !== null &&
+      collection.partition.partition_id === partition.partition_id
+    ) {
+      // 目标分区与当前合集分区一致
+      throw new BadRequestException(
+        VideoMessage.update_video_collection_partition_error,
+      );
+    }
+    // 更新合集
+    await this.VCRepository.update(collection.collection_id, { partition });
+    return null;
+  }
+
+  /**
+   * 获取此分区下的视频合集
+   * @param partition_id 分区id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 是否根据视频创建时间降序
+   */
+  async partitionList(
+    partition_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    const partition = await this.VPService.findByIdOrFail(partition_id);
+    const [list, total] = await this.VCRepository.createQueryBuilder(
+      "collection",
+    )
+      .where("collection.partition_id = :partition_id", {
+        partition_id: partition.partition_id,
+      })
+      .orderBy("collection.created_time", desc ? "DESC" : "ASC")
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+    return {
+      list,
+      total,
+      has_more: total > limit + offset,
+    };
   }
 
   /**
@@ -242,14 +331,15 @@ export class VideoCollectionService {
    * @param collections 视频合集
    */
   async isCollectionsOwner(account: Account, collections: VideoCollection[]) {
-    for (let i = 0; i < collections.length; i++) {
-      const collection = collections[i];
-      const flag = await this.isCollectionOwner(account, collection);
-      if (flag === false) {
-        return false;
-      }
-    }
-    return true;
+    const result = await this.VCRepository.find({
+      where: {
+        collection_id: In(collections.map((item) => item.collection_id)),
+      },
+      relations: { creator: true },
+    });
+    return result.every(
+      (item) => item.creator.account_id === account.account_id,
+    );
   }
 
   /**
@@ -290,6 +380,7 @@ export class VideoCollectionService {
    * @param description 合集描述
    * @param collection_cover 视频封面
    * @param videos 视频列表，在创建时就会建立关系
+   * @param partition 视频分区
    */
   async create(
     account: Account,
@@ -297,6 +388,7 @@ export class VideoCollectionService {
     description?: string,
     collection_cover?: string,
     videos?: Video[],
+    partition?: VideoPartition,
   ) {
     const collection = this.VCRepository.create({ collection_name });
     collection.creator = account;
@@ -306,6 +398,7 @@ export class VideoCollectionService {
     }
     if (description) collection.description = description;
     if (collection_cover) collection.collection_cover = collection_cover;
+    if (partition) collection.partition = partition;
     return this.VCRepository.save(collection);
   }
 

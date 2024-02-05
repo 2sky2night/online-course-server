@@ -7,31 +7,19 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { VideoReply } from "@src/module/video/video-reply/entity/video-reply.entity";
 import { User } from "@src/module/user/entity";
-import { Video } from "@src/module/video/video/entity/video.entity";
 
 /**
- * 视频点赞表
+ * 点赞视频回复表
  */
 @Entity()
-export class VideoLike {
+export class VideoReplyLike {
   /**
-   * 点赞记录id
+   * 点赞的id
    */
-  @PrimaryGeneratedColumn({ comment: "点赞记录id" })
+  @PrimaryGeneratedColumn({ comment: "点赞的id" })
   like_id: number;
-  /**
-   * 一个用户可以产生多个对视频的点赞记录
-   */
-  @ManyToOne(() => User, (user) => user.likeVideos)
-  @JoinColumn({ name: "user_id" })
-  user: User;
-  /**
-   * 一个视频可以有多个点赞记录
-   */
-  @ManyToOne(() => Video, (video) => video.likes)
-  @JoinColumn({ name: "video_id" })
-  video: Video;
   /**
    * 创建时间
    */
@@ -47,4 +35,16 @@ export class VideoLike {
    */
   @DeleteDateColumn({ type: "datetime", comment: "删除时间" })
   deleted_time: Date | null;
+  /**
+   * 多个点赞记录可以对应同一个回复
+   */
+  @ManyToOne(() => VideoReply, (vr) => vr.likes)
+  @JoinColumn({ name: "reply_id" })
+  reply: VideoReply;
+  /**
+   * 多个点赞记录可以来自同一个用户
+   */
+  @ManyToOne(() => User, (user) => user.likeVideoReplies)
+  @JoinColumn({ name: "user_id" })
+  user: User;
 }

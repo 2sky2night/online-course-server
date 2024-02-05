@@ -20,6 +20,10 @@ import {
   VideoComment,
   VideoCommentLike,
 } from "@src/module/video/video-comment/entity";
+import {
+  VideoReply,
+  VideoReplyLike,
+} from "@src/module/video/video-reply/entity";
 
 /**
  * 用户表
@@ -106,15 +110,25 @@ export class User {
    * 一个用户可以点赞多个视频
    */
   @OneToMany(() => VideoLike, (vl) => vl.user)
-  videoLikes: VideoLike[];
+  likeVideos: VideoLike[];
   /**
    * 一个用户可以有发送多个视频评论
    */
   @OneToMany(() => VideoComment, (vc) => vc.user)
-  comments: VideoComment[];
+  videoComments: VideoComment[];
   /**
-   * 一个用户可以产生多个点赞评论记录
+   * 一个用户可以产生多个点赞视频评论记录
    */
   @OneToMany(() => VideoCommentLike, (vcl) => vcl.user)
-  like_comments: VideoCommentLike[];
+  likeVideoComments: VideoCommentLike[];
+  /**
+   * 一个用户可以发送多个回复
+   */
+  @OneToMany(() => VideoReply, (vr) => vr.user)
+  videoReplies: VideoReply[];
+  /**
+   * 一个用户可以点赞多个回复
+   */
+  @OneToMany(() => VideoReplyLike, (vrl) => vrl.user)
+  likeVideoReplies: VideoReplyLike[];
 }

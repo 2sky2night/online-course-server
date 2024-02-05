@@ -20,5 +20,6 @@ import { VideoCommentController } from "@src/module/video/video-comment/video-co
   ],
   controllers: [VideoCommentController],
   providers: [VideoCommentService],
+  exports: [VideoCommentService],
 })
 export class VideoCommentModule {}

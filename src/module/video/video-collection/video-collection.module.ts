@@ -5,6 +5,7 @@ import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { VideoCollectionController } from "@src/module/video/video-collection/video-collection.controller";
 import { VideoModule } from "@src/module/video/video/video.module";
+import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
 
 /**
  * 视频合集模块
@@ -14,6 +15,7 @@ import { VideoModule } from "@src/module/video/video/video.module";
     TypeOrmModule.forFeature([VideoCollection]),
     AccountModule,
     forwardRef(() => VideoModule),
+    VideoPartitionModule,
   ],
   providers: [VideoCollectionService],
   controllers: [VideoCollectionController],

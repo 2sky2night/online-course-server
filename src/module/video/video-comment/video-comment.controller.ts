@@ -87,6 +87,4 @@ export class VideoCommentController {
   ) {
     return this.service.removeCommentLike(comment_id, user_id);
   }
-
-  // TODO 回复功能
 }

@@ -16,22 +16,32 @@ export class UploadImgService {
    * 目录API:上传前台用户头像
    */
   @Inject("UPLOAD_USER_AVATAR")
-  userAvatarFolder: Folder;
+  private userAvatarFolder: Folder;
   /**
    * 目录API:上传后台用户头像
    */
   @Inject("UPLOAD_ACCOUNT_AVATAR")
-  accountAvatarFolder: Folder;
+  private accountAvatarFolder: Folder;
   /**
    * 目录API:上传视频封面目录
    */
   @Inject("UPLOAD_VIDEO_COVER")
-  videoCoverFolder: Folder;
+  private videoCoverFolder: Folder;
   /**
    * 目录API:上传视频合集封面目录
    */
   @Inject("UPLOAD_VIDEO_COLLECTION_COVER")
-  VCCFolder: Folder;
+  private VCCFolder: Folder;
+  /**
+   * 目录API：上传视频评论配图目录
+   */
+  @Inject("UPLOAD_VIDEO_COMMENT")
+  private videoCommentFolder: Folder;
+  /**
+   * 目录API:视频回复配图目录
+   */
+  @Inject("UPLOAD_VIDEO_REPLY")
+  private videoReplyFolder: Folder;
   /**
    * 前台账户追踪表
    * @private
@@ -48,17 +58,17 @@ export class UploadImgService {
    * 前台用户服务层
    */
   @Inject(UserService)
-  userService: UserService;
+  private userService: UserService;
   /**
    * 后台用户服务层
    */
   @Inject(AccountService)
-  accountService: AccountService;
+  private accountService: AccountService;
   /**
    * 文件服务层
    */
   @Inject(FileService)
-  fileService: FileService;
+  private fileService: FileService;
 
   /**
    * 前台用户上传头像
@@ -115,6 +125,34 @@ export class UploadImgService {
       accountId,
       uploadFile,
       this.VCCFolder,
+      FileType.IMAGE,
+    );
+  }
+
+  /**
+   * 用户上传视频评论配图
+   * @param userId 用户id
+   * @param uploadFile 上传的图片
+   */
+  uploadVideoComment(userId: number, uploadFile: Express.Multer.File) {
+    return this.userTrace(
+      userId,
+      uploadFile,
+      this.videoCommentFolder,
+      FileType.IMAGE,
+    );
+  }
+
+  /**
+   * 用户上传视频回复配图
+   * @param userId 用户id
+   * @param uploadFile 上传的图片
+   */
+  uploadVideoReply(userId: number, uploadFile: Express.Multer.File) {
+    return this.userTrace(
+      userId,
+      uploadFile,
+      this.videoReplyFolder,
       FileType.IMAGE,
     );
   }

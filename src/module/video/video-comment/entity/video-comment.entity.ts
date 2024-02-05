@@ -12,6 +12,7 @@ import {
 import { Video } from "@src/module/video/video/entity";
 import { User } from "@src/module/user/entity";
 import { VideoCommentLike } from "@src/module/video/video-comment/entity/video-comment-like.entity";
+import { VideoReply } from "@src/module/video/video-reply/entity";
 
 /**
  * 视频评论表
@@ -57,7 +58,7 @@ export class VideoComment {
   /**
    * 多个评论可以来自一个用户
    */
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.videoComments)
   @JoinColumn({ name: "user_id" })
   user: User;
   /**
@@ -65,4 +66,9 @@ export class VideoComment {
    */
   @OneToMany(() => VideoCommentLike, (vcl) => vcl.comment)
   likes: VideoCommentLike[];
+  /**
+   * 一个评论包含多个回复
+   */
+  @OneToMany(() => VideoReply, (vr) => vr.comment)
+  replies: VideoReply[];
 }

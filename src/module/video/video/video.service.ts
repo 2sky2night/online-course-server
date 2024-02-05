@@ -28,6 +28,8 @@ import { FfmpegFolder, Folder } from "@src/lib/folder";
 import { getVideoDuration } from "@src/utils/ffmpeg";
 import { UserService } from "@src/module/user/service";
 import { User } from "@src/module/user/entity";
+import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
 
 @Injectable()
 export class VideoService {
@@ -93,6 +95,12 @@ export class VideoService {
    */
   @Inject("UPLOAD_VIDEO")
   private videoFolder: Folder;
+  /**
+   * 视频分区服务层
+   * @private
+   */
+  @Inject(VideoPartitionService)
+  private VPService: VideoPartitionService;
 
   /**
    * 发布视频
@@ -107,6 +115,7 @@ export class VideoService {
       video_name,
       collection_id_list,
       video_cover,
+      partition_id,
     }: PublishVideoDto,
   ) {
     const account = await this.accountService.findById(account_id, true);
@@ -121,19 +130,21 @@ export class VideoService {
       throw new BadRequestException(VideoMessage.file_is_not_owner);
     }
     if (collection_id_list && collection_id_list.length) {
+      // 分区信息
+      let partition: VideoPartition | null = null;
+      if (partition_id)
+        partition = await this.VPService.findByIdOrFail(partition_id); // 若发布视频时选择将视频添加到某个分区中
       // 若需要将视频添加到视频合集中
       const collections = await Promise.all(
         collection_id_list.map((id) => this.VCService.findById(id, true)),
       );
       // 这些视频合集是否为当前用户创建的？
-      const flag = await this.VCService.isCollectionsOwner(
-        account,
-        collections,
-      );
-      if (flag === false) {
+      if (
+        (await this.VCService.isCollectionsOwner(account, collections)) ===
+        false
+      )
         // 视频合集中存在非当前用户创建的
         throw new BadRequestException(VideoMessage.collection_is_not_owner);
-      }
       // 增加视频
       const video = await this.create(
         account,
@@ -141,6 +152,7 @@ export class VideoService {
         video_name,
         description,
         video_cover,
+        partition,
       );
       if (video_cover === undefined) {
         // 未上传视频封面，则后台静默生成视频封面
@@ -161,6 +173,10 @@ export class VideoService {
         collections.map((c) => this.VCService.addVideosRelation(c, [video])),
       );
     } else {
+      // 发布时选择将视频发布在某个分区下？
+      let partition: VideoPartition | null = null;
+      if (partition_id)
+        partition = await this.VPService.findByIdOrFail(partition_id); // 查询此分区是否存在
       // 直接发布视频
       const video = await this.create(
         account,
@@ -168,6 +184,7 @@ export class VideoService {
         video_name,
         description,
         video_cover,
+        partition,
       );
       if (video_cover === undefined) {
         // 未上传视频封面，则后台静默生成视频封面
@@ -250,6 +267,75 @@ export class VideoService {
       list,
       total,
       has_more: total > offset + limit,
+    };
+  }
+
+  /**
+   * 更新视频分区
+   * @param account_id 账户id
+   * @param video_id 视频id
+   * @param partition_id 合集id
+   */
+  async updateVideoPartition(
+    account_id: number,
+    video_id: number,
+    partition_id: number,
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const video = await this.videoRepository.findOne({
+      relations: { partition: true, publisher: true },
+      where: { video_id },
+    });
+    if (video === null) {
+      // 视频不存在
+      throw new NotFoundException(VideoMessage.video_not_exist);
+    }
+    if (video.publisher.account_id !== account.account_id) {
+      // 视频非本人上传
+      throw new BadRequestException(VideoMessage.video_is_not_owner);
+    }
+    const partition = await this.VPService.findByIdOrFail(partition_id);
+    if (
+      video.partition !== null &&
+      partition.partition_id === video.partition.partition_id
+    ) {
+      // 要修改的目标分区不能和当前视频分区相同
+      throw new BadRequestException(VideoMessage.update_video_partition_error);
+    }
+    // 更新视频的分区
+    await this.videoRepository.update(video.video_id, {
+      partition,
+    });
+    return null;
+  }
+
+  /**
+   * 获取此分区下的视频
+   * @param partition_id 分区id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 是否根据视频创建时间降序
+   */
+  async partitionList(
+    partition_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    const partition = await this.VPService.findByIdOrFail(partition_id);
+    const [list, total] = await this.videoRepository
+      .createQueryBuilder("video")
+      .where("video.partition_id = :partition_id", {
+        partition_id: partition.partition_id,
+      })
+      .orderBy("video.created_time", desc ? "DESC" : "ASC")
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+    return {
+      list,
+      total,
+      has_more: total > limit + offset,
     };
   }
 
@@ -457,6 +543,7 @@ export class VideoService {
    * @param video_name 视频名称
    * @param description 视频描述
    * @param video_cover 视频封面
+   * @param partition 视频所属分区
    */
   async create(
     account: Account,
@@ -464,6 +551,7 @@ export class VideoService {
     video_name: string,
     description?: string,
     video_cover?: string,
+    partition?: VideoPartition,
   ) {
     const duration = await getVideoDuration(
       this.videoFolder.getAbsolutePath(basename(file.file_path)),
@@ -473,6 +561,7 @@ export class VideoService {
     video.file = file;
     if (description) video.description = description;
     if (video_cover) video.video_cover = video_cover;
+    if (partition) video.partition = partition;
     return this.videoRepository.save(video);
   }
 
@@ -482,13 +571,14 @@ export class VideoService {
    * @param video 目标视频
    */
   async isVideoOwner(account: Account, video: Video) {
-    const rawVideo = await this.videoRepository
+    const flag = await this.videoRepository
       .createQueryBuilder("video")
-      .leftJoinAndSelect("video.publisher", "publisher")
-      .where({ video_id: video.video_id })
+      .where("video.account_id = :account_id", {
+        account_id: account.account_id,
+      })
+      .andWhere("video.video_id = :video_id", { video_id: video.video_id })
       .getOne();
-    console.log(rawVideo);
-    return rawVideo.publisher.account_id === account.account_id;
+    return flag !== null;
   }
 
   /**

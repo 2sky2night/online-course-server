@@ -14,6 +14,7 @@ import { FileModule } from "@src/module/file/file.module";
 import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
 import { VideoProvider } from "@src/module/video/video/video.provider";
 import { UserModule } from "@src/module/user/user.module";
+import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
 
 /**
  * 视频模块
@@ -26,6 +27,7 @@ import { UserModule } from "@src/module/user/user.module";
     FileModule,
     forwardRef(() => VideoCollectionModule),
     UserModule,
+    VideoPartitionModule,
   ],
   providers: [VideoService, ...VideoProvider],
   controllers: [VideoController],

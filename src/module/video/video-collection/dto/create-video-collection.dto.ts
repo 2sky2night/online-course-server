@@ -42,4 +42,10 @@ export class CreateVideoCollectionDto {
   @IsOptional()
   @IsString({ message: "视频合集的封面必须是字符型!" })
   collection_cover?: string;
+  /**
+   * 视频分区id
+   */
+  @IsOptional()
+  @IsNumber({}, { message: "视频分区id必须是数字型!" })
+  partition_id?: number;
 }

@@ -9,13 +9,13 @@ export class IntPipe implements PipeTransform<string | undefined, number> {
   /**
    * 参数字段的名称
    */
-  param?: string;
+  param: string;
 
   /**
    * int管道
    * @param param 字段参数
    */
-  constructor(param?: string) {
+  constructor(param: string) {
     this.param = param;
   }
 

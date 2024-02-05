@@ -14,6 +14,7 @@ import { ApprovalRegister } from "@src/module/auth/account/entity";
 import { AccountUpload } from "@src/module/upload/entity";
 import { Video } from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
 
 /**
  * 账户表
@@ -98,4 +99,9 @@ export class Account {
    */
   @OneToMany(() => VideoCollection, (vc) => vc.creator)
   collections: Promise<VideoCollection[]>;
+  /**
+   * 一个管理员可以创建多个视频分区
+   */
+  @OneToMany(() => VideoPartition, (vp) => vp.account)
+  videoPartitions: VideoPartition[];
 }

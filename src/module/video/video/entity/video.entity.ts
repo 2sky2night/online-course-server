@@ -17,6 +17,7 @@ import { VideoView } from "@src/module/video/video/entity/video-view.entity";
 import { VideoHistory } from "@src/module/video/video/entity/video-history.entity";
 import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
 import { VideoComment } from "@src/module/video/video-comment/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
 
 /**
  * 视频表
@@ -100,4 +101,10 @@ export class Video {
    */
   @OneToMany(() => VideoComment, (vc) => vc.video)
   comments: VideoComment[];
+  /**
+   * 多个视频可以来自同一个分区
+   */
+  @ManyToOne(() => VideoPartition, (vp) => vp.videos)
+  @JoinColumn({ name: "partition_id" })
+  partition: VideoPartition;
 }

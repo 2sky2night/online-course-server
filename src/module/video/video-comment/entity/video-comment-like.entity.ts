@@ -36,9 +36,9 @@ export class VideoCommentLike {
   @DeleteDateColumn({ type: "datetime", comment: "删除时间" })
   deleted_time: Date | null;
   /**
-   * 一个用户可以产生多个点赞评论记录
+   * 一个用户可以产生多个点赞视频评论记录
    */
-  @ManyToOne(() => User, (user) => user.like_comments)
+  @ManyToOne(() => User, (user) => user.likeVideoComments)
   @JoinColumn({ name: "user_id" })
   user: User;
   /**

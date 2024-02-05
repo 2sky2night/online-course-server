@@ -10,7 +10,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { UploadImgService } from "@src/module/upload/module/img/upload-img.service";
 import { AccountGuard, UserGuard } from "@src/common/guard";
 import { AccountToken, Role, UserToken } from "@src/common/decorator";
-import { FileAvatarPipe, FileCoverPipe } from "@src/common/pipe";
+import { FileAvatarPipe, FileCoverPipe, FileImagePipe } from "@src/common/pipe";
 import { Roles } from "@src/module/account/module/role/enum";
 
 @Controller("/upload/img")
@@ -81,5 +81,35 @@ export class UploadImgController {
     @UploadedFile(FileCoverPipe) file: Express.Multer.File,
   ) {
     return this.uploadImgService.uploadVideoCollectionCover(accountId, file);
+  }
+
+  /**
+   * 上传视频评论配图
+   * @param userId 用户id
+   * @param file 文件
+   */
+  @Post("/video/comment")
+  @UseGuards(UserGuard)
+  @UseInterceptors(FileInterceptor("image"))
+  uploadVideoComment(
+    @UserToken("sub") userId: number,
+    @UploadedFile(FileImagePipe) file: Express.Multer.File,
+  ) {
+    return this.uploadImgService.uploadVideoComment(userId, file);
+  }
+
+  /**
+   * 上传视频回复配图
+   * @param userId 用户id
+   * @param file 文件
+   */
+  @Post("/video/reply")
+  @UseGuards(UserGuard)
+  @UseInterceptors(FileInterceptor("image"))
+  uploadVideoReply(
+    @UserToken("sub") userId: number,
+    @UploadedFile(FileImagePipe) file: Express.Multer.File,
+  ) {
+    return this.uploadImgService.uploadVideoReply(userId, file);
   }
 }

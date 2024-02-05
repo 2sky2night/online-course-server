@@ -27,6 +27,12 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
   const auto_video_cover_path = `${upload_img_path}/auto-video-cover`;
   // 视频合集封面的路径
   const upload_video_collection_cover_path = `${upload_img_path}/video-collection-cover`;
+  // 视频评论的配图
+  const upload_video_comment_path = `${upload_comment_path}/video`;
+  // 上传回复配图的路径
+  const upload_reply_path = `${upload_img_path}/reply`;
+  // 上传视频回复配图的路径
+  const upload_video_reply_path = `${upload_reply_path}/video`;
   return {
     upload_root_path,
     upload_img_path,
@@ -39,5 +45,8 @@ export const UploadConfig = registerAs<UploadConfigType>("upload", () => {
     upload_video_cover_path,
     auto_video_cover_path,
     upload_video_collection_cover_path,
+    upload_video_comment_path,
+    upload_video_reply_path,
+    upload_reply_path,
   };
 });

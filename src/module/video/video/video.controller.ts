@@ -18,6 +18,7 @@ import {
   AddVideoHistoryDto,
   PublishVideoDto,
   UpdateVideoDto,
+  UpdateVideoPartitionDto,
 } from "@src/module/video/video/dto";
 import { bodyOptionCatcher } from "@src/utils/tools";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
@@ -163,5 +164,43 @@ export class VideoController {
     @UserToken("sub") user_id: number,
   ) {
     return this.videoService.removeHistory(video_id, user_id);
+  }
+
+  /**
+   * 更新视频的分区
+   * @param video_id 视频id
+   * @param account_id 账户id
+   * @param dto 分区信息
+   */
+  @Patch(":vid/partition")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  updateVideoPartition(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @AccountToken("sub") account_id: number,
+    @Body() dto: UpdateVideoPartitionDto,
+  ) {
+    return this.videoService.updateVideoPartition(
+      account_id,
+      video_id,
+      dto.partition_id,
+    );
+  }
+
+  /**
+   * 获取此分区下的视频
+   * @param partition_id 分区id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 是否根据视频创建时间降序
+   */
+  @Get("/list/partition/:pid")
+  partitionList(
+    @Param("pid", new IntPipe("pid")) partition_id: number,
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.videoService.partitionList(partition_id, offset, limit, desc);
   }
 }

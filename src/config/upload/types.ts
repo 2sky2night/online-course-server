@@ -46,4 +46,16 @@ export interface UploadConfig {
    * 上传视频合集封面路径
    */
   upload_video_collection_cover_path: string;
+  /**
+   * 上传视频评论配图的路径
+   */
+  upload_video_comment_path: string;
+  /**
+   * 上传回复配图的路径
+   */
+  upload_reply_path: string;
+  /**
+   * 上传视频回复配图的路径
+   */
+  upload_video_reply_path: string;
 }
