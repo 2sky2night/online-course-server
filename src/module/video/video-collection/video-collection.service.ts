@@ -16,6 +16,8 @@ import { Account } from "@src/module/account/entity";
 import { Video } from "@src/module/video/video/entity";
 import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoTag } from "@src/module/video/video-tag/entity";
+import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 
 @Injectable()
 export class VideoCollectionService {
@@ -42,6 +44,12 @@ export class VideoCollectionService {
    */
   @Inject(VideoPartitionService)
   private VPService: VideoPartitionService;
+  /**
+   * 视频标签服务层
+   * @private
+   */
+  @Inject(VideoTagService)
+  private videoTagService: VideoTagService;
 
   /**
    * 查询视频合集
@@ -64,6 +72,7 @@ export class VideoCollectionService {
    * @param collection_cover
    * @param video_id_list
    * @param partition_id
+   * @param tag_id_list
    */
   async publishCollection(
     accountId: number,
@@ -73,13 +82,28 @@ export class VideoCollectionService {
       video_id_list,
       collection_cover,
       partition_id,
+      tag_id_list,
     }: CreateVideoCollectionDto,
   ) {
+    // 账户信息
     const account = await this.accountService.findById(accountId, true);
-    if (video_id_list) {
+    // 合集所属的分区
+    let partition: VideoPartition | null = null;
+    // 合集下的视频
+    let videos: Video[] = [];
+    // 视频合集实例
+    let collection: VideoCollection | null = null;
+    // 标签实例
+    let tags: VideoTag[] = [];
+    // 若选择将合集设置在某个分区下
+    if (partition_id) {
+      partition = await this.VPService.findByIdOrFail(partition_id); // 查询分区信息
+    }
+    // 若将视频添加到新合集中（对视频进行验证）
+    if (video_id_list && video_id_list.length) {
       // 添加了视频
       // 查询选择视频是否为自己发布的视频
-      const videos = await Promise.all(
+      videos = await Promise.all(
         video_id_list.map((id) => this.videoService.findById(id, true)),
       );
       const flag = await this.videoService.isVideosOwner(account, videos);
@@ -87,34 +111,25 @@ export class VideoCollectionService {
         // 有视频非当前用户上传
         throw new BadRequestException(VideoMessage.video_is_not_owner);
       }
-      let partition: VideoPartition | null = null; // 合集所属的分区
-      if (partition_id)
-        partition = await this.VPService.findByIdOrFail(partition_id); // 查询分区信息
-      // 创建合集
-      await this.create(
-        account,
-        collection_name,
-        description,
-        collection_cover,
-        videos,
-        partition,
-      );
-      return null;
-    } else {
-      let partition: VideoPartition | null = null; // 合集所属的分区
-      if (partition_id)
-        partition = await this.VPService.findByIdOrFail(partition_id); // 查询分区信息
-      // 未添加视频
-      await this.create(
-        account,
-        collection_name,
-        description,
-        collection_cover,
-        null,
-        partition,
-      );
-      return null;
     }
+    // 若需要给新合集添加标签(对标签进行验证)
+    if (tag_id_list && tag_id_list.length) {
+      tags = await this.videoTagService.findTagsById(tag_id_list);
+    }
+    // 未添加视频
+    collection = await this.create(
+      account,
+      collection_name,
+      description,
+      collection_cover,
+      videos,
+      partition,
+    );
+    // 给新合集添加标签
+    if (tag_id_list && tag_id_list.length) {
+      await this.videoTagService.addCollectionTags(collection, tags);
+    }
+    return null;
   }
 
   /**
@@ -323,6 +338,87 @@ export class VideoCollectionService {
       total,
       has_more: total > limit + offset,
     };
+  }
+
+  /**
+   * 给合集添加标签
+   * @param account_id 账户id
+   * @param collection_id 合集id
+   * @param tag_id_list 标签id
+   */
+  async addTags(
+    account_id: number,
+    collection_id: number,
+    tag_id_list: number[],
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const collection = await this.findById(collection_id, true);
+    // 查询合集是否为当前用户创建
+    if ((await this.isCollectionOwner(account, collection)) === false) {
+      // 非合集创建者
+      throw new BadRequestException(VideoMessage.collection_is_not_owner);
+    }
+    const tags = await this.videoTagService.findTagsById(tag_id_list);
+    // 查询合集是否已经包含这些标签了
+    if (
+      await this.videoTagService.checkCollectionTags(
+        collection_id,
+        tag_id_list,
+        false,
+      )
+    ) {
+      // 此视频合集已经包含其中的标签了
+      throw new BadRequestException(VideoMessage.add_collection_tags_error);
+    }
+    await this.videoTagService.addCollectionTags(collection, tags);
+    return null;
+  }
+
+  /**
+   * 移除视频合集的标签
+   * @param account_id 账户id
+   * @param collection_id 合集id
+   * @param tag_id_list 标签id列表
+   */
+  async removeTags(
+    account_id: number,
+    collection_id: number,
+    tag_id_list: number[],
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const collection = await this.VCRepository.createQueryBuilder("collection")
+      .where("collection.collection_id = :collection_id", { collection_id })
+      .leftJoinAndSelect("collection.tagRelation", "relation")
+      .leftJoinAndSelect("relation.tag", "tag")
+      .getOne();
+    if (collection === null) {
+      // 合集不存在
+      throw new NotFoundException(VideoMessage.collection_not_exist);
+    }
+    if ((await this.isCollectionOwner(account, collection)) === false) {
+      // 非合集创建者
+      throw new BadRequestException(VideoMessage.collection_is_not_owner);
+    }
+    // 查询这些标签是否存在
+    await this.videoTagService.findTagsById(tag_id_list);
+    // 查询合集是否拥有这些标签
+    if (
+      (await this.videoTagService.checkCollectionTags(
+        collection_id,
+        tag_id_list,
+        true,
+      )) === false
+    ) {
+      // 合集不包含这些标签
+      throw new BadRequestException(VideoMessage.remove_collection_tags_error);
+    }
+    // 过滤出需要删除的关系
+    const relation = collection.tagRelation.filter((relation) => {
+      return tag_id_list.includes(relation.tag.tag_id);
+    });
+    // 删除合集与标签的关系
+    await this.videoTagService.removeCollectionTags(relation);
+    return null;
   }
 
   /**

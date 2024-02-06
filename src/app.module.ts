@@ -17,6 +17,7 @@ import { FileModule } from "@src/module/file/file.module";
 import { VideoCommentModule } from "@src/module/video/video-comment/video-comment.module";
 import { VideoReplyModule } from "@src/module/video/video-reply/video-reply.module";
 import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
+import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { VideoPartitionModule } from "@src/module/video/video-partition/video-pa
     VideoCommentModule,
     VideoReplyModule,
     VideoPartitionModule,
+    VideoTagModule,
   ],
 })
 export class AppModule {}

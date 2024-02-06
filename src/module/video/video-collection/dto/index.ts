@@ -3,3 +3,5 @@ export { AddVideosDto } from "./add-videos.dto";
 export { DeleteVideosDto } from "./delete-videos.dto";
 export { UpdateVideoCollectionDto } from "./update-video-collection.dto";
 export { UpdateCollectionPartitionDto } from "./update-collection-partition.dto";
+export { AddTagsDto } from "./add-tags.dto";
+export { RemoveTagsDto } from "./remove-tags.dto";

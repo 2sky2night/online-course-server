@@ -9,10 +9,12 @@ import {
   JoinTable,
   JoinColumn,
   ManyToMany,
+  OneToMany,
 } from "typeorm";
 import { Video } from "@src/module/video/video/entity";
 import { Account } from "@src/module/account/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity";
 
 /**
  * 视频合集（课程）
@@ -83,4 +85,9 @@ export class VideoCollection {
   @ManyToOne(() => VideoPartition, (vp) => vp.videoCollections)
   @JoinColumn({ name: "partition_id" })
   partition: VideoPartition;
+  /**
+   * 旗下的标签(一个视频合集包含多个标签)
+   */
+  @OneToMany(() => VideoCollectionRelationTag, (vcrt) => vcrt.collection)
+  tagRelation: VideoCollectionRelationTag[];
 }

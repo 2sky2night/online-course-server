@@ -30,6 +30,9 @@ import { UserService } from "@src/module/user/service";
 import { User } from "@src/module/user/entity";
 import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { VideoTag } from "@src/module/video/video-tag/entity";
 
 @Injectable()
 export class VideoService {
@@ -101,6 +104,12 @@ export class VideoService {
    */
   @Inject(VideoPartitionService)
   private VPService: VideoPartitionService;
+  /**
+   * 视频标签服务层
+   * @private
+   */
+  @Inject(VideoTagService)
+  private videoTagService: VideoTagService;
 
   /**
    * 发布视频
@@ -116,10 +125,12 @@ export class VideoService {
       collection_id_list,
       video_cover,
       partition_id,
+      tag_id_list,
     }: PublishVideoDto,
   ) {
     const account = await this.accountService.findById(account_id, true);
     const file = await this.fileService.findById(file_id, true);
+    // 文件类型是否正确
     if (file.file_type !== FileType.VIDEO) {
       // 选择的文件类型错误
       throw new BadRequestException(VideoMessage.file_type_error);
@@ -129,13 +140,22 @@ export class VideoService {
       // 此用户未上传此文件，不允许发布
       throw new BadRequestException(VideoMessage.file_is_not_owner);
     }
+    // 视频实例
+    let video: Video | null = null;
+    // 分区实例
+    let partition: VideoPartition | null = null;
+    // 合集实例
+    let collections: VideoCollection[] = [];
+    // 标签实例
+    let tags: VideoTag[] = [];
+    // 发布时选择将视频发布在某个分区下？
+    if (partition_id) {
+      partition = await this.VPService.findByIdOrFail(partition_id); // 查询此分区是否存在
+    }
+    // 发布时选择将视频添加到某些合集中?(对合集非法检查)
     if (collection_id_list && collection_id_list.length) {
-      // 分区信息
-      let partition: VideoPartition | null = null;
-      if (partition_id)
-        partition = await this.VPService.findByIdOrFail(partition_id); // 若发布视频时选择将视频添加到某个分区中
-      // 若需要将视频添加到视频合集中
-      const collections = await Promise.all(
+      // 若需要将视频添加到视频合集中，进行非法检查
+      collections = await Promise.all(
         collection_id_list.map((id) => this.VCService.findById(id, true)),
       );
       // 这些视频合集是否为当前用户创建的？
@@ -145,61 +165,44 @@ export class VideoService {
       )
         // 视频合集中存在非当前用户创建的
         throw new BadRequestException(VideoMessage.collection_is_not_owner);
-      // 增加视频
-      const video = await this.create(
-        account,
-        file,
-        video_name,
-        description,
-        video_cover,
-        partition,
-      );
-      if (video_cover === undefined) {
-        // 未上传视频封面，则后台静默生成视频封面
-        this.generateVideoCover(file).then(
-          (file_path) => {
-            this.videoRepository.update(video.video_id, {
-              video_cover: file_path,
-            });
-          },
-          (e) => {
-            // 出错了，则不设置视频封面
-            Logger.error(e);
-          },
-        );
-      }
-      // 添加视频和视频合集的关系
+    }
+    // 发布时选择给视频添加了标签?(对标签非法检查)
+    if (tag_id_list && tag_id_list.length) {
+      tags = await this.videoTagService.findTagsById(tag_id_list);
+    }
+    // 发布视频
+    video = await this.create(
+      account,
+      file,
+      video_name,
+      description,
+      video_cover,
+      partition,
+    );
+    // 发布时选择将视频发布在某个分区下?(添加合集与视频的关系)
+    if (collection_id_list && collection_id_list.length) {
       await Promise.all(
         collections.map((c) => this.VCService.addVideosRelation(c, [video])),
       );
-    } else {
-      // 发布时选择将视频发布在某个分区下？
-      let partition: VideoPartition | null = null;
-      if (partition_id)
-        partition = await this.VPService.findByIdOrFail(partition_id); // 查询此分区是否存在
-      // 直接发布视频
-      const video = await this.create(
-        account,
-        file,
-        video_name,
-        description,
-        video_cover,
-        partition,
+    }
+    // 发布时选择给视频添加了标签?(添加视频和标签的关系)
+    if (tag_id_list && tag_id_list.length) {
+      await this.videoTagService.addVideoTags(video, tags);
+    }
+    // 上传视频封面
+    if (video_cover === undefined) {
+      // 未上传视频封面，则后台静默生成视频封面
+      this.generateVideoCover(file).then(
+        (file_path) => {
+          this.videoRepository.update(video.video_id, {
+            video_cover: file_path,
+          });
+        },
+        (e) => {
+          // 出错了，则不设置视频封面
+          Logger.error(e);
+        },
       );
-      if (video_cover === undefined) {
-        // 未上传视频封面，则后台静默生成视频封面
-        this.generateVideoCover(file).then(
-          (file_path) => {
-            this.videoRepository.update(video.video_id, {
-              video_cover: file_path,
-            });
-          },
-          (e) => {
-            // 出错了，则不设置视频封面
-            Logger.error(e);
-          },
-        );
-      }
     }
     return null;
   }
@@ -337,6 +340,84 @@ export class VideoService {
       total,
       has_more: total > limit + offset,
     };
+  }
+
+  /**
+   * 给视频添加标签
+   * @param account_id 账户id
+   * @param video_id 视频id
+   * @param tag_id_list 标签id列表
+   */
+  async addVideoTags(
+    account_id: number,
+    video_id: number,
+    tag_id_list: number[],
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const video = await this.findById(video_id, true);
+    if ((await this.isVideoOwner(account, video)) === false)
+      throw new BadRequestException(VideoMessage.video_is_not_owner); // 非视频上传者，不能添加视频标签
+    // 查询标签
+    const tags = await this.videoTagService.findTagsById(tag_id_list);
+    // 查询视频是否已经拥有其中某个标签了
+    if (
+      await this.videoTagService.checkVideoTags(
+        video.video_id,
+        tag_id_list,
+        false,
+      )
+    )
+      throw new BadRequestException(VideoMessage.add_video_tags_error); // 其中有个标签已经存在了
+    await this.videoTagService.addVideoTags(video, tags);
+    return null;
+  }
+
+  /**
+   * 移除视频的标签
+   * @param account_id 账户id
+   * @param video_id 视频id
+   * @param tag_id_list id列表
+   */
+  async removeVideoTags(
+    account_id: number,
+    video_id: number,
+    tag_id_list: number[],
+  ): Promise<null> {
+    const account = await this.accountService.findById(account_id, true);
+    const video = await this.videoRepository
+      .createQueryBuilder("video")
+      .where("video.video_id = :video_id", { video_id })
+      .leftJoinAndSelect("video.tagRelation", "relation")
+      .leftJoinAndSelect("relation.tag", "tag")
+      .getOne();
+    if (video === null) {
+      // 视频不存在
+      throw new NotFoundException(VideoMessage.video_not_exist);
+    }
+    // 查询当前用户是否为视频创建者
+    if ((await this.isVideoOwner(account, video)) === false) {
+      // 非视频上传者，不能移除视频标签
+      throw new BadRequestException(VideoMessage.video_is_not_owner);
+    }
+    // 查询标签是否存在
+    await this.videoTagService.findTagsById(tag_id_list);
+    // 查询视频是否拥有这些标签
+    if (
+      (await this.videoTagService.checkVideoTags(
+        video.video_id,
+        tag_id_list,
+        true,
+      )) === false
+    ) {
+      // 视频不包含这些标签
+      throw new BadRequestException(VideoMessage.remove_video_tags_error);
+    }
+    // 过滤出需要被删除的关系
+    const tagRelation = video.tagRelation.filter((relation) => {
+      return tag_id_list.includes(relation.tag.tag_id);
+    });
+    await this.videoTagService.removeVideoTags(tagRelation);
+    return null;
   }
 
   /**

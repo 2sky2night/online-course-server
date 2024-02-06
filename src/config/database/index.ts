@@ -30,6 +30,11 @@ import {
   VideoReplyLike,
 } from "@src/module/video/video-reply/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import {
+  VideoCollectionRelationTag,
+  VideoRelationTag,
+  VideoTag,
+} from "@src/module/video/video-tag/entity";
 
 /**
  * 所有实体
@@ -54,6 +59,9 @@ export const entities = [
   VideoReply,
   VideoReplyLike,
   VideoPartition,
+  VideoTag,
+  VideoRelationTag,
+  VideoCollectionRelationTag,
 ];
 
 /**

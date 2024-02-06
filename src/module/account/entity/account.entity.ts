@@ -15,6 +15,7 @@ import { AccountUpload } from "@src/module/upload/entity";
 import { Video } from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoTag } from "@src/module/video/video-tag/entity";
 
 /**
  * 账户表
@@ -104,4 +105,9 @@ export class Account {
    */
   @OneToMany(() => VideoPartition, (vp) => vp.account)
   videoPartitions: VideoPartition[];
+  /**
+   * 创建的视频标签(一个管理员可以创建多个视频标签)
+   */
+  @OneToMany(() => VideoTag, (vt) => vt.account)
+  videoTags: VideoTag[];
 }

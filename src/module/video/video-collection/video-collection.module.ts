@@ -6,6 +6,7 @@ import { VideoCollectionService } from "@src/module/video/video-collection/video
 import { VideoCollectionController } from "@src/module/video/video-collection/video-collection.controller";
 import { VideoModule } from "@src/module/video/video/video.module";
 import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
+import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
 
 /**
  * 视频合集模块
@@ -16,6 +17,7 @@ import { VideoPartitionModule } from "@src/module/video/video-partition/video-pa
     AccountModule,
     forwardRef(() => VideoModule),
     VideoPartitionModule,
+    VideoTagModule,
   ],
   providers: [VideoCollectionService],
   controllers: [VideoCollectionController],

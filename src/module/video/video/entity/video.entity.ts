@@ -18,6 +18,7 @@ import { VideoHistory } from "@src/module/video/video/entity/video-history.entit
 import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
 import { VideoComment } from "@src/module/video/video-comment/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoRelationTag } from "@src/module/video/video-tag/entity";
 
 /**
  * 视频表
@@ -107,4 +108,9 @@ export class Video {
   @ManyToOne(() => VideoPartition, (vp) => vp.videos)
   @JoinColumn({ name: "partition_id" })
   partition: VideoPartition;
+  /**
+   * 旗下的标签（一个视频包含多个标签）
+   */
+  @OneToMany(() => VideoRelationTag, (vrt) => vrt.video)
+  tagRelation: VideoRelationTag[];
 }

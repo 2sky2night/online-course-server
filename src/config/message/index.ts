@@ -120,6 +120,13 @@ export const VideoMessage = Object.freeze({
   partition_name_is_exist: "此名称的分区已经存在!",
   update_video_partition_error: "目标分区不能为当前视频的分区!",
   update_video_collection_partition_error: "目标分区不能为当前视频合集的分区!",
+  tag_not_exist: "此标签不存在!",
+  tag_name_is_exist: "此名称的标签已经存在!",
+  update_tag_name_error: "不能与当前标签名称一致!",
+  add_video_tags_error: "该视频已经包含此标签了!",
+  remove_video_tags_error: "该视频不包含此标签!",
+  add_collection_tags_error: "该视频合集已经包含此标签了!",
+  remove_collection_tags_error: "该视频合集不包含此标签!",
 });
 
 /**

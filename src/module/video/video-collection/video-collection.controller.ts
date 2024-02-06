@@ -11,9 +11,11 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  AddTagsDto,
   AddVideosDto,
   CreateVideoCollectionDto,
   DeleteVideosDto,
+  RemoveTagsDto,
   UpdateCollectionPartitionDto,
   UpdateVideoCollectionDto,
 } from "@src/module/video/video-collection/dto";
@@ -178,5 +180,39 @@ export class VideoCollectionController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.VCService.partitionList(partition_id, offset, limit, desc);
+  }
+
+  /**
+   * 给合集添加标签
+   * @param collection_id 合集id
+   * @param tag_id_list 标签id列表
+   * @param account_id 账户id
+   */
+  @Post(":cid/tags")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  addTags(
+    @Param("cid", new IntPipe("cid")) collection_id: number,
+    @Body() { tag_id_list }: AddTagsDto,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.VCService.addTags(account_id, collection_id, tag_id_list);
+  }
+
+  /**
+   * 移除合集的标签
+   * @param collection_id 合集id
+   * @param tag_id_list 标签id列表
+   * @param account_id 账户id
+   */
+  @Delete(":cid/tags")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  removeTags(
+    @Param("cid", new IntPipe("cid")) collection_id: number,
+    @Body() { tag_id_list }: RemoveTagsDto,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.VCService.removeTags(account_id, collection_id, tag_id_list);
   }
 }

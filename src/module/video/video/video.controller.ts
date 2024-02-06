@@ -16,7 +16,9 @@ import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard, UserGuard } from "@src/common/guard";
 import {
   AddVideoHistoryDto,
+  AddVideoTagsDto,
   PublishVideoDto,
+  RemoveVideoTagsDto,
   UpdateVideoDto,
   UpdateVideoPartitionDto,
 } from "@src/module/video/video/dto";
@@ -202,5 +204,39 @@ export class VideoController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.videoService.partitionList(partition_id, offset, limit, desc);
+  }
+
+  /**
+   * 给视频添加标签
+   * @param video_id 视频id
+   * @param account_id 账户id
+   * @param tag_id_list 标签id列表
+   */
+  @Post(":vid/tags")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  addVideoTags(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @AccountToken("sub") account_id: number,
+    @Body() { tag_id_list }: AddVideoTagsDto,
+  ) {
+    return this.videoService.addVideoTags(account_id, video_id, tag_id_list);
+  }
+
+  /**
+   * 移除视频标签
+   * @param video_id 视频id
+   * @param account_id 账户id
+   * @param tag_id_list 标签id列表
+   */
+  @Delete(":vid/tags")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  removeVideoTags(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @AccountToken("sub") account_id: number,
+    @Body() { tag_id_list }: RemoveVideoTagsDto,
+  ) {
+    return this.videoService.removeVideoTags(account_id, video_id, tag_id_list);
   }
 }
