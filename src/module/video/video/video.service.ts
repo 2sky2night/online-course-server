@@ -33,6 +33,7 @@ import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoTag } from "@src/module/video/video-tag/entity";
+import { RedisService } from "@src/module/redis/redis.service";
 
 @Injectable()
 export class VideoService {
@@ -110,6 +111,11 @@ export class VideoService {
    */
   @Inject(VideoTagService)
   private videoTagService: VideoTagService;
+  /**
+   * redis服务层
+   */
+  @Inject(RedisService)
+  private redisService: RedisService;
 
   /**
    * 发布视频
@@ -421,6 +427,77 @@ export class VideoService {
   }
 
   /**
+   * 增加视频的实时观看人数
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  async incWatchVideo(video_id: number, user_id: number): Promise<null> {
+    const user = await this.userService.findByUID(user_id, true);
+    const video = await this.findById(video_id, true);
+    const key = `video-watching:${video.video_id}`;
+    const value = String(user.user_id);
+    // 此键是否存在
+    if (await this.redisService.exists(key)) {
+      // 存在
+      // 当前用户是否已经在观看视频了？
+      if ((await this.redisService.sIsMember(key, value)) === false) {
+        // 当前用户未在观看视频集合中，则增加元素
+        await this.redisService.sAdd(key, value);
+      }
+    } else {
+      // 不存在，创建一个集合，并以当前用户id添加一个元素
+      await this.redisService.sAdd(key, value);
+    }
+    return null;
+  }
+
+  /**
+   * 减少视频的实时观看人数
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  async decWatchVideo(video_id: number, user_id: number): Promise<null> {
+    const user = await this.userService.findByUID(user_id, true);
+    const video = await this.findById(video_id, true);
+    const key = `video-watching:${video.video_id}`;
+    const value = String(user.user_id);
+    if ((await this.redisService.exists(key)) === 0) {
+      // 键不存在(无人观看此视频)，不能减少视频观看人数
+      throw new BadRequestException(VideoMessage.dec_watch_video_error);
+    }
+    if ((await this.redisService.sIsMember(key, value)) === false) {
+      // 当前用户未观看此视频
+      throw new BadRequestException(VideoMessage.dec_watch_video_user_error);
+    }
+    // 从集合中删除一个成员
+    await this.redisService.sRem(key, value);
+    // 查询集合的数量
+    const count = await this.redisService.sCard(key);
+    if (count === 0) {
+      // 若当前无人观看此视频了，移除集合
+      await this.redisService.del(key);
+    }
+    return null;
+  }
+
+  /**
+   * 获取视频实时观看数量
+   * @param video_id 视频id
+   */
+  async videoWatchCount(video_id: number) {
+    const video = await this.findById(video_id, true);
+    const key = `video-watching:${video.video_id}`;
+    let count = 0;
+    if (await this.redisService.exists(key)) {
+      // 集合存在，查询集合中元素数量
+      count = await this.redisService.sCard(key);
+    }
+    return {
+      count,
+    };
+  }
+
+  /**
    * 验证这些视频是否位此人上传的
    * @param account 验证目标
    * @param videos 视频列表
@@ -448,6 +525,21 @@ export class VideoService {
       throw new NotFoundException(VideoMessage.video_not_exist);
     }
     return video;
+  }
+
+  /**
+   * 通过id列表查询 视频列表
+   * @param video_id_list 视频列表
+   * @param needFind 未全部找到就报错
+   */
+  async findByIds(video_id_list: number[], needFind = false) {
+    const videos = await this.videoRepository.findBy({
+      video_id: In(video_id_list),
+    });
+    if (needFind && videos.length === 0) {
+      throw new NotFoundException(VideoMessage.video_not_exist);
+    }
+    return videos;
   }
 
   /**

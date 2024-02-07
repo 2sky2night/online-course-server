@@ -19,6 +19,7 @@ import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
 import { VideoComment } from "@src/module/video/video-comment/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { VideoRelationTag } from "@src/module/video/video-tag/entity";
+import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity";
 
 /**
  * 视频表
@@ -113,4 +114,9 @@ export class Video {
    */
   @OneToMany(() => VideoRelationTag, (vrt) => vrt.video)
   tagRelation: VideoRelationTag[];
+  /**
+   * 视频收藏记录(一个视频可以被收藏多次)
+   */
+  @OneToMany(() => VideoRelationFavorite, (vrf) => vrf.video)
+  favoriteRelation: VideoRelationFavorite[];
 }

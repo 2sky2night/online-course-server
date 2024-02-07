@@ -239,4 +239,41 @@ export class VideoController {
   ) {
     return this.videoService.removeVideoTags(account_id, video_id, tag_id_list);
   }
+
+  /**
+   * 增加视频实时观看人数
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Post(":vid/watch")
+  @UseGuards(UserGuard)
+  watchVideo(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.incWatchVideo(video_id, user_id);
+  }
+
+  /**
+   * 移除视频实时观看人数
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Delete(":vid/watch")
+  @UseGuards(UserGuard)
+  decWatchVideo(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.decWatchVideo(video_id, user_id);
+  }
+
+  /**
+   * 查询视频观看实时人数
+   * @param video_id 视频id
+   */
+  @Get(":vid/watch")
+  videoWatchCount(@Param("vid", new IntPipe("vid")) video_id: number) {
+    return this.videoService.videoWatchCount(video_id);
+  }
 }

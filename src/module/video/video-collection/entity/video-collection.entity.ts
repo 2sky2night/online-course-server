@@ -15,6 +15,7 @@ import { Video } from "@src/module/video/video/entity";
 import { Account } from "@src/module/account/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 
 /**
  * 视频合集（课程）
@@ -90,4 +91,9 @@ export class VideoCollection {
    */
   @OneToMany(() => VideoCollectionRelationTag, (vcrt) => vcrt.collection)
   tagRelation: VideoCollectionRelationTag[];
+  /**
+   * 订阅的用户(一个合集可以被多个用户订阅)
+   */
+  @OneToMany(() => CollectionSubscribe, (cs) => cs.collection)
+  subscribedUsers: CollectionSubscribe[];
 }

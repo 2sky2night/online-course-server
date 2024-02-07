@@ -62,3 +62,17 @@ export function bodyOptionCatcher(
     throw new BadRequestException(CommonMessage.form_fields_error);
   }
 }
+
+/**
+ * 将数值列表转换成queryString
+ * @param list 列表
+ */
+export function arrayToQueryString(list: number[]) {
+  return list.reduce((pre, item, index) => {
+    if (index === 0) {
+      return String(item);
+    } else {
+      return `${pre},${item}`;
+    }
+  }, "");
+}

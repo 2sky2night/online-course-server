@@ -27,7 +27,7 @@ export const CommonMessage = Object.freeze({
   int_pipe_type_error: (field?: string) =>
     field ? `${field}的类型必须是数值型!` : "字段校验失败!",
   int_pipe_empty_error: (field?: string) =>
-    field ? `${field}的不能为空!` : "字段校验失败!",
+    field ? `${field}不能为空!` : "字段校验失败!",
 });
 
 /**
@@ -127,6 +127,14 @@ export const VideoMessage = Object.freeze({
   remove_video_tags_error: "该视频不包含此标签!",
   add_collection_tags_error: "该视频合集已经包含此标签了!",
   remove_collection_tags_error: "该视频合集不包含此标签!",
+  dec_watch_video_error: "此视频当前无任何人观看!",
+  dec_watch_video_user_error: "当前用户未观看此视频!",
+  favorite_not_exist: "此收藏夹不存在!",
+  favorite_is_not_owner: "此收藏夹非当前用户创建!",
+  favorite_video_error: "有收藏夹已经收藏此视频了!",
+  remove_favorite_video_error: "有视频不在该收藏夹中!",
+  subscribe_collection_error: "此合集已经被订阅过了!",
+  unsubscribe_collection_error: "此合集未订阅!",
 });
 
 /**

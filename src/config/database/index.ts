@@ -35,6 +35,11 @@ import {
   VideoRelationTag,
   VideoTag,
 } from "@src/module/video/video-tag/entity";
+import {
+  VideoFavorite,
+  VideoRelationFavorite,
+} from "@src/module/video/video-favorite/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 
 /**
  * 所有实体
@@ -62,6 +67,9 @@ export const entities = [
   VideoTag,
   VideoRelationTag,
   VideoCollectionRelationTag,
+  VideoFavorite,
+  VideoRelationFavorite,
+  CollectionSubscribe,
 ];
 
 /**

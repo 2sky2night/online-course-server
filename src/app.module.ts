@@ -18,6 +18,8 @@ import { VideoCommentModule } from "@src/module/video/video-comment/video-commen
 import { VideoReplyModule } from "@src/module/video/video-reply/video-reply.module";
 import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
 import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
+import { VideoFavoriteModule } from "@src/module/video/video-favorite/video-favorite.module";
+import { CollectionSubscribeModule } from "@src/module/video/collection-subsribe/collection-subscribe.module";
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
     VideoReplyModule,
     VideoPartitionModule,
     VideoTagModule,
+    VideoFavoriteModule,
+    CollectionSubscribeModule,
   ],
 })
 export class AppModule {}

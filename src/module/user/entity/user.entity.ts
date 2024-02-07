@@ -24,6 +24,11 @@ import {
   VideoReply,
   VideoReplyLike,
 } from "@src/module/video/video-reply/entity";
+import {
+  VideoFavorite,
+  VideoRelationFavorite,
+} from "@src/module/video/video-favorite/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 
 /**
  * 用户表
@@ -131,4 +136,19 @@ export class User {
    */
   @OneToMany(() => VideoReplyLike, (vrl) => vrl.user)
   likeVideoReplies: VideoReplyLike[];
+  /**
+   * 收藏视频记录(一个用户可以收藏多个视频)
+   */
+  @OneToMany(() => VideoRelationFavorite, (vrf) => vrf.user)
+  favoriteVideoRelation: VideoRelationFavorite[];
+  /**
+   * 视频收藏夹(一个用户可以创建多个收藏视频文件夹)
+   */
+  @OneToMany(() => VideoFavorite, (vf) => vf.user)
+  videoFavorites: VideoFavorite[];
+  /**
+   * 订阅的视频合集记录(一个用户可以关注多个视频合集)
+   */
+  @OneToMany(() => CollectionSubscribe, (cs) => cs.user)
+  subCollections: CollectionSubscribe[];
 }
