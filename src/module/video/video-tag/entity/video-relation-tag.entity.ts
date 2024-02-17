@@ -13,7 +13,9 @@ import { Video } from "@src/module/video/video/entity";
 /**
  * 视频和视频标签联系表
  */
-@Entity()
+@Entity({
+  comment: "视频与视频标签关系表",
+})
 export class VideoRelationTag {
   /**
    * id

@@ -13,7 +13,9 @@ import { VideoCollection } from "@src/module/video/video-collection/entity";
 /**
  * 用户订阅视频合集表
  */
-@Entity()
+@Entity({
+  comment: "用户订阅视频合集表",
+})
 export class CollectionSubscribe {
   @PrimaryGeneratedColumn({ comment: "订阅追踪id" })
   trace_id: number;

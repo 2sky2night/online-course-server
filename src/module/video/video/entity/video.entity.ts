@@ -20,11 +20,14 @@ import { VideoComment } from "@src/module/video/video-comment/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { VideoRelationTag } from "@src/module/video/video-tag/entity";
 import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 
 /**
  * 视频表
  */
-@Entity()
+@Entity({
+  comment: "视频表",
+})
 export class Video {
   /**
    * 视频id
@@ -119,4 +122,9 @@ export class Video {
    */
   @OneToMany(() => VideoRelationFavorite, (vrf) => vrf.video)
   favoriteRelation: VideoRelationFavorite[];
+  /**
+   * 弹幕(一个视频包含多个弹幕)
+   */
+  @OneToMany(() => VideoDanmu, (danmu) => danmu.video)
+  danmus: VideoDanmu[];
 }

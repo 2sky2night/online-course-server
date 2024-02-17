@@ -40,6 +40,7 @@ import {
   VideoRelationFavorite,
 } from "@src/module/video/video-favorite/entity";
 import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 
 /**
  * 所有实体
@@ -70,6 +71,7 @@ export const entities = [
   VideoFavorite,
   VideoRelationFavorite,
   CollectionSubscribe,
+  VideoDanmu,
 ];
 
 /**

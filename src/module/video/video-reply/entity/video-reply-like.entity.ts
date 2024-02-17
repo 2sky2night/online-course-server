@@ -13,7 +13,9 @@ import { User } from "@src/module/user/entity";
 /**
  * 点赞视频回复表
  */
-@Entity()
+@Entity({
+  comment: "点赞视频回复表",
+})
 export class VideoReplyLike {
   /**
    * 点赞的id

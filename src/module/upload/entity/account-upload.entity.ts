@@ -11,9 +11,11 @@ import { Account } from "@src/module/account/entity";
 import { File } from "@src/module/file/entity";
 
 /**
- * 前台账户上传资源追踪表
+ * 后台账户上传资源追踪表
  */
-@Entity()
+@Entity({
+  comment: "后台账户上传资源追踪表",
+})
 export class AccountUpload {
   /**
    * 追踪id

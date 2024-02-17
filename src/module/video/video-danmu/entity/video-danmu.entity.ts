@@ -9,25 +9,30 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { User } from "@src/module/user/entity";
-import { Video } from "@src/module/video/video/entity/video.entity";
+import { Video } from "@src/module/video/video/entity";
 
 /**
- * 用户浏览历史记录
+ * 视频弹幕模型
  */
 @Entity({
-  comment: "视频浏览历史记录表",
+  comment: "视频弹幕表",
 })
-export class VideoHistory {
+export class VideoDanmu {
   /**
-   * 历史记录id
+   * 弹幕id
    */
-  @PrimaryGeneratedColumn({ comment: "历史记录id" })
-  history_id: number;
+  @PrimaryGeneratedColumn({ comment: "弹幕id" })
+  danmu_id: number;
   /**
-   * 观看时间
+   * 弹幕的内容
    */
-  @Column({ type: "float", comment: "浏览时长,秒为单位" })
-  viewing_time: number;
+  @Column({ type: "text", comment: "弹幕的内容" })
+  content: string;
+  /**
+   * 弹幕发布时间(单位：秒)
+   */
+  @Column({ type: "float", comment: "在视频中的某个时间点发布的(单位：秒)" })
+  time: number;
   /**
    * 创建时间
    */
@@ -44,15 +49,15 @@ export class VideoHistory {
   @DeleteDateColumn({ type: "datetime", comment: "删除时间" })
   deleted_time: Date | null;
   /**
-   * 一个用户有多个视频浏览记录
+   * 用户（一个用户可以发布多个视频弹幕）
    */
-  @ManyToOne(() => User, (user) => user.videoHistories)
+  @ManyToOne(() => User, (user) => user.videoDanmus)
   @JoinColumn({ name: "user_id" })
   user: User;
   /**
-   * 一个视频有多个用户的历史记录
+   * 视频(一个视频中可以包含多个视频弹幕)
    */
-  @ManyToOne(() => Video, (video) => video.histories)
+  @ManyToOne(() => Video, (video) => video.danmus)
   @JoinColumn({ name: "video_id" })
   video: Video;
 }

@@ -13,7 +13,9 @@ import { VideoComment } from "@src/module/video/video-comment/entity/video-comme
 /**
  * 点赞视频评论表
  */
-@Entity()
+@Entity({
+  comment: "点赞视频评论表",
+})
 export class VideoCommentLike {
   /**
    * 视频点赞的id

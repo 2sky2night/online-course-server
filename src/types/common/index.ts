@@ -17,3 +17,10 @@ export type AccountToken = {
   sub: number;
   role_name: Roles;
 };
+
+/**
+ * 前台账户中的Token数据
+ */
+export type UserToken = {
+  sub: number;
+};

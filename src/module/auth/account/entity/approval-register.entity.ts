@@ -15,7 +15,9 @@ import { Account } from "@src/module/account/entity";
 /**
  * 审批申请注册表
  */
-@Entity()
+@Entity({
+  comment: "后台账户申请注册审批表",
+})
 export class ApprovalRegister {
   /**
    * 审批id

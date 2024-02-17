@@ -13,7 +13,9 @@ import { File } from "@src/module/file/entity";
 /**
  * 前台账户上传资源追踪表
  */
-@Entity()
+@Entity({
+  comment: "前台账户上传资源追踪表",
+})
 export class UserUpload {
   /**
    * 追踪id

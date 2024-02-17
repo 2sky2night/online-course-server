@@ -20,7 +20,9 @@ import { VideoTag } from "@src/module/video/video-tag/entity";
 /**
  * 账户表
  */
-@Entity()
+@Entity({
+  comment: "后台账户表",
+})
 export class Account {
   /**
    * 账户id

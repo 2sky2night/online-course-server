@@ -14,7 +14,7 @@ import { VideoFavorite } from "@src/module/video/video-favorite/entity/video-fav
 /**
  * 用户收藏视频关系表
  */
-@Entity({ comment: "用户收藏视频与视频收藏夹关系" })
+@Entity({ comment: "用户收藏视频与视频收藏夹关系表" })
 export class VideoRelationFavorite {
   /**
    * 收藏追踪id

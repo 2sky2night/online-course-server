@@ -13,7 +13,9 @@ import { Video } from "@src/module/video/video/entity/video.entity";
 /**
  * 视频浏览量
  */
-@Entity()
+@Entity({
+  comment: "视频浏览量表",
+})
 export class VideoView {
   /**
    * 追踪id

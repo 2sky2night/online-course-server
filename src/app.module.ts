@@ -20,6 +20,7 @@ import { VideoPartitionModule } from "@src/module/video/video-partition/video-pa
 import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
 import { VideoFavoriteModule } from "@src/module/video/video-favorite/video-favorite.module";
 import { CollectionSubscribeModule } from "@src/module/video/collection-subsribe/collection-subscribe.module";
+import { VideoDanmuModule } from "@src/module/video/video-danmu/video-danmu.module";
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { CollectionSubscribeModule } from "@src/module/video/collection-subsribe
     VideoTagModule,
     VideoFavoriteModule,
     CollectionSubscribeModule,
+    VideoDanmuModule,
   ],
 })
 export class AppModule {}

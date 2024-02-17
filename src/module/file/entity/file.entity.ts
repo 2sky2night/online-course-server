@@ -14,7 +14,9 @@ import { Video } from "@src/module/video/video/entity";
 /**
  * 文件模型
  */
-@Entity()
+@Entity({
+  comment: "文件存储表",
+})
 export class File {
   /**
    * 文件的id

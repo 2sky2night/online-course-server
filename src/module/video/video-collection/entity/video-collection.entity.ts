@@ -20,7 +20,9 @@ import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entit
 /**
  * 视频合集（课程）
  */
-@Entity()
+@Entity({
+  comment: "视频合集表",
+})
 export class VideoCollection {
   /**
    * 视频合集id

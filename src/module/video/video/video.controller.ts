@@ -11,9 +11,19 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { VideoService } from "@src/module/video/video/video.service";
-import { AccountToken, Role, UserToken } from "@src/common/decorator";
+import {
+  AccountToken,
+  Role,
+  UserOptionToken,
+  UserToken,
+} from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
-import { AccountGuard, RoleGuard, UserGuard } from "@src/common/guard";
+import {
+  AccountGuard,
+  RoleGuard,
+  UserGuard,
+  UserOptionalGuard,
+} from "@src/common/guard";
 import {
   AddVideoHistoryDto,
   AddVideoTagsDto,
@@ -102,12 +112,21 @@ export class VideoController {
    * @param user_id 用户id
    */
   @Post(":vid/views")
-  @UseGuards(UserGuard)
+  @UseGuards(UserOptionalGuard)
   addViews(
     @Param("vid", new IntPipe("vid")) video_id: number,
-    @UserToken("sub") user_id: number,
+    @UserOptionToken("sub") user_id: number | undefined,
   ) {
     return this.videoService.addViews(video_id, user_id);
+  }
+
+  /**
+   * 获取视频浏览量
+   * @param video_id 视频id
+   */
+  @Get(":vid/views")
+  viewsCount(@Param("vid", new IntPipe("vid")) video_id: number) {
+    return this.videoService.viewsCount(video_id);
   }
 
   /**

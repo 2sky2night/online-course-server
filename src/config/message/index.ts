@@ -135,6 +135,8 @@ export const VideoMessage = Object.freeze({
   remove_favorite_video_error: "有视频不在该收藏夹中!",
   subscribe_collection_error: "此合集已经被订阅过了!",
   unsubscribe_collection_error: "此合集未订阅!",
+  create_danmu_error: "发布时间超过视频的时长!",
+  get_danmu_error: "开始时间不能大于结束时间!",
 });
 
 /**

@@ -29,11 +29,14 @@ import {
   VideoRelationFavorite,
 } from "@src/module/video/video-favorite/entity";
 import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 
 /**
  * 用户表
  */
-@Entity()
+@Entity({
+  comment: "前台用户表",
+})
 export class User {
   /**
    * 用户id
@@ -151,4 +154,9 @@ export class User {
    */
   @OneToMany(() => CollectionSubscribe, (cs) => cs.user)
   subCollections: CollectionSubscribe[];
+  /**
+   * 弹幕（一个用户可以发布多个视频弹幕）
+   */
+  @OneToMany(() => VideoDanmu, (danmu) => danmu.user)
+  videoDanmus: VideoDanmu[];
 }

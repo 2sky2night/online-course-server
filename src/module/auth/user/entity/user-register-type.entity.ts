@@ -12,7 +12,9 @@ import { User } from "@src/module/user/entity";
 /**
  * 前台用户注册方式表
  */
-@Entity()
+@Entity({
+  comment: "前台用户注册方式表",
+})
 export class UserRegisterType {
   /**
    * 注册类型id

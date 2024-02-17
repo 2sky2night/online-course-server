@@ -12,7 +12,9 @@ import { ApprovalRegister } from "@src/module/auth/account/entity/approval-regis
 /**
  * 申请注册表
  */
-@Entity()
+@Entity({
+  comment: "后台账户注册申请表",
+})
 export class ApplyRegister {
   /**
    * 申请注册id

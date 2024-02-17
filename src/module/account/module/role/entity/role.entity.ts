@@ -13,7 +13,9 @@ import { Roles } from "../enum";
 /**
  * 角色表
  */
-@Entity()
+@Entity({
+  comment: "后台账户角色表",
+})
 export class Role {
   /**
    * 角色id

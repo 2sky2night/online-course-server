@@ -16,7 +16,9 @@ import { VideoReplyLike } from "@src/module/video/video-reply/entity/video-reply
 /**
  * 视频回复表
  */
-@Entity()
+@Entity({
+  comment: "视频评论回复表",
+})
 export class VideoReply {
   /**
    * 回复的id

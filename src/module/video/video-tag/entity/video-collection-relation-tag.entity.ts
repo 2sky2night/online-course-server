@@ -13,7 +13,9 @@ import { VideoCollection } from "@src/module/video/video-collection/entity";
 /**
  * 视频合集与标签关系表
  */
-@Entity()
+@Entity({
+  comment: "视频合集与视频标签关系表",
+})
 export class VideoCollectionRelationTag {
   /**
    * id

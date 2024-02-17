@@ -547,11 +547,27 @@ export class VideoService {
    * @param video_id 视频号
    * @param user_id 用户id
    */
-  async addViews(video_id: number, user_id: number): Promise<null> {
-    const user = await this.userService.findByUID(user_id, true);
+  async addViews(video_id: number, user_id: number | undefined): Promise<null> {
+    let user: User | null = null;
     const video = await this.findById(video_id, true);
+    if (user_id !== undefined)
+      user = await this.userService.findByUID(user_id, true);
     await this.createViews(video, user);
     return null;
+  }
+
+  /**
+   * 获取视频浏览量
+   * @param video_id 视频id
+   */
+  async viewsCount(video_id: number) {
+    const video = await this.findById(video_id, true);
+    const count = await this.VVRespository.createQueryBuilder("views")
+      .where("views.video_id = :video_id", { video_id: video.video_id })
+      .getCount();
+    return {
+      count,
+    };
   }
 
   /**
@@ -635,9 +651,9 @@ export class VideoService {
    * @param video 视频实例
    * @param user 用户实例
    */
-  createViews(video: Video, user: User) {
+  createViews(video: Video, user: User | null) {
     const views = this.VVRespository.create();
-    views.user = user;
+    if (user) views.user = user;
     views.video = video;
     return this.VVRespository.save(views);
   }

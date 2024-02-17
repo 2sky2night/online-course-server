@@ -16,7 +16,9 @@ import { VideoCollection } from "@src/module/video/video-collection/entity";
 /**
  * 视频分区模型
  */
-@Entity()
+@Entity({
+  comment: "视频分区表",
+})
 export class VideoPartition {
   /**
    * 视频分区的id
