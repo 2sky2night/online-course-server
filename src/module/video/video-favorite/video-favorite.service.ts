@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
   NotFoundException,
@@ -43,7 +44,7 @@ export class VideoFavoriteService {
    * 视频服务层
    * @private
    */
-  @Inject(VideoService)
+  @Inject(forwardRef(() => VideoService))
   private videoService: VideoService;
 
   /**
@@ -432,5 +433,30 @@ export class VideoFavoriteService {
       .andWhere("relation.video_id = :video_id", { video_id })
       .andWhere("relation.favorite_id is :favorite_id", { favorite_id: null })
       .getOne();
+  }
+
+  /**
+   * 查询用户是否收藏过此视频
+   * @param user_id 用户id
+   * @param video_id 视频id
+   */
+  async isStarVideo(user_id: number, video_id: number) {
+    await this.userService.findByUID(user_id, true);
+    await this.videoService.findById(video_id, true);
+    const flag = await this.VRFRepository.createQueryBuilder("star")
+      .where("star.video_id = :video_id", { video_id })
+      .andWhere("star.user_id = :user_id", { user_id })
+      .getOne();
+    return !!flag;
+  }
+
+  /**
+   * 查询视频收藏量
+   * @param video_id 视频id
+   */
+  videoStarCount(video_id: number) {
+    return this.VRFRepository.createQueryBuilder("star")
+      .where("star.video_id = :video_id", { video_id })
+      .getCount();
   }
 }

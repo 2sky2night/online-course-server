@@ -53,10 +53,6 @@ declare namespace NodeJS {
      */
     SUPER_ADMIN_EMAIL: string;
     /**
-     * 邮箱授权码
-     */
-    EMAIL_CODE: string;
-    /**
      * 发件时的邮箱名称
      */
     EMAIL_NAME: string;
@@ -69,37 +65,9 @@ declare namespace NodeJS {
      */
     FILE_AVATAR_SIZE: string;
     /**
-     * Github客户端id
-     */
-    GITHUB_CLIENT_ID: string;
-    /**
-     * Github客户端密钥
-     */
-    GITHUB_CLIENT_SECRET: string;
-    /**
-     * Gitee客户端id
-     */
-    GITEE_CLIENT_ID: string;
-    /**
-     * Gitee客户端密钥
-     */
-    GITEE_CLIENT_SECRET: string;
-    /**
      * Gitee授权成功回调(回调地址，若与申请时填写的地址不一样会导致调用API失败)
      */
     GITEE_CALLBACK_URL: string;
-    /**
-     * 支付宝应用id
-     */
-    ALIPAY_APP_ID: string;
-    /**
-     * 支付宝应用公钥
-     */
-    ALIPAY_PRIVATE_KEY: string;
-    /**
-     * 支付宝应用私钥
-     */
-    ALIPAY_PUBLIC_KEY: string;
     /**
      * 上传文件的存储路径（绝对路径）所有上传的文件会分类保存
      */
@@ -148,5 +116,45 @@ declare namespace NodeJS {
      * m3u8视频存储的路径
      */
     VIDEO_PATH: string;
+    /**
+     * 邮箱代理授权码密钥存储路径
+     */
+    EMAIL_KEY_PATH: string;
+    /**
+     *支付宝应用公钥存储路径
+     */
+    ALIPAY_PUBLIC_KEY_PATH: string;
+    /**
+     * 支付宝应用私钥存储路径
+     */
+    ALIPAY_PRIVATE_KEY_PATH: string;
+    /**
+     * gitee客户端id存储路径
+     */
+    GITEE_CLIENT_ID_PATH: string;
+    /**
+     * gitee客户端密钥存储路径
+     */
+    GITEE_CLIENT_SECRET_PATH: string;
+    /**
+     * github客户端id存储路径
+     */
+    GITHUB_CLIENT_ID_PATH: string;
+    /**
+     * github客户端密钥存储路径
+     */
+    GITHUB_CLIENT_SECRET_PATH: string;
+    /**
+     * 支付宝应用id的存储路径
+     */
+    ALIPAY_APP_ID_PATH: string;
+    /**
+     * 数据库用户名存储路径
+     */
+    DATABASE_USER_PATH: string;
+    /**
+     * 数据库密码存储路径
+     */
+    DATABASE_PASSWORD_PATH: string;
   }
 }

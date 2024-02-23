@@ -1,3 +1,4 @@
+import { existsSync, readFile } from "node:fs";
 import { createHash } from "node:crypto";
 import { ArrayBuffer } from "spark-md5";
 import { BadRequestException } from "@nestjs/common";
@@ -75,4 +76,31 @@ export function arrayToQueryString(list: number[]) {
       return `${pre},${item}`;
     }
   }, "");
+}
+
+/**
+ * 读取文件中的数据
+ * @param filePath 文件路径
+ * @param utf8 是否以uft8读取文件数据，否则就是buffer
+ */
+export function readFileData(filePath: string, utf8: true): Promise<string>;
+export function readFileData(filePath: string, utf8: false): Promise<Buffer>;
+export function readFileData(filePath: string, utf8: boolean) {
+  return new Promise((resolve, reject) => {
+    if (existsSync(filePath)) {
+      if (utf8) {
+        readFile(filePath, "utf8", (err, data) => {
+          if (err) reject(`读取文件数据失败，错误信息为:${err}`);
+          resolve(data);
+        });
+      } else {
+        readFile(filePath, (err, data) => {
+          if (err) reject(`读取文件数据失败，错误信息为:${err}`);
+          resolve(data);
+        });
+      }
+    } else {
+      reject("读取文件数据失败，文件路径不存在!");
+    }
+  });
 }

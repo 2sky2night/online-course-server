@@ -295,4 +295,18 @@ export class VideoController {
   videoWatchCount(@Param("vid", new IntPipe("vid")) video_id: number) {
     return this.videoService.videoWatchCount(video_id);
   }
+
+  /**
+   * 查询当前用户对视频的态度
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  @Get(":vid/status")
+  @UseGuards(UserGuard)
+  getVideoStatus(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @UserToken("sub") user_id: number,
+  ) {
+    return this.videoService.getVideoStatus(video_id, user_id);
+  }
 }

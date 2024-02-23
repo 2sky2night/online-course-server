@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import {
   VideoFavorite,
@@ -16,9 +16,10 @@ import { VideoModule } from "@src/module/video/video/video.module";
   imports: [
     TypeOrmModule.forFeature([VideoFavorite, VideoRelationFavorite]),
     UserModule,
-    VideoModule,
+    forwardRef(() => VideoModule),
   ],
   controllers: [VideoFavoriteController],
   providers: [VideoFavoriteService],
+  exports: [VideoFavoriteService],
 })
 export class VideoFavoriteModule {}

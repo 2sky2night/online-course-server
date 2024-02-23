@@ -16,6 +16,7 @@ import { VideoProvider } from "@src/module/video/video/video.provider";
 import { UserModule } from "@src/module/user/user.module";
 import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
 import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
+import { VideoFavoriteModule } from "@src/module/video/video-favorite/video-favorite.module";
 
 /**
  * 视频模块
@@ -30,6 +31,7 @@ import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
     UserModule,
     VideoPartitionModule,
     VideoTagModule,
+    forwardRef(() => VideoFavoriteModule),
   ],
   providers: [VideoService, ...VideoProvider],
   controllers: [VideoController],

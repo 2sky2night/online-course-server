@@ -41,6 +41,7 @@ import {
 } from "@src/module/video/video-favorite/entity";
 import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 import { VideoDanmu } from "@src/module/video/video-danmu/entity";
+import { readFileData } from "@src/utils/tools";
 
 /**
  * 所有实体
@@ -78,13 +79,15 @@ export const entities = [
 /**
  * 数据库连接配置项工厂函数
  */
-export const databaseConfigFactory = (): DataSourceOptions => {
+export const databaseConfigFactory = async (): Promise<DataSourceOptions> => {
+  const username = await readFileData(process.env.DATABASE_USER_PATH, true);
+  const password = await readFileData(process.env.DATABASE_PASSWORD_PATH, true);
   return {
     type: "mysql",
     host: process.env.DATABASE_HOST,
     port: Number(process.env.DATABASE_PORT),
-    username: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
+    username,
+    password,
     database: process.env.DATABASE_NAME,
     synchronize: process.env.NODE_ENV === "development", // 生产环境禁用!!
     logging: true,
@@ -95,28 +98,11 @@ export const databaseConfigFactory = (): DataSourceOptions => {
 };
 
 /**
- * 数据库连接配置项(注意，此对象在根模块中引用会无法正确读取环境变量中的数据)
- */
-export const databaseConfig: DataSourceOptions = {
-  type: "mysql",
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  username: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  synchronize: process.env.NODE_ENV === "development", // 生产环境禁用!!
-  logging: true,
-  entities,
-  subscribers: [],
-  migrations: [],
-};
-
-/**
  * TypeORM配置项
  */
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  createTypeOrmOptions(): TypeOrmModuleOptions {
-    return databaseConfigFactory();
+  async createTypeOrmOptions(): Promise<TypeOrmModuleOptions> {
+    return await databaseConfigFactory();
   }
 }

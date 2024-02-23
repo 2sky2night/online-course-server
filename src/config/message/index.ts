@@ -64,6 +64,7 @@ export const AuthMessage = Object.freeze({
   email_code_error: "邮箱验证码无效!",
   email_send_error: "发送邮箱失败，请检查邮箱是否正确!",
   email_not_exists: "此邮箱未注册!",
+  auth_code_error: "授权码无效!",
 });
 
 /**

@@ -119,8 +119,13 @@ export class AuthUserService {
         };
       }
     } catch (e) {
-      Logger.error(`${ServerMessage.server_error}:${e.toString()}`);
-      throw new InternalServerErrorException(ServerMessage.server_error);
+      if (e.response?.status === 401) {
+        // 授权码无效
+        throw new BadRequestException(AuthMessage.auth_code_error);
+      } else {
+        Logger.error(`${ServerMessage.server_error}:${e.toString()}`);
+        throw new InternalServerErrorException(ServerMessage.server_error);
+      }
     }
   }
 
@@ -165,8 +170,13 @@ export class AuthUserService {
         };
       }
     } catch (e) {
-      Logger.error(`${ServerMessage.server_error}:${e.toString()}`);
-      throw new InternalServerErrorException(ServerMessage.server_error);
+      if (e.response?.status === 401) {
+        // 授权码无效
+        throw new BadRequestException(AuthMessage.auth_code_error);
+      } else {
+        Logger.error(`${ServerMessage.server_error}:${e.toString()}`);
+        throw new InternalServerErrorException(ServerMessage.server_error);
+      }
     }
   }
 
@@ -205,6 +215,13 @@ export class AuthUserService {
         };
       }
     } catch (e) {
+      if (e.serverResult?.data) {
+        // 支付宝jdk请求错误
+        const result = JSON.parse(e.serverResult.data);
+        if (result.error_response?.code === "40002") {
+          throw new BadRequestException(AuthMessage.auth_code_error);
+        }
+      }
       Logger.error(`${ServerMessage.server_error}:${e.toString()}`);
       throw new InternalServerErrorException(ServerMessage.server_error);
     }

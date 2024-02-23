@@ -34,6 +34,7 @@ import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoTag } from "@src/module/video/video-tag/entity";
 import { RedisService } from "@src/module/redis/redis.service";
+import { VideoFavoriteService } from "@src/module/video/video-favorite/video-favorite.service";
 
 @Injectable()
 export class VideoService {
@@ -116,6 +117,12 @@ export class VideoService {
    */
   @Inject(RedisService)
   private redisService: RedisService;
+  /**
+   * 视频收藏服务层
+   * @private
+   */
+  @Inject(forwardRef(() => VideoFavoriteService))
+  private VFService: VideoFavoriteService;
 
   /**
    * 发布视频
@@ -231,7 +238,7 @@ export class VideoService {
     video_name?: string,
     description?: string,
     video_cover?: string,
-  ) {
+  ): Promise<null> {
     const video = await this.findById(video_id, true);
     const account = await this.accountService.findById(account_id, true);
     // 校验视频是否为当前用户发布？
@@ -267,16 +274,27 @@ export class VideoService {
       .getOne();
     const source = info.file.m3u8; // 播放源信息
     const tags = info.tagRelation.map((item) => item.tag); // 视频标签
-    const views = await this.VVRespository.countBy({ video });
-    const like = await this.VLRepository.countBy({ video });
+    // 观看数量
+    const views = await this.VVRespository.createQueryBuilder("views")
+      .where("views.video_id", { video_id })
+      .getCount();
+    // 点赞数量
+    const likes = await this.VLRepository.createQueryBuilder("like")
+      .where("like.video_id = :video_id", { video_id })
+      .getCount();
+    // 收藏数量
+    const stars = await this.VFService.videoStarCount(video_id);
     Reflect.deleteProperty(info, "file");
     Reflect.deleteProperty(info, "tagRelation");
     return {
       ...info,
       source,
       tags,
-      views,
-      like,
+      count: {
+        views,
+        likes,
+        stars,
+      },
     };
   }
 
@@ -802,5 +820,26 @@ export class VideoService {
     const filepath = this.videoFolder.getAbsolutePath(basename(file.file_path));
     // 截取并生成视频封面
     return this.VCFolder.setVideoFirstFrame(filepath);
+  }
+
+  /**
+   * 查询当前用户对视频的态度
+   * @param video_id 视频id
+   * @param user_id 用户id
+   */
+  async getVideoStatus(video_id: number, user_id: number) {
+    await this.findById(video_id, true);
+    await this.userService.findByUID(user_id, true);
+    const isStar = await this.VFService.isStarVideo(user_id, video_id);
+    const isLike = Boolean(
+      await this.VLRepository.createQueryBuilder("like")
+        .where("like.video_id = :video_id", { video_id })
+        .andWhere("like.user_id = :user_id", { user_id })
+        .getOne(),
+    );
+    return {
+      is_star: isStar,
+      is_like: isLike,
+    };
   }
 }
