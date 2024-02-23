@@ -107,7 +107,7 @@ declare namespace NodeJS {
     /**
      * 生成视频封面的临时路径
      */
-    AUTO_VIDEO_COVER_TEMP: string;
+    AUTO_VIDEO_COVER_TEMP_PATH: string;
     /**
      * 封面最大大小
      */
@@ -132,5 +132,21 @@ declare namespace NodeJS {
      * 配图文件的最大大小
      */
     FILE_IMAGE_SIZE: string;
+    /**
+     * 视频加密密钥路径
+     */
+    VIDEO_KEY_PATH: string;
+    /**
+     * 视频加密密钥关系映射路径
+     */
+    VIDEO_KEY_INFO_PATH: string;
+    /**
+     * 存储转码后的临时视频文件夹路径
+     */
+    VIDEO_TEMP_PATH: string;
+    /**
+     * m3u8视频存储的路径
+     */
+    VIDEO_PATH: string;
   }
 }

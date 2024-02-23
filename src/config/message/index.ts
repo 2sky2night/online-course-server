@@ -91,6 +91,10 @@ export const UploadMessage = Object.freeze({
   chunk_check_error: "校验切片文件错误!",
   fast_upload_fail: "秒传失败,文件未上传过!",
   fast_upload_success: "秒传成功!",
+  video_processing_01: "正在生成此视频的各个分辨率的版本...",
+  video_processing_02: "正在加密各个分辨率的视频...",
+  video_processing_not_exist: "此id的视频处理信息不存在或处理已经完成!",
+  get_video_processing_error: "视频处理进度id不能为空!",
 });
 
 /**

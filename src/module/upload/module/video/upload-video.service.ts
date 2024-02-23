@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { ChunkFolder, Folder } from "@src/lib/folder";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AccountUpload } from "@src/module/upload/entity";
@@ -10,6 +10,8 @@ import { File } from "@src/module/file/entity";
 import { FileType } from "@src/module/file/enum";
 import { UploadMessage } from "@src/config/message";
 import { readdirSync } from "node:fs";
+import { VideoProcessing } from "@src/lib/video-processing";
+import { RedisService } from "@src/module/redis/redis.service";
 
 @Injectable()
 export class UploadVideoService {
@@ -42,6 +44,18 @@ export class UploadVideoService {
    */
   @Inject(FileService)
   fileService: FileService;
+  /**
+   * 视频处理API
+   * @private
+   */
+  @Inject("VIDEO_PROCESSING")
+  private videoProcessingAPI: VideoProcessing;
+  /**
+   * redis服务层
+   * @private
+   */
+  @Inject(RedisService)
+  private redisService: RedisService;
 
   /**
    * 老师上传视频
@@ -141,9 +155,16 @@ export class UploadVideoService {
       // 数据库中未保存，则增加此文件记录
       file = await this.fileService.create(fileHash, path, FileType.VIDEO);
     }
+    // 生成查询视频处理的key
+    const processingKey = `video-processing:${file.file_id}`;
+    // 后台静默对视频进行处理
+    this.videoProcessing(file, processingKey);
     // 增加上传记录
     const trace = await this.createTrace(accountId, file);
-    return this.formatTrace(trace, file);
+    return {
+      ...this.formatTrace(trace, file),
+      processing_key: processingKey,
+    };
   }
 
   /**
@@ -191,6 +212,21 @@ export class UploadVideoService {
   }
 
   /**
+   * 获取视频处理进度
+   * @param processingKey id
+   */
+  async getVideoProcessing(processingKey: string) {
+    const value = await this.redisService.get(processingKey);
+    if (value === null) {
+      throw new NotFoundException(UploadMessage.video_processing_not_exist);
+    } else {
+      return {
+        tips: value,
+      };
+    }
+  }
+
+  /**
    * 记录上传文件记录
    * @param accountId 上传者
    * @param file 文件实例
@@ -214,5 +250,54 @@ export class UploadVideoService {
       file_id: file.file_id,
       url: file.file_path,
     };
+  }
+
+  /**
+   * 处理视频，将源视频转换成多个分辨率的m3u8编码为h264的视频
+   * @param file 文件实例
+   * @param processingKey redis键
+   */
+  async videoProcessing(file: File, processingKey: string) {
+    // 在redis中保存此视频处理的key
+    await this.redisService.set(
+      processingKey,
+      UploadMessage.video_processing_01, // 开始生成视频各个分辨率的版本
+    );
+    const { hash } = file;
+    // 1.根据hash进入用户上传视频文件夹将合并完成的视频输出为各个分辨率的临时视频文件，存储在临时视频文件夹中
+    const { pList, raw } = await this.videoProcessingAPI.generateTempVideos(
+      hash,
+    );
+    // 在redis中保存此视频处理的key
+    await this.redisService.set(
+      processingKey,
+      UploadMessage.video_processing_02, // 开始加密各个分辨率的视频
+    );
+    // 2.将临时视频文件加密输出为m3u8文件
+    await this.videoProcessingAPI.generateM3U8Videos(hash);
+    // 2.5后台静默删除所有临时视频
+    await this.videoProcessingAPI.deleteTempVideos(hash);
+    // 3.获取所有分辨率的m3u8文件的相对路径
+    const m3u8List = pList.map((p) => {
+      return {
+        path: `/video/${hash}/${p}/index.m3u8`,
+        resolution: p,
+      };
+    });
+    if (raw) {
+      // 此视频包含了原画
+      m3u8List.push({
+        path: `/video/${hash}/raw/index.m3u8}`,
+        resolution: null,
+      });
+    }
+    // 4.将这些m3u8文件信息保存在数据库中
+    await Promise.all(
+      m3u8List.map((item) =>
+        this.fileService.createFileVideo(file, item.path, item.resolution),
+      ),
+    );
+    // 在redis中移除此视频处理(视频处理已经完成)
+    await this.redisService.del(processingKey);
   }
 }

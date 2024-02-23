@@ -10,6 +10,7 @@ import {
 import { FileType } from "@src/module/file/enum";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 import { Video } from "@src/module/video/video/entity";
+import { FileVideo } from "@src/module/file/entity/file-video.entity";
 
 /**
  * 文件模型
@@ -78,4 +79,9 @@ export class File {
    */
   @OneToMany(() => Video, (video) => video.file)
   videos: Video[];
+  /**
+   * 一个文件有多个视频源
+   */
+  @OneToMany(() => FileVideo, (fv) => fv.file)
+  m3u8: FileVideo[];
 }

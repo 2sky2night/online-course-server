@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { File } from "@src/module/file/entity";
+import { File, FileVideo } from "@src/module/file/entity";
 import { Repository } from "typeorm";
-import { FileType } from "@src/module/file/enum";
+import { FileType, VideoResolution } from "@src/module/file/enum";
 import { FileMessage } from "@src/config/message";
 import { Account } from "@src/module/account/entity";
 
@@ -17,6 +17,12 @@ export class FileService {
    */
   @InjectRepository(File)
   private fileRepository: Repository<File>;
+  /**
+   * 视频文件模型
+   * @private
+   */
+  @InjectRepository(FileVideo)
+  private FVRepository: Repository<FileVideo>;
 
   /**
    * 根据相对路径查询文件
@@ -65,5 +71,21 @@ export class FileService {
     return rawFile.trace_accounts.some(
       (trace) => trace.uploader.account_id === account.account_id,
     );
+  }
+
+  /**
+   * 创建视频文件记录
+   * @param file 与文件绑定关联
+   * @param file_path 视频文件的相对路径
+   * @param resolution 分辨率
+   */
+  createFileVideo(
+    file: File,
+    file_path: string,
+    resolution: VideoResolution | null,
+  ) {
+    const video = this.FVRepository.create({ file_path, file });
+    if (resolution !== null) video.resolution = resolution;
+    return this.FVRepository.save(video);
   }
 }

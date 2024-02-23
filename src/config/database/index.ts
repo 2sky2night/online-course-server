@@ -20,7 +20,7 @@ import {
   VideoView,
 } from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { File } from "@src/module/file/entity";
+import { File, FileVideo } from "@src/module/file/entity";
 import {
   VideoComment,
   VideoCommentLike,
@@ -72,6 +72,7 @@ export const entities = [
   VideoRelationFavorite,
   CollectionSubscribe,
   VideoDanmu,
+  FileVideo,
 ];
 
 /**

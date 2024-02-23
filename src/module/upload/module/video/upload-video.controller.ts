@@ -2,8 +2,10 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Inject,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -116,5 +118,18 @@ export class UploadVideoController {
   @UseGuards(AccountGuard, RoleGuard)
   chunkUploadProgress(@Body() dto: ChunkProgressDto) {
     return this.uploadVideoService.chunkUploadProgress(dto.file_hash);
+  }
+
+  /**
+   * 获取视频处理进度
+   * @param processingKey 要查询的视频处理信息键
+   */
+  @Get("/processing")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  getVideoProcessing(@Query("processingKey") processingKey: string) {
+    if (!processingKey.length)
+      throw new BadRequestException(UploadMessage.get_video_processing_error);
+    return this.uploadVideoService.getVideoProcessing(processingKey);
   }
 }

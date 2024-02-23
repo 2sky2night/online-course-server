@@ -17,7 +17,7 @@ export class FfmpegFolder extends Folder {
   constructor(base: string, root: string) {
     super(base, root);
     // 初始化临时视频封面文件夹
-    const path = process.env.AUTO_VIDEO_COVER_TEMP;
+    const path = process.env.AUTO_VIDEO_COVER_TEMP_PATH;
     this.tempPath = path;
     if (existsSync(path) === false) {
       mkdirSync(path);
