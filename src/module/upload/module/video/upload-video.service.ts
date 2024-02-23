@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from "@nestjs/common";
 import { ChunkFolder, Folder } from "@src/lib/folder";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AccountUpload } from "@src/module/upload/entity";
@@ -8,10 +14,11 @@ import { generateFileHash } from "@src/utils/tools";
 import { FileService } from "@src/module/file/service";
 import { File } from "@src/module/file/entity";
 import { FileType } from "@src/module/file/enum";
-import { UploadMessage } from "@src/config/message";
+import { UploadMessage, VideoMessage } from "@src/config/message";
 import { readdirSync } from "node:fs";
 import { VideoProcessing } from "@src/lib/video-processing";
 import { RedisService } from "@src/module/redis/redis.service";
+import { Account } from "@src/module/account/entity";
 
 @Injectable()
 export class UploadVideoService {
@@ -134,13 +141,44 @@ export class UploadVideoService {
   }
 
   /**
-   * 合并切片
+   * 开始合并切片
    * @param accountId 账户id
    * @param fileHash 文件hash
    * @param chunkCount 切片数量
    */
-  async mergeChunk(accountId: number, fileHash: string, chunkCount: number) {
-    await this.accountService.findById(accountId, true);
+  async toDoMergeChunk(
+    accountId: number,
+    fileHash: string,
+    chunkCount: number,
+  ) {
+    const account = await this.accountService.findById(accountId, true);
+    // 生成查询进度key
+    const mergeKey = `video-merge:${fileHash}`;
+    // 在redis中保存此key
+    await this.redisService.set(mergeKey, UploadMessage.video_merging);
+    // 后台静默对切片进行合并
+    this.mergeChunk(account, fileHash, chunkCount)
+      .then((result) => {
+        // 合并成功，将文件信息保存在redis中，等待轮询获取此文件信息
+        this.redisService.set(mergeKey, JSON.stringify(result));
+      })
+      .catch((err) => {
+        Logger.error(`合并视频失败!原因：${err}`);
+        // 合并失败，在redis删除此合并进度key
+        this.redisService.del(mergeKey);
+      });
+    return {
+      merge_key: mergeKey,
+    };
+  }
+
+  /**
+   * 合并切片
+   * @param account 账户
+   * @param fileHash 文件hash
+   * @param chunkCount 切片数量
+   */
+  async mergeChunk(account: Account, fileHash: string, chunkCount: number) {
     // 合并文件，输出到视频目录下
     await this.tempFolder.mergeChunk(fileHash, chunkCount);
     // 获取合并完成后的视频路径
@@ -155,14 +193,35 @@ export class UploadVideoService {
       // 数据库中未保存，则增加此文件记录
       file = await this.fileService.create(fileHash, path, FileType.VIDEO);
     }
+    // 增加上传记录
+    const trace = await this.createTrace(account.account_id, file);
+    return this.formatTrace(trace, file);
+  }
+
+  /**
+   * 开始对视频进行处理
+   * @param file_id 视频id
+   * @param account_id 账户id
+   */
+  async toDoVideoProcessing(file_id: number, account_id: number) {
+    const file = await this.fileService.findById(file_id, true);
+    if (file.file_type !== FileType.VIDEO) {
+      throw new BadRequestException(VideoMessage.file_type_error);
+    }
+    const account = await this.accountService.findById(account_id, true);
+    if ((await this.fileService.fileAccountUploader(file, account)) === false) {
+      // 此文件用户未上传过
+      throw new BadRequestException(VideoMessage.file_is_not_owner);
+    }
     // 生成查询视频处理的key
     const processingKey = `video-processing:${file.file_id}`;
     // 后台静默对视频进行处理
-    this.videoProcessing(file, processingKey);
-    // 增加上传记录
-    const trace = await this.createTrace(accountId, file);
+    this.videoProcessing(file, processingKey).catch((err) => {
+      Logger.error(`处理视频失败!原因是:${err}`);
+      // 在redis中移除此视频处理(视频处理失败，需要移除)
+      this.redisService.del(processingKey);
+    });
     return {
-      ...this.formatTrace(trace, file),
       processing_key: processingKey,
     };
   }
@@ -215,14 +274,47 @@ export class UploadVideoService {
    * 获取视频处理进度
    * @param processingKey id
    */
-  async getVideoProcessing(processingKey: string) {
+  async getVideoProcessingProgress(processingKey: string) {
     const value = await this.redisService.get(processingKey);
     if (value === null) {
+      // 不存在
       throw new NotFoundException(UploadMessage.video_processing_not_exist);
     } else {
-      return {
-        tips: value,
-      };
+      // 存在
+      if (value === "done") {
+        return {
+          done: true,
+        };
+      } else {
+        return {
+          tips: value,
+          done: false,
+        };
+      }
+    }
+  }
+
+  /**
+   * 查询合并进度
+   * @param mergeKey 合并key
+   */
+  async getVideoMergeProgress(mergeKey: string) {
+    const value = await this.redisService.get(mergeKey);
+    if (value === null) {
+      throw new NotFoundException(UploadMessage.get_video_merge_error);
+    } else {
+      try {
+        // 合并完成，redis中会记录的是文件信息
+        const data = JSON.parse(value);
+        return {
+          ...data,
+        };
+      } catch {
+        // 合并未完成，是提示信息
+        return {
+          tips: value,
+        };
+      }
     }
   }
 
@@ -280,14 +372,14 @@ export class UploadVideoService {
     // 3.获取所有分辨率的m3u8文件的相对路径
     const m3u8List = pList.map((p) => {
       return {
-        path: `/video/${hash}/${p}/index.m3u8`,
+        path: `/${hash}/${p}/index.m3u8`,
         resolution: p,
       };
     });
     if (raw) {
       // 此视频包含了原画
       m3u8List.push({
-        path: `/video/${hash}/raw/index.m3u8}`,
+        path: `/${hash}/raw/index.m3u8`,
         resolution: null,
       });
     }
@@ -297,7 +389,7 @@ export class UploadVideoService {
         this.fileService.createFileVideo(file, item.path, item.resolution),
       ),
     );
-    // 在redis中移除此视频处理(视频处理已经完成)
-    await this.redisService.del(processingKey);
+    // 在redis中更新此视频处理键(视频处理已经完成)
+    await this.redisService.set(processingKey, "done");
   }
 }

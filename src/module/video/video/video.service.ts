@@ -135,7 +135,11 @@ export class VideoService {
     }: PublishVideoDto,
   ) {
     const account = await this.accountService.findById(account_id, true);
-    const file = await this.fileService.findById(file_id, true);
+    const file = await this.fileService.findById(file_id, true, true);
+    if (file.m3u8 === null || file.m3u8.length === 0) {
+      // 视频未处理完成，禁止发布视频!
+      throw new BadRequestException(VideoMessage.push_video_error);
+    }
     // 文件类型是否正确
     if (file.file_type !== FileType.VIDEO) {
       // 选择的文件类型错误
@@ -247,14 +251,33 @@ export class VideoService {
    * @param video_id 视频id
    */
   async info(video_id: number) {
-    const video = await this.videoRepository.findOne({
-      where: { video_id },
-      relations: ["publisher", "file", "collections"],
-    });
+    const video = await this.findById(video_id, true);
     if (video === null) {
       throw new NotFoundException(VideoMessage.video_not_exist);
     }
-    return video;
+    const info = await this.videoRepository
+      .createQueryBuilder("video")
+      .where("video.video_id = :video_id", { video_id: video.video_id })
+      .leftJoinAndSelect("video.publisher", "user") // 发布人信息
+      .leftJoinAndSelect("video.file", "file") // 文件信息
+      .leftJoinAndSelect("file.m3u8", "m3u8") // 视频源信息
+      .leftJoinAndSelect("video.partition", "partition") // 视频分区
+      .leftJoinAndSelect("video.tagRelation", "tagRelation") // 视频与标签关系
+      .leftJoinAndSelect("tagRelation.tag", "tag") // 标签信息
+      .getOne();
+    const source = info.file.m3u8; // 播放源信息
+    const tags = info.tagRelation.map((item) => item.tag); // 视频标签
+    const views = await this.VVRespository.countBy({ video });
+    const like = await this.VLRepository.countBy({ video });
+    Reflect.deleteProperty(info, "file");
+    Reflect.deleteProperty(info, "tagRelation");
+    return {
+      ...info,
+      source,
+      tags,
+      views,
+      like,
+    };
   }
 
   /**

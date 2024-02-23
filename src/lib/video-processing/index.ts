@@ -5,7 +5,6 @@ import {
   getVideoResolution,
   generateM3U8Video,
 } from "@src/utils/ffmpeg";
-import { Logger } from "@nestjs/common";
 
 /**
  * 视频处理(封装了对合并完成后的视频进行处理的API)
@@ -90,7 +89,7 @@ export class VideoProcessing {
   }
 
   /**
-   * 将原有视频加密处理为m3u8文件（将临时文件夹中存储的各个版本的分辨率视频输出为m3u8文件）
+   * 将原有视频加密处理为m3u8文件（将临时文件夹中存储的各个版本的分辨率视频输出为m3u8文件，存储路径格式为: /hash/分辨率/index.m3u8）
    * @param hash 视频文件的hash值(会在临时文件夹中读取此名称的文件夹，并将其中的所有视频转码)
    * @return {Promise<string[]>} 所有m3u8视频文件的绝对路径
    */
@@ -176,35 +175,5 @@ export class VideoProcessing {
         resolve();
       });
     });
-  }
-
-  /**
-   * 处理视频(将合并完成的视频输出为各个分辨率的m3u8视频且编码格式为:h264)
-   * @param hash 文件hash
-   */
-  async main(hash: string) {
-    // 1.根据hash进入用户上传视频文件夹将合并完成的视频输出为各个分辨率的临时视频文件，存储在临时视频文件夹中
-    const { pList, raw } = await this.generateTempVideos(hash);
-    // 2.将临时视频文件加密输出为m3u8文件
-    await this.generateM3U8Videos(hash);
-    // 3.获取所有分辨率的m3u8文件的相对路径
-    const m3u8List = pList.map((p) => {
-      return {
-        path: `/video/${hash}/${p}/index.m3u8`,
-        resolution: p,
-      };
-    });
-    if (raw) {
-      // 此视频包含了原画
-      m3u8List.push({
-        path: `/video/${hash}/raw/index.m3u8}`,
-        resolution: null,
-      });
-    }
-    // 后台静默删除所有临时视频
-    this.deleteTempVideos(hash).catch((err) =>
-      Logger.error(`删除临时视频文件失败!原因:${err}`),
-    );
-    return m3u8List;
   }
 }

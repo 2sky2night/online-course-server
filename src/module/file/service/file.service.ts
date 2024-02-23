@@ -47,9 +47,13 @@ export class FileService {
    * 根据id查询文件
    * @param file_id 文件id
    * @param needFind 是否必须找到
+   * @param relation 查询与视频源的关联关系
    */
-  async findById(file_id: number, needFind = false) {
-    const file = await this.fileRepository.findOneBy({ file_id });
+  async findById(file_id: number, needFind = false, relation = false) {
+    const file = await this.fileRepository.findOne({
+      where: { file_id },
+      relations: relation ? { m3u8: true } : {},
+    });
     if (needFind && file === null) {
       throw new NotFoundException(FileMessage.file_not_exist);
     }

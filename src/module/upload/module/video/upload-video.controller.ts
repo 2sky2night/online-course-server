@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -76,7 +77,7 @@ export class UploadVideoController {
   }
 
   /**
-   * 合并切片
+   * 开始合并切片
    * @param accountId 上传者
    * @param dto 文件信息表单
    */
@@ -87,7 +88,7 @@ export class UploadVideoController {
     @AccountToken("sub") accountId: number,
     @Body() dto: MergeChunkDto,
   ) {
-    return this.uploadVideoService.mergeChunk(
+    return this.uploadVideoService.toDoMergeChunk(
       accountId,
       dto.file_hash,
       dto.chunk_count,
@@ -127,9 +128,35 @@ export class UploadVideoController {
   @Get("/processing")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
-  getVideoProcessing(@Query("processingKey") processingKey: string) {
+  getVideoProcessingProgress(@Query("processing_key") processingKey: string) {
     if (!processingKey.length)
       throw new BadRequestException(UploadMessage.get_video_processing_error);
-    return this.uploadVideoService.getVideoProcessing(processingKey);
+    return this.uploadVideoService.getVideoProcessingProgress(processingKey);
+  }
+
+  /**
+   * 对源视频进行处理
+   * @param file_id 文件id
+   * @param account_id 账户id
+   */
+  @Post("/processing/:fid")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  toDoVideoProcessing(
+    @Param("fid") file_id: number,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.uploadVideoService.toDoVideoProcessing(file_id, account_id);
+  }
+
+  /**
+   * 获取视频合并进度
+   * @param mergeKey 合并进度
+   */
+  @Get("/chunk/merge")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  getVideoMergeProgress(@Query("merge_key") mergeKey: string) {
+    return this.uploadVideoService.getVideoMergeProgress(mergeKey);
   }
 }

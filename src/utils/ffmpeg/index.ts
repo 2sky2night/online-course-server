@@ -164,7 +164,7 @@ export function generateM3U8Video(
     exec(
       `ffmpeg -y -i ${inputPath} -hls_time 5 -hls_key_info_file ${keyInfoPath} -hls_playlist_type vod -hls_segment_filename "${Re(
         outputDirPath,
-        "./test-%d.ts",
+        "./chunk-%d.ts",
       )}" ${m3u8Path}
 `,
       (err) => {

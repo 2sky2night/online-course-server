@@ -93,8 +93,11 @@ export const UploadMessage = Object.freeze({
   fast_upload_success: "秒传成功!",
   video_processing_01: "正在生成此视频的各个分辨率的版本...",
   video_processing_02: "正在加密各个分辨率的视频...",
-  video_processing_not_exist: "此id的视频处理信息不存在或处理已经完成!",
+  video_processing_not_exist: "此id的视频处理信息不存在!",
   get_video_processing_error: "视频处理进度id不能为空!",
+  get_video_merge_error: "视频合并进度id不能为空!",
+  video_merge_not_exist: "此id的视频合并信息不存在!",
+  video_merging: "正在合并视频文件中...",
 });
 
 /**
@@ -141,6 +144,7 @@ export const VideoMessage = Object.freeze({
   unsubscribe_collection_error: "此合集未订阅!",
   create_danmu_error: "发布时间超过视频的时长!",
   get_danmu_error: "开始时间不能大于结束时间!",
+  push_video_error: "此文件还在处理中，禁止发布!",
 });
 
 /**
