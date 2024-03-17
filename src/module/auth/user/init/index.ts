@@ -1,6 +1,6 @@
-import { AuthUserService } from "@src/module/auth/user/service";
 import { Logger } from "@nestjs/common";
 import { ServerMessage } from "@src/config/message";
+import { AuthUserService } from "@src/module/auth/user/service";
 
 /**
  * 初始化创建注册方式

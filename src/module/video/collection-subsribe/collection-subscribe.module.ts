@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { UserModule } from "@src/module/user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import { UserModule } from "@src/module/user/user.module";
 import { CollectionSubscribeController } from "@src/module/video/collection-subsribe/collection-subscribe.controller";
 import { CollectionSubscribeService } from "@src/module/video/collection-subsribe/collection-subscribe.service";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
 
 /**

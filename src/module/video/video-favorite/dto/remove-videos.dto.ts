@@ -1,5 +1,5 @@
-import { IsArray, IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsNumber } from "class-validator";
 
 /**
  * 从收藏夹中移除一些视频

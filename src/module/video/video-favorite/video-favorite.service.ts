@@ -6,16 +6,16 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { VideoMessage } from "@src/config/message";
+import { User } from "@src/module/user/entity";
+import { UserService } from "@src/module/user/service";
+import { VideoService } from "@src/module/video/video/video.service";
 import {
   VideoFavorite,
   VideoRelationFavorite,
 } from "@src/module/video/video-favorite/entity";
-import { In, Repository } from "typeorm";
-import { UserService } from "@src/module/user/service";
-import { VideoMessage } from "@src/config/message";
-import { User } from "@src/module/user/entity";
-import { VideoService } from "@src/module/video/video/video.service";
 import { arrayToQueryString } from "@src/utils/tools";
+import { In, Repository } from "typeorm";
 
 /**
  * 视频收藏服务层

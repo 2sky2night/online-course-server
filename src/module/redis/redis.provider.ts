@@ -1,6 +1,6 @@
-import { createClient } from "redis";
 import { Logger, Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { createClient } from "redis";
 
 export const redisProvider: Provider[] = [
   {

@@ -1,21 +1,21 @@
+import { Account } from "@src/module/account/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity";
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  JoinTable,
-  JoinColumn,
-  ManyToMany,
-  OneToMany,
 } from "typeorm";
-import { Video } from "@src/module/video/video/entity";
-import { Account } from "@src/module/account/entity";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
-import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity";
-import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 
 /**
  * 视频合集（课程）

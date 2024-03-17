@@ -9,21 +9,21 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponseEmpty,
-  ApiResponsePage,
-  UserToken,
-} from "@src/common/decorator";
-import { AddCommentDto } from "@src/module/video/video-comment/dto";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { AddCommentDto } from "@src/module/video/video-comment/dto";
+import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
 import { ResponseDto } from "@src/types/docs";
 import { CommentDto } from "@src/types/docs/video/common";
 

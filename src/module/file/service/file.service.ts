@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { File, FileVideo } from "@src/module/file/entity";
-import { Repository } from "typeorm";
-import { FileType, VideoResolution } from "@src/module/file/enum";
 import { FileMessage } from "@src/config/message";
 import { Account } from "@src/module/account/entity";
+import { File, FileVideo } from "@src/module/file/entity";
+import { FileType, VideoResolution } from "@src/module/file/enum";
+import { Repository } from "typeorm";
 
 /**
  * 文件服务层

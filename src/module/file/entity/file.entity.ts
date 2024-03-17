@@ -1,3 +1,7 @@
+import { FileVideo } from "@src/module/file/entity/file-video.entity";
+import { FileType } from "@src/module/file/enum";
+import { AccountUpload, UserUpload } from "@src/module/upload/entity";
+import { Video } from "@src/module/video/video/entity";
 import {
   Column,
   CreateDateColumn,
@@ -7,10 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { FileType } from "@src/module/file/enum";
-import { AccountUpload, UserUpload } from "@src/module/upload/entity";
-import { Video } from "@src/module/video/video/entity";
-import { FileVideo } from "@src/module/file/entity/file-video.entity";
 
 /**
  * 文件模型

@@ -11,33 +11,33 @@ import {
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import {
-  AccountToken,
-  ApiResponse,
-  ApiResponseEmpty,
-  Role,
-} from "@src/common/decorator";
-import { Roles } from "@src/module/account/module/role/enum";
-import { FileChunkPipe, FileVideoPipe } from "@src/common/pipe";
-import {
-  FastUploadDto,
-  MergeChunkDto,
-  UploadChunkDto,
-  ChunkProgressDto,
-} from "@src/module/upload/module/video/dto";
-import { UploadMessage } from "@src/config/message";
 import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiExtraModels,
   ApiOperation,
-  ApiTags,
   ApiResponse as ApiResponseRaw,
+  ApiTags,
 } from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  Role,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { FileChunkPipe, FileVideoPipe } from "@src/common/pipe";
+import { UploadMessage } from "@src/config/message";
+import { Roles } from "@src/module/account/module/role/enum";
+import {
+  ChunkProgressDto,
+  FastUploadDto,
+  MergeChunkDto,
+  UploadChunkDto,
+} from "@src/module/upload/module/video/dto";
+import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
 import { ResponseDto } from "@src/types/docs";
 import {
   FileUploadChunkDto,

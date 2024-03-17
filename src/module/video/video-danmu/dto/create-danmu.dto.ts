@@ -1,5 +1,5 @@
-import { IsNumber, IsString, MaxLength, Min, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber, IsString, MaxLength, Min, MinLength } from "class-validator";
 
 /**
  * 创建弹幕

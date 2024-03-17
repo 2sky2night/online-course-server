@@ -1,26 +1,26 @@
-import { Body, Controller, Inject, Post, UseGuards, Get } from "@nestjs/common";
-import { AuthAccountService } from "@src/module/auth/account/service";
-import {
-  LoginAccountDto,
-  ApplyAccountDto,
-  ApprovalAccountDto,
-  EmailCodeDto,
-  EmailLoginDto,
-} from "@src/module/auth/account/dto";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import {
-  AccountToken,
-  ApiResponse,
-  ApiResponseEmpty,
-  Role,
-} from "@src/common/decorator";
-import { Roles } from "@src/module/account/module/role/enum";
+import { Body, Controller, Get, Inject, Post, UseGuards } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  Role,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { Roles } from "@src/module/account/module/role/enum";
+import {
+  ApplyAccountDto,
+  ApprovalAccountDto,
+  EmailCodeDto,
+  EmailLoginDto,
+  LoginAccountDto,
+} from "@src/module/auth/account/dto";
+import { AuthAccountService } from "@src/module/auth/account/service";
 import { ResponseDto } from "@src/types/docs";
 import {
   R_ApplyAccountDto,

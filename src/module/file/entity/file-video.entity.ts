@@ -1,3 +1,5 @@
+import { File } from "@src/module/file/entity/file.entity";
+import { VideoResolution } from "@src/module/file/enum";
 import {
   Column,
   CreateDateColumn,
@@ -8,8 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { VideoResolution } from "@src/module/file/enum";
-import { File } from "@src/module/file/entity/file.entity";
 
 /**
  * m3u8视频文件模型

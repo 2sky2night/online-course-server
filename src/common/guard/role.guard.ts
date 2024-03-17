@@ -1,16 +1,16 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
+  Injectable,
   InternalServerErrorException,
   Logger,
-  ForbiddenException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Observable } from "rxjs";
-import type { Request } from "express";
-import { Roles } from "@src/module/account/module/role/enum";
 import { CommonMessage, ServerMessage } from "@src/config/message";
+import { Roles } from "@src/module/account/module/role/enum";
+import type { Request } from "express";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class RoleGuard implements CanActivate {

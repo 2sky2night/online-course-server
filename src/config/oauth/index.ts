@@ -1,7 +1,7 @@
 import { registerAs } from "@nestjs/config";
+import { alipayConfig } from "@src/config/oauth/alipay";
 import { giteeConfig } from "@src/config/oauth/gitee";
 import { githubConfig } from "@src/config/oauth/github";
-import { alipayConfig } from "@src/config/oauth/alipay";
 
 /**
  * 前台所有的注册方式

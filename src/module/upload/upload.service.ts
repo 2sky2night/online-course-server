@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { UploadConfig } from "@src/config/upload/types";
 import { initLoader } from "@src/module/upload/init";
 

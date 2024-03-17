@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { RequestMethod } from "@nestjs/common";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ResponseDto<TData> {
   @ApiProperty({

@@ -6,18 +6,18 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, In } from "typeorm";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoMessage } from "@src/config/message";
+import { Account } from "@src/module/account/entity";
 import { AccountService } from "@src/module/account/service";
+import { Video } from "@src/module/video/video/entity";
 import { VideoService } from "@src/module/video/video/video.service";
 import { CreateVideoCollectionDto } from "@src/module/video/video-collection/dto";
-import { Account } from "@src/module/account/entity";
-import { Video } from "@src/module/video/video/entity";
-import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { VideoTag } from "@src/module/video/video-tag/entity";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
+import { In, Repository } from "typeorm";
 
 @Injectable()
 export class VideoCollectionService {

@@ -1,6 +1,7 @@
-import { UploadConfig } from "@src/config/upload/types";
-import { mkdirSync, existsSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
+
+import { UploadConfig } from "@src/config/upload/types";
 
 /**
  * 初始化时需要创建上传文件夹

@@ -1,5 +1,5 @@
-import { IsNumber, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber, Min } from "class-validator";
 
 /**
  * 增加视频浏览历史记录dto

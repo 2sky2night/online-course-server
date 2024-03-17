@@ -1,27 +1,27 @@
 import {
-  Injectable,
+  BadRequestException,
   Inject,
+  Injectable,
   InternalServerErrorException,
   Logger,
-  BadRequestException,
 } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import type { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { Repository } from "typeorm";
-import { UserRegisterType } from "@src/module/auth/user/entity";
-import { UserService } from "@src/module/user/service";
-import { RegisterType, registerTypeConfig } from "src/config/oauth";
-import {
-  Github as GithubOAuth,
-  Gitee as GiteeOAuth,
-  Alipay as AlipayOAuth,
-} from "@src/lib/oauth";
+import { InjectRepository } from "@nestjs/typeorm";
 import { AuthMessage, ServerMessage } from "@src/config/message";
-import { generateCode } from "@src/utils/tools";
+import {
+  Alipay as AlipayOAuth,
+  Gitee as GiteeOAuth,
+  Github as GithubOAuth,
+} from "@src/lib/oauth";
+import { UserRegisterType } from "@src/module/auth/user/entity";
 import { EmailService } from "@src/module/email/email.service";
 import { RedisService } from "@src/module/redis/redis.service";
+import { UserService } from "@src/module/user/service";
+import { generateCode } from "@src/utils/tools";
 import * as process from "process";
+import { RegisterType, registerTypeConfig } from "src/config/oauth";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class AuthUserService {

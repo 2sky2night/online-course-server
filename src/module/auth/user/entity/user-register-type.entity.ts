@@ -1,3 +1,4 @@
+import { User } from "@src/module/user/entity";
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "@src/module/user/entity";
 
 /**
  * 前台用户注册方式表

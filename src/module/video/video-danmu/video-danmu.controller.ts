@@ -9,22 +9,22 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { VideoDanmuService } from "@src/module/video/video-danmu/video-danmu.service";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponseEmpty,
-  ApiResponsePage,
-  UserToken,
-} from "@src/common/decorator";
-import { CreateDanmuDto } from "@src/module/video/video-danmu/dto";
-import { IntPipe } from "@src/common/pipe";
-import { VideoMessage } from "@src/config/message";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { IntPipe } from "@src/common/pipe";
+import { VideoMessage } from "@src/config/message";
+import { CreateDanmuDto } from "@src/module/video/video-danmu/dto";
+import { VideoDanmuService } from "@src/module/video/video-danmu/video-danmu.service";
 import { ResponseDto } from "@src/types/docs";
 import { DanmuDto } from "@src/types/docs/video/common";
 

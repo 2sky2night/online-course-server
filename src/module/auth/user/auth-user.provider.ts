@@ -1,8 +1,8 @@
 import { Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Github } from "@src/lib/oauth";
-import { Gitee } from "@src/lib/oauth/gitee";
 import { Alipay } from "@src/lib/oauth/alipay";
+import { Gitee } from "@src/lib/oauth/gitee";
 
 export const AuthUserProvider: Provider[] = [
   {

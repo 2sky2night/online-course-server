@@ -1,5 +1,6 @@
-import { existsSync, createWriteStream, mkdirSync, readdirSync } from "node:fs";
-import { resolve, extname } from "node:path";
+import { createWriteStream, existsSync, mkdirSync, readdirSync } from "node:fs";
+import { extname, resolve } from "node:path";
+
 import { Logger } from "@nestjs/common";
 
 /**
@@ -130,5 +131,5 @@ export class Folder {
   }
 }
 
-export { FfmpegFolder } from "./ffmpeg";
 export { ChunkFolder } from "./chunk";
+export { FfmpegFolder } from "./ffmpeg";

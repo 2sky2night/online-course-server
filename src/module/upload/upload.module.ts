@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { UploadImgModule } from "@src/module/upload/module/img/upload-img.module";
+import { UploadVideoModule } from "@src/module/upload/module/video/upload-video.module";
 import { uploadProvider } from "@src/module/upload/upload.provider";
 import { UploadService } from "@src/module/upload/upload.service";
-import { UploadVideoModule } from "@src/module/upload/module/video/upload-video.module";
 
 /**
  * 上传模块

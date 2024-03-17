@@ -1,8 +1,9 @@
 import { Logger } from "@nestjs/common";
-import { emit } from "@src/utils/events";
-import { RoleService } from "../service";
-import { Roles } from "../enum";
 import { ServerMessage } from "@src/config/message";
+import { emit } from "@src/utils/events";
+
+import { Roles } from "../enum";
+import { RoleService } from "../service";
 
 /**
  * 初始化时创建超级管理员、管理员、老师三个初始用户

@@ -1,5 +1,5 @@
-import { IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString } from "class-validator";
 
 /**
  * 第三方授权码登录

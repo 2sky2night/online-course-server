@@ -1,6 +1,7 @@
 import { Controller } from "@nestjs/common";
-import { RoleService } from "../service";
+
 import { initLoader } from "../init";
+import { RoleService } from "../service";
 
 @Controller("role")
 export class RoleController {

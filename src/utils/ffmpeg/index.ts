@@ -1,6 +1,6 @@
-import { resolve as Re } from "node:path";
 import { exec } from "node:child_process";
 import { existsSync } from "node:fs";
+import { resolve as Re } from "node:path";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ffmpeg = require("fluent-ffmpeg"); // 只能使用cjs的方式才能导入
 

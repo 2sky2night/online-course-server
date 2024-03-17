@@ -1,3 +1,5 @@
+import { basename } from "node:path";
+
 import {
   BadRequestException,
   forwardRef,
@@ -6,35 +8,34 @@ import {
   Logger,
   NotFoundException,
 } from "@nestjs/common";
-import { basename } from "node:path";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { VideoMessage } from "@src/config/message";
+import { FfmpegFolder, Folder } from "@src/lib/folder";
+import { Account } from "@src/module/account/entity";
+import { AccountService } from "@src/module/account/service";
+import { File } from "@src/module/file/entity";
+import { FileType } from "@src/module/file/enum";
+import { FileService } from "@src/module/file/service";
+import { RedisService } from "@src/module/redis/redis.service";
+import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
+import { User } from "@src/module/user/entity";
+import { UserService } from "@src/module/user/service";
+import { PublishVideoDto } from "@src/module/video/video/dto";
 import {
   Video,
   VideoHistory,
   VideoLike,
   VideoView,
 } from "@src/module/video/video/entity";
-import { AccountService } from "@src/module/account/service";
-import { UploadVideoService } from "@src/module/upload/module/video/upload-video.service";
-import { FileService } from "@src/module/file/service";
-import { PublishVideoDto } from "@src/module/video/video/dto";
-import { VideoMessage } from "@src/config/message";
-import { FileType } from "@src/module/file/enum";
-import { Account } from "@src/module/account/entity";
-import { File } from "@src/module/file/entity";
-import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
-import { FfmpegFolder, Folder } from "@src/lib/folder";
-import { getVideoDuration } from "@src/utils/ffmpeg";
-import { UserService } from "@src/module/user/service";
-import { User } from "@src/module/user/entity";
-import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
-import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { VideoTag } from "@src/module/video/video-tag/entity";
-import { RedisService } from "@src/module/redis/redis.service";
+import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { VideoFavoriteService } from "@src/module/video/video-favorite/video-favorite.service";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
+import { VideoTag } from "@src/module/video/video-tag/entity";
+import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
+import { getVideoDuration } from "@src/utils/ffmpeg";
+import { In, Repository } from "typeorm";
 
 @Injectable()
 export class VideoService {

@@ -1,10 +1,10 @@
-export { ValidationPipe } from "./validation.pipe";
+export { BooleanPipe } from "./boolean.pipe";
 export { FileAvatarPipe } from "./file-avatar.pipe";
+export { FileChunkPipe } from "./file-chunk.pipe";
+export { FileCoverPipe } from "./file-cover.pipe";
+export { FileImagePipe } from "./file-image.pipe";
 export { FileVideoPipe } from "./file-video.pipe";
 export { IntPipe } from "./int.pipe";
-export { OffsetPipe } from "./offset.pipe";
 export { LimitPipe } from "./limit.pipe";
-export { BooleanPipe } from "./boolean.pipe";
-export { FileCoverPipe } from "./file-cover.pipe";
-export { FileChunkPipe } from "./file-chunk.pipe";
-export { FileImagePipe } from "./file-image.pipe";
+export { OffsetPipe } from "./offset.pipe";
+export { ValidationPipe } from "./validation.pipe";

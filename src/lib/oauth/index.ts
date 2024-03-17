@@ -1,3 +1,3 @@
-export { Github } from "./github";
-export { Gitee } from "./gitee";
 export { Alipay } from "./alipay";
+export { Gitee } from "./gitee";
+export { Github } from "./github";

@@ -1,5 +1,5 @@
-import { IsEmail } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail } from "class-validator";
 
 /**
  * 获取登录验证码DTO

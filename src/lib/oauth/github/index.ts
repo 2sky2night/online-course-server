@@ -1,9 +1,10 @@
 import { Agent } from "node:https";
-import axios from "axios";
+
 import type {
   ResponseGithubToken,
   ResponseGithubUser,
 } from "@src/lib/oauth/github/types";
+import axios from "axios";
 
 /**
  * Github第三方登录封装的API

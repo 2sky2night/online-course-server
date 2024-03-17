@@ -4,17 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
 import { InjectRepository } from "@nestjs/typeorm";
+import { VideoMessage } from "@src/config/message";
+import { User } from "@src/module/user/entity";
+import { UserService } from "@src/module/user/service";
+import { VideoComment } from "@src/module/video/video-comment/entity";
+import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
 import {
   VideoReply,
   VideoReplyLike,
 } from "@src/module/video/video-reply/entity";
 import { Repository } from "typeorm";
-import { UserService } from "@src/module/user/service";
-import { VideoComment } from "@src/module/video/video-comment/entity";
-import { User } from "@src/module/user/entity";
-import { VideoMessage } from "@src/config/message";
 
 /**
  * 视频回复服务层

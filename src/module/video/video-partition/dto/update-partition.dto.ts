@@ -1,5 +1,5 @@
-import { IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString, MaxLength, MinLength } from "class-validator";
 
 /**
  * 更新分区信息DTO

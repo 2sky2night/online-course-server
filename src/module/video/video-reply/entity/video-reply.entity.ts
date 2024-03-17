@@ -1,3 +1,6 @@
+import { User } from "@src/module/user/entity";
+import { VideoComment } from "@src/module/video/video-comment/entity/video-comment.entity";
+import { VideoReplyLike } from "@src/module/video/video-reply/entity/video-reply-like.entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,9 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "@src/module/user/entity";
-import { VideoComment } from "@src/module/video/video-comment/entity/video-comment.entity";
-import { VideoReplyLike } from "@src/module/video/video-reply/entity/video-reply-like.entity";
 
 /**
  * 视频回复表

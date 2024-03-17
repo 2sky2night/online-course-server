@@ -1,3 +1,4 @@
+import { Account } from "@src/module/account/entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,8 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+
 import { ApplyRegister } from "./index";
-import { Account } from "@src/module/account/entity";
 
 /**
  * 审批申请注册表

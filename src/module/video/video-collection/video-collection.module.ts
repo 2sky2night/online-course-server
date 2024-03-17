@@ -1,10 +1,10 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { AccountModule } from "@src/module/account/account.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
-import { VideoCollectionController } from "@src/module/video/video-collection/video-collection.controller";
+import { AccountModule } from "@src/module/account/account.module";
 import { VideoModule } from "@src/module/video/video/video.module";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { VideoCollectionController } from "@src/module/video/video-collection/video-collection.controller";
+import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
 import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
 

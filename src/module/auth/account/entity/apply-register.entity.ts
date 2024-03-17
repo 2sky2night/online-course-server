@@ -1,3 +1,4 @@
+import { ApprovalRegister } from "@src/module/auth/account/entity/approval-register.entity";
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { ApprovalRegister } from "@src/module/auth/account/entity/approval-register.entity";
 
 /**
  * 申请注册表

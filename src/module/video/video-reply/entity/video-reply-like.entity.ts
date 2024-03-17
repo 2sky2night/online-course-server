@@ -1,3 +1,5 @@
+import { User } from "@src/module/user/entity";
+import { VideoReply } from "@src/module/video/video-reply/entity/video-reply.entity";
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -7,8 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { VideoReply } from "@src/module/video/video-reply/entity/video-reply.entity";
-import { User } from "@src/module/user/entity";
 
 /**
  * 点赞视频回复表

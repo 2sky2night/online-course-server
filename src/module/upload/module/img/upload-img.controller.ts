@@ -7,16 +7,6 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { UploadImgService } from "@src/module/upload/module/img/upload-img.service";
-import { AccountGuard, UserGuard } from "@src/common/guard";
-import {
-  AccountToken,
-  ApiResponse,
-  Role,
-  UserToken,
-} from "@src/common/decorator";
-import { FileAvatarPipe, FileCoverPipe, FileImagePipe } from "@src/common/pipe";
-import { Roles } from "@src/module/account/module/role/enum";
 import {
   ApiBearerAuth,
   ApiBody,
@@ -25,6 +15,16 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponse,
+  Role,
+  UserToken,
+} from "@src/common/decorator";
+import { AccountGuard, UserGuard } from "@src/common/guard";
+import { FileAvatarPipe, FileCoverPipe, FileImagePipe } from "@src/common/pipe";
+import { Roles } from "@src/module/account/module/role/enum";
+import { UploadImgService } from "@src/module/upload/module/img/upload-img.service";
 import { ResponseDto } from "@src/types/docs";
 import {
   FileUploadAvatarDto,

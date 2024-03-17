@@ -1,5 +1,5 @@
 import { applyDecorators, Type } from "@nestjs/common";
-import { ApiExtraModels, getSchemaPath, ApiResponse } from "@nestjs/swagger";
+import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 import { ResponseDto } from "@src/types/docs";
 
 export const ApiResponsePage = <TModel extends Type<any>>(model: TModel) => {

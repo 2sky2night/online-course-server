@@ -1,26 +1,26 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "@src/config/database";
+import { UploadConfig } from "@src/config/upload";
 import { AccountModule } from "@src/module/account/account.module";
-import { AuthUserModule } from "@src/module/auth/user/auth-user.module";
+import { RoleModule } from "@src/module/account/module/role/role.module";
 import { AuthAccountModule } from "@src/module/auth/account/auth-account.module";
-import { UserModule } from "@src/module/user/user.module";
+import { AuthUserModule } from "@src/module/auth/user/auth-user.module";
+import { FileModule } from "@src/module/file/file.module";
 import { RedisModule } from "@src/module/redis/redis.module";
 import { UploadModule } from "@src/module/upload/upload.module";
-import OAuthConfig from "src/config/oauth";
-import { UploadConfig } from "@src/config/upload";
-import { RoleModule } from "@src/module/account/module/role/role.module";
+import { UserModule } from "@src/module/user/user.module";
+import { CollectionSubscribeModule } from "@src/module/video/collection-subsribe/collection-subscribe.module";
 import { VideoModule } from "@src/module/video/video/video.module";
 import { VideoCollectionModule } from "@src/module/video/video-collection/video-collection.module";
-import { FileModule } from "@src/module/file/file.module";
 import { VideoCommentModule } from "@src/module/video/video-comment/video-comment.module";
-import { VideoReplyModule } from "@src/module/video/video-reply/video-reply.module";
-import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
-import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
-import { VideoFavoriteModule } from "@src/module/video/video-favorite/video-favorite.module";
-import { CollectionSubscribeModule } from "@src/module/video/collection-subsribe/collection-subscribe.module";
 import { VideoDanmuModule } from "@src/module/video/video-danmu/video-danmu.module";
+import { VideoFavoriteModule } from "@src/module/video/video-favorite/video-favorite.module";
+import { VideoPartitionModule } from "@src/module/video/video-partition/video-partition.module";
+import { VideoReplyModule } from "@src/module/video/video-reply/video-reply.module";
+import { VideoTagModule } from "@src/module/video/video-tag/video-tag.module";
+import OAuthConfig from "src/config/oauth";
 
 @Module({
   imports: [

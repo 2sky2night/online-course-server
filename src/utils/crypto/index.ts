@@ -1,9 +1,9 @@
+import { AES, enc } from "crypto-js";
 import {
   v4 as uuidV4,
   validate as uuidValidate,
   version as uuidVersion,
 } from "uuid";
-import { AES, enc } from "crypto-js";
 
 /**
  * 生成盐

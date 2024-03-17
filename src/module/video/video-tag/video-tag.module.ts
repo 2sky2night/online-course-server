@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AccountModule } from "@src/module/account/account.module";
 import {
   VideoCollectionRelationTag,
   VideoRelationTag,
   VideoTag,
 } from "@src/module/video/video-tag/entity";
-import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { VideoTagController } from "@src/module/video/video-tag/video-tag.controller";
-import { AccountModule } from "@src/module/account/account.module";
+import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 
 /**
  * 视频标签模块

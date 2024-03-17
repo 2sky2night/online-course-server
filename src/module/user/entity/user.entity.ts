@@ -1,3 +1,24 @@
+import { UserRegisterType } from "@src/module/auth/user/entity";
+import { UserUpload } from "@src/module/upload/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import {
+  VideoHistory,
+  VideoLike,
+  VideoView,
+} from "@src/module/video/video/entity";
+import {
+  VideoComment,
+  VideoCommentLike,
+} from "@src/module/video/video-comment/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
+import {
+  VideoFavorite,
+  VideoRelationFavorite,
+} from "@src/module/video/video-favorite/entity";
+import {
+  VideoReply,
+  VideoReplyLike,
+} from "@src/module/video/video-reply/entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,27 +30,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserRegisterType } from "@src/module/auth/user/entity";
-import { UserUpload } from "@src/module/upload/entity";
-import {
-  VideoHistory,
-  VideoLike,
-  VideoView,
-} from "@src/module/video/video/entity";
-import {
-  VideoComment,
-  VideoCommentLike,
-} from "@src/module/video/video-comment/entity";
-import {
-  VideoReply,
-  VideoReplyLike,
-} from "@src/module/video/video-reply/entity";
-import {
-  VideoFavorite,
-  VideoRelationFavorite,
-} from "@src/module/video/video-favorite/entity";
-import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
-import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 
 /**
  * 用户表

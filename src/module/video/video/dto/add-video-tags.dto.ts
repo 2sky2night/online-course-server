@@ -1,5 +1,5 @@
-import { IsArray, IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsNumber } from "class-validator";
 
 /**
  * 给视频添加标签

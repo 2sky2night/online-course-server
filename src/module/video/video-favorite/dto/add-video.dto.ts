@@ -1,5 +1,5 @@
-import { IsArray, IsBoolean, IsNumber, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsBoolean, IsNumber, IsOptional } from "class-validator";
 
 /**
  * 收藏视频DTO

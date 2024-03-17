@@ -1,18 +1,19 @@
-import { Folder } from "@src/lib/folder/index";
 import {
+  createReadStream,
   createWriteStream,
   existsSync,
   mkdirSync,
   readdirSync,
-  createReadStream,
-  writeFileSync,
-  unlink,
   rmdirSync,
   statSync,
+  unlink,
+  writeFileSync,
 } from "node:fs";
 import { resolve } from "node:path";
+
 import { BadRequestException } from "@nestjs/common";
 import { UploadMessage } from "@src/config/message";
+import { Folder } from "@src/lib/folder/index";
 
 /**
  * 切片目录API

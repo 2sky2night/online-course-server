@@ -1,9 +1,9 @@
 import { Logger } from "@nestjs/common";
-import { AccountService } from "@src/module/account/service";
-import { Roles } from "@src/module/account/module/role/enum";
-import { once } from "@src/utils/events";
 import { ServerMessage } from "@src/config/message";
+import { Roles } from "@src/module/account/module/role/enum";
+import { AccountService } from "@src/module/account/service";
 import { passwordEncrypt } from "@src/utils/crypto";
+import { once } from "@src/utils/events";
 
 export function initLoader(accountService: AccountService) {
   once("ROLE_DATA_INIT_DONE", async () => {

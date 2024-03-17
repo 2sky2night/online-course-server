@@ -1,8 +1,9 @@
-import { existsSync, readFile } from "node:fs";
 import { createHash } from "node:crypto";
-import { ArrayBuffer } from "spark-md5";
+import { existsSync, readFile } from "node:fs";
+
 import { BadRequestException } from "@nestjs/common";
 import { CommonMessage } from "@src/config/message";
+import { ArrayBuffer } from "spark-md5";
 
 /**
  * 生成验证码

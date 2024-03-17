@@ -4,11 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { Observable } from "rxjs";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
 import { AuthMessage } from "@src/config/message";
 import { UserToken } from "@src/types/common";
+import { Request } from "express";
+import { Observable } from "rxjs";
 
 /**
  * 可选的用户身份校验

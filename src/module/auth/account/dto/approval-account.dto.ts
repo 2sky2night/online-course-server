@@ -1,5 +1,5 @@
-import { IsBoolean, IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNumber } from "class-validator";
 
 /**
  * 审批申请注册传输对象

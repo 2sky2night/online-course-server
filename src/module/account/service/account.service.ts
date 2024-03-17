@@ -5,9 +5,6 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import type { Repository } from "typeorm";
-import { Account } from "../entity";
-import { RoleService } from "../module/role/service";
 import {
   AccountMessage,
   CommonMessage,
@@ -18,6 +15,10 @@ import {
   UpdateAccountProfileDto,
 } from "@src/module/account/dto";
 import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
+import type { Repository } from "typeorm";
+
+import { Account } from "../entity";
+import { RoleService } from "../module/role/service";
 
 @Injectable()
 export class AccountService {

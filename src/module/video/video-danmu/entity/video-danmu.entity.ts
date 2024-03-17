@@ -1,3 +1,5 @@
+import { User } from "@src/module/user/entity";
+import { Video } from "@src/module/video/video/entity";
 import {
   Column,
   CreateDateColumn,
@@ -8,8 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "@src/module/user/entity";
-import { Video } from "@src/module/video/video/entity";
 
 /**
  * 视频弹幕模型

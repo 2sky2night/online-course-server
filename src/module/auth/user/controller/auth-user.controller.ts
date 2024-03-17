@@ -1,27 +1,27 @@
-import { Controller, Inject, Body, Post, Get, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Post, UseGuards } from "@nestjs/common";
 import type { ConfigType } from "@nestjs/config";
-import { AuthUserService } from "@src/module/auth/user/service";
-import { initLoader } from "@src/module/auth/user/init";
-import { registerTypeConfig } from "src/config/oauth";
-import {
-  EmailCodeDto,
-  EmailLoginDto,
-  OauthLoginDto,
-} from "@src/module/auth/user/dto";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponse,
-  ApiResponseEmpty,
-  UserToken,
-} from "@src/common/decorator";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiResponseEmpty,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import {
+  EmailCodeDto,
+  EmailLoginDto,
+  OauthLoginDto,
+} from "@src/module/auth/user/dto";
+import { initLoader } from "@src/module/auth/user/init";
+import { AuthUserService } from "@src/module/auth/user/service";
 import { ResponseDto } from "@src/types/docs";
 import { R_LoginUserDto } from "@src/types/docs/auth/user";
+import { registerTypeConfig } from "src/config/oauth";
 
 @ApiTags("AuthUser")
 @ApiBearerAuth()

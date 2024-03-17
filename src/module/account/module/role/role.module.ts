@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+
 import { RoleController } from "./controller";
-import { RoleService } from "./service";
 import { Role } from "./entity";
+import { RoleService } from "./service";
 
 /**
  * 角色模块

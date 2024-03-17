@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuthUserProvider } from "@src/module/auth/user/auth-user.provider";
+import { AuthUserController } from "@src/module/auth/user/controller";
 import { UserRegisterType } from "@src/module/auth/user/entity";
 import { AuthUserService } from "@src/module/auth/user/service";
-import { AuthUserController } from "@src/module/auth/user/controller";
-import { UserModule } from "@src/module/user/user.module";
-import { AuthUserProvider } from "@src/module/auth/user/auth-user.provider";
 import { EmailModule } from "@src/module/email/email.module";
+import { UserModule } from "@src/module/user/user.module";
 
 /**
  * 前台用户登录模块

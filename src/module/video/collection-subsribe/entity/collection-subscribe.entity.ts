@@ -1,3 +1,5 @@
+import { User } from "@src/module/user/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -7,8 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "@src/module/user/entity";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
 
 /**
  * 用户订阅视频合集表

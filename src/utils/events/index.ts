@@ -1,5 +1,6 @@
 import { EventEmitter } from "node:events";
-import type { EventName, EventHandler } from "@src/types/common";
+
+import type { EventHandler, EventName } from "@src/types/common";
 
 const emitter = new EventEmitter();
 

@@ -1,3 +1,5 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { Roles } from "@src/module/account/module/role/enum";
 import {
   IsEmail,
   IsEnum,
@@ -5,8 +7,6 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { Roles } from "@src/module/account/module/role/enum";
-import { ApiProperty } from "@nestjs/swagger";
 
 /**
  * 申请账户的表单

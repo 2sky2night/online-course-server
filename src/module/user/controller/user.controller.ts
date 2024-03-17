@@ -6,17 +6,17 @@ import {
   Patch,
   UseGuards,
 } from "@nestjs/common";
-import { UserService } from "@src/module/user/service";
-import { UserGuard } from "@src/common/guard";
-import { ApiResponseEmpty, UserToken } from "@src/common/decorator";
-import { UpdateUserProfileDto } from "@src/module/user/dto";
-import { CommonMessage } from "@src/config/message";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import { ApiResponseEmpty, UserToken } from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { CommonMessage } from "@src/config/message";
+import { UpdateUserProfileDto } from "@src/module/user/dto";
+import { UserService } from "@src/module/user/service";
 import { ResponseDto } from "@src/types/docs";
 
 @ApiTags("User")

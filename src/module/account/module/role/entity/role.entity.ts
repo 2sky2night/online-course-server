@@ -1,13 +1,14 @@
+import { Account } from "@src/module/account/entity";
 import {
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import { Account } from "@src/module/account/entity";
+
 import { Roles } from "../enum";
 
 /**

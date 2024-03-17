@@ -1,5 +1,5 @@
-import { IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber } from "class-validator";
 
 /**
  * 修改视频分区DTO

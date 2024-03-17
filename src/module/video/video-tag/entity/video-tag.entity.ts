@@ -1,3 +1,6 @@
+import { Account } from "@src/module/account/entity";
+import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity/video-collection-relation-tag.entity";
+import { VideoRelationTag } from "@src/module/video/video-tag/entity/video-relation-tag.entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,9 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Account } from "@src/module/account/entity";
-import { VideoRelationTag } from "@src/module/video/video-tag/entity/video-relation-tag.entity";
-import { VideoCollectionRelationTag } from "@src/module/video/video-tag/entity/video-collection-relation-tag.entity";
 
 /**
  * 视频标签表

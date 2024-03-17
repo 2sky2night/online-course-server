@@ -1,7 +1,7 @@
 import { Provider } from "@nestjs/common";
-import { createTransport } from "nodemailer";
 import { ConfigService } from "@nestjs/config";
 import { readFileData } from "@src/utils/tools";
+import { createTransport } from "nodemailer";
 
 /**
  * EMAIL模块的提供者

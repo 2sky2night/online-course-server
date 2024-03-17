@@ -1,3 +1,6 @@
+import { Account } from "@src/module/account/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,9 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Account } from "@src/module/account/entity";
-import { Video } from "@src/module/video/video/entity";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
 
 /**
  * 视频分区模型

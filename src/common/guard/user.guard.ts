@@ -4,9 +4,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { Request } from "express";
-import { AuthMessage } from "@src/config/message";
 import { JwtService } from "@nestjs/jwt";
+import { AuthMessage } from "@src/config/message";
+import { Request } from "express";
 
 /**
  * 前台用户守卫

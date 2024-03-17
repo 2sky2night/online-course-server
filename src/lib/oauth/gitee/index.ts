@@ -1,9 +1,10 @@
 import { Agent } from "node:https";
-import axios from "axios";
+
 import {
   ResponseGiteeToken,
   ResponseGiteeUser,
 } from "@src/lib/oauth/gitee/types";
+import axios from "axios";
 
 /**
  * Gitee第三方登录封装的API

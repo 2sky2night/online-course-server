@@ -1,8 +1,8 @@
-import AlipaySdk from "alipay-sdk";
 import {
   ResponseAlipayToken,
   ResponseAlipayUser,
 } from "@src/lib/oauth/alipay/types";
+import AlipaySdk from "alipay-sdk";
 
 /**
  * 支付宝第三方登录封装的API

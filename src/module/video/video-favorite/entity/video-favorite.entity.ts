@@ -1,3 +1,5 @@
+import { User } from "@src/module/user/entity";
+import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity/video-relation-favorite.entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,8 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "@src/module/user/entity";
-import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity/video-relation-favorite.entity";
 
 /**
  * 视频收藏夹表

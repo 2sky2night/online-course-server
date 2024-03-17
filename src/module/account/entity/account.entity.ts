@@ -1,3 +1,10 @@
+import { Role } from "@src/module/account/module/role/entity";
+import { ApprovalRegister } from "@src/module/auth/account/entity";
+import { AccountUpload } from "@src/module/upload/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoTag } from "@src/module/video/video-tag/entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,13 +16,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Role } from "@src/module/account/module/role/entity";
-import { ApprovalRegister } from "@src/module/auth/account/entity";
-import { AccountUpload } from "@src/module/upload/entity";
-import { Video } from "@src/module/video/video/entity";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
-import { VideoTag } from "@src/module/video/video-tag/entity";
 
 /**
  * 账户表

@@ -8,20 +8,20 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { CollectionSubscribeService } from "@src/module/video/collection-subsribe/collection-subscribe.service";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponseEmpty,
-  ApiResponsePage,
-  UserToken,
-} from "@src/common/decorator";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { CollectionSubscribeService } from "@src/module/video/collection-subsribe/collection-subscribe.service";
 import { ResponseDto } from "@src/types/docs";
 import { CollectionDtoA } from "@src/types/docs/video/collection";
 

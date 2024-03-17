@@ -1,8 +1,9 @@
+import { resolve } from "node:path";
+
 import { Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { UploadConfig } from "@src/config/upload/types";
 import { Folder } from "@src/lib/folder";
-import { resolve } from "node:path";
 
 /**
  * 图片上传提供者

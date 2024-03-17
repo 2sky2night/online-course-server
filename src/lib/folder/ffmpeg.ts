@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, unlink } from "node:fs";
+
 import { Logger } from "@nestjs/common";
-import { v4 as uuidV4 } from "uuid";
 import { Folder } from "@src/lib/folder/index";
 import { extractFirstFrame } from "@src/utils/ffmpeg";
 import { generateFileHash } from "@src/utils/tools";
+import { v4 as uuidV4 } from "uuid";
 
 /**
  * 目录API，增加视频处理的API

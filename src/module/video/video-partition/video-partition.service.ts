@@ -4,12 +4,12 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { AccountService } from "@src/module/account/service";
 import { InjectRepository } from "@nestjs/typeorm";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
-import { Repository } from "typeorm";
 import { VideoMessage } from "@src/config/message";
 import { Account } from "@src/module/account/entity";
+import { AccountService } from "@src/module/account/service";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { Repository } from "typeorm";
 
 /**
  * 视频分区服务层

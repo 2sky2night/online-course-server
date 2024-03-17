@@ -1,3 +1,5 @@
+import { Account } from "@src/module/account/entity";
+import { File } from "@src/module/file/entity";
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -7,8 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Account } from "@src/module/account/entity";
-import { File } from "@src/module/file/entity";
 
 /**
  * 后台账户上传资源追踪表

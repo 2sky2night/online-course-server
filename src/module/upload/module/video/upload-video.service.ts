@@ -1,3 +1,5 @@
+import { readdirSync } from "node:fs";
+
 import {
   BadRequestException,
   Inject,
@@ -5,20 +7,19 @@ import {
   Logger,
   NotFoundException,
 } from "@nestjs/common";
-import { ChunkFolder, Folder } from "@src/lib/folder";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AccountUpload } from "@src/module/upload/entity";
-import { Repository } from "typeorm";
+import { UploadMessage, VideoMessage } from "@src/config/message";
+import { ChunkFolder, Folder } from "@src/lib/folder";
+import { VideoProcessing } from "@src/lib/video-processing";
+import { Account } from "@src/module/account/entity";
 import { AccountService } from "@src/module/account/service";
-import { generateFileHash } from "@src/utils/tools";
-import { FileService } from "@src/module/file/service";
 import { File } from "@src/module/file/entity";
 import { FileType } from "@src/module/file/enum";
-import { UploadMessage, VideoMessage } from "@src/config/message";
-import { readdirSync } from "node:fs";
-import { VideoProcessing } from "@src/lib/video-processing";
+import { FileService } from "@src/module/file/service";
 import { RedisService } from "@src/module/redis/redis.service";
-import { Account } from "@src/module/account/entity";
+import { AccountUpload } from "@src/module/upload/entity";
+import { generateFileHash } from "@src/utils/tools";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UploadVideoService {

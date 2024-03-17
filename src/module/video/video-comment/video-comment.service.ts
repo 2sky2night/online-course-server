@@ -5,16 +5,16 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { VideoMessage } from "@src/config/message";
+import { User } from "@src/module/user/entity";
+import { UserService } from "@src/module/user/service";
+import { Video } from "@src/module/video/video/entity";
+import { VideoService } from "@src/module/video/video/video.service";
 import {
   VideoComment,
   VideoCommentLike,
 } from "@src/module/video/video-comment/entity";
 import { Repository } from "typeorm";
-import { UserService } from "@src/module/user/service";
-import { VideoService } from "@src/module/video/video/video.service";
-import { VideoMessage } from "@src/config/message";
-import { User } from "@src/module/user/entity";
-import { Video } from "@src/module/video/video/entity";
 
 /**
  * 视频评论服务层

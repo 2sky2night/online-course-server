@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsArray,
   IsNumber,
@@ -6,7 +7,6 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
 
 /**
  * 创建视频合集DTO

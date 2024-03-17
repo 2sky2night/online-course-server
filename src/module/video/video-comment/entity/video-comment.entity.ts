@@ -1,3 +1,7 @@
+import { User } from "@src/module/user/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCommentLike } from "@src/module/video/video-comment/entity/video-comment-like.entity";
+import { VideoReply } from "@src/module/video/video-reply/entity";
 import {
   Column,
   CreateDateColumn,
@@ -9,10 +13,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Video } from "@src/module/video/video/entity";
-import { User } from "@src/module/user/entity";
-import { VideoCommentLike } from "@src/module/video/video-comment/entity/video-comment-like.entity";
-import { VideoReply } from "@src/module/video/video-reply/entity";
 
 /**
  * 视频评论表

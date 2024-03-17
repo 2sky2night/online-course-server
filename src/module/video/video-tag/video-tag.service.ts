@@ -5,17 +5,17 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { VideoMessage } from "@src/config/message";
+import { Account } from "@src/module/account/entity";
+import { AccountService } from "@src/module/account/service";
+import { Video } from "@src/module/video/video/entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
 import {
   VideoCollectionRelationTag,
   VideoRelationTag,
   VideoTag,
 } from "@src/module/video/video-tag/entity";
 import { In, Repository } from "typeorm";
-import { VideoMessage } from "@src/config/message";
-import { Account } from "@src/module/account/entity";
-import { AccountService } from "@src/module/account/service";
-import { Video } from "@src/module/video/video/entity";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
 
 /**
  * 视频标签服务层

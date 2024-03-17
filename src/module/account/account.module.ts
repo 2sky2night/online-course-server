@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { RoleModule } from "./module/role/role.module";
-import { Account } from "./entity";
-import { AccountService } from "./service";
+
 import { AccountController } from "./controller";
+import { Account } from "./entity";
+import { RoleModule } from "./module/role/role.module";
+import { AccountService } from "./service";
 
 /**
  * 账户模块(后台)

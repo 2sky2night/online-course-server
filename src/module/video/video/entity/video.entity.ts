@@ -1,3 +1,14 @@
+import { Account } from "@src/module/account/entity";
+import { File } from "@src/module/file/entity";
+import { VideoHistory } from "@src/module/video/video/entity/video-history.entity";
+import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
+import { VideoView } from "@src/module/video/video/entity/video-view.entity";
+import { VideoCollection } from "@src/module/video/video-collection/entity";
+import { VideoComment } from "@src/module/video/video-comment/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
+import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
+import { VideoRelationTag } from "@src/module/video/video-tag/entity";
 import {
   Column,
   CreateDateColumn,
@@ -10,17 +21,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Account } from "@src/module/account/entity";
-import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { File } from "@src/module/file/entity";
-import { VideoView } from "@src/module/video/video/entity/video-view.entity";
-import { VideoHistory } from "@src/module/video/video/entity/video-history.entity";
-import { VideoLike } from "@src/module/video/video/entity/video-like.entity";
-import { VideoComment } from "@src/module/video/video-comment/entity";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
-import { VideoRelationTag } from "@src/module/video/video-tag/entity";
-import { VideoRelationFavorite } from "@src/module/video/video-favorite/entity";
-import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 
 /**
  * 视频表

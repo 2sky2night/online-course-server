@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { MulterModule } from "@nestjs/platform-express";
-import { memoryStorage } from "multer";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AccountModule } from "@src/module/account/account.module";
+import { FileModule } from "@src/module/file/file.module";
+import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 import { UploadImgController } from "@src/module/upload/module/img/upload-img.controller";
 import { uploadImgProvider } from "@src/module/upload/module/img/upload-img.provider";
 import { UploadImgService } from "@src/module/upload/module/img/upload-img.service";
-import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 import { UserModule } from "@src/module/user/user.module";
-import { AccountModule } from "@src/module/account/account.module";
-import { FileModule } from "@src/module/file/file.module";
+import { memoryStorage } from "multer";
 
 /**
  * 上传照片模块

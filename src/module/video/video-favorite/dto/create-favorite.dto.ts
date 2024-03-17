@@ -1,5 +1,5 @@
-import { IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 /**
  * 创建视频收藏夹DTO

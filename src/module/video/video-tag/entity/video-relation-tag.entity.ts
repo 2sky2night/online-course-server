@@ -1,3 +1,5 @@
+import { Video } from "@src/module/video/video/entity";
+import { VideoTag } from "@src/module/video/video-tag/entity/video-tag.entity";
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -7,8 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { VideoTag } from "@src/module/video/video-tag/entity/video-tag.entity";
-import { Video } from "@src/module/video/video/entity";
 
 /**
  * 视频和视频标签联系表

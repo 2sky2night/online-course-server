@@ -11,6 +11,22 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { Roles } from "@src/module/account/module/role/enum";
+import {
   AddTagsDto,
   AddVideosDto,
   CreateVideoCollectionDto,
@@ -20,26 +36,10 @@ import {
   UpdateVideoCollectionDto,
 } from "@src/module/video/video-collection/dto";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
-import {
-  AccountToken,
-  ApiResponse,
-  ApiResponseEmpty,
-  ApiResponsePage,
-  Role,
-} from "@src/common/decorator";
-import { Roles } from "@src/module/account/module/role/enum";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
-import { bodyOptionCatcher } from "@src/utils/tools";
-import {
-  ApiBearerAuth,
-  ApiExtraModels,
-  ApiOperation,
-  ApiTags,
-} from "@nestjs/swagger";
 import { ResponseDto } from "@src/types/docs";
 import { CollectionDtoA } from "@src/types/docs/video/collection";
 import { CollectionDto } from "@src/types/docs/video/common";
+import { bodyOptionCatcher } from "@src/utils/tools";
 
 @ApiTags("VideoCollection")
 @ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证

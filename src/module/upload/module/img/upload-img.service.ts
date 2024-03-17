@@ -1,14 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AccountUpload, UserUpload } from "@src/module/upload/entity";
 import { Folder } from "@src/lib/folder";
-import { generateFileHash } from "@src/utils/tools";
-import { UserService } from "@src/module/user/service";
-import { Repository } from "typeorm";
 import { AccountService } from "@src/module/account/service";
-import { FileService } from "@src/module/file/service";
-import { FileType } from "@src/module/file/enum";
 import { File } from "@src/module/file/entity";
+import { FileType } from "@src/module/file/enum";
+import { FileService } from "@src/module/file/service";
+import { AccountUpload, UserUpload } from "@src/module/upload/entity";
+import { UserService } from "@src/module/user/service";
+import { generateFileHash } from "@src/utils/tools";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UploadImgService {

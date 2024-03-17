@@ -8,21 +8,21 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import type { Repository } from "typeorm";
-import { AccountService } from "@src/module/account/service";
 import { AuthMessage, CommonMessage } from "@src/config/message";
-import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
+import { Account } from "@src/module/account/entity";
+import { Roles } from "@src/module/account/module/role/enum";
+import { RoleService } from "@src/module/account/module/role/service";
+import { AccountService } from "@src/module/account/service";
 import {
   ApplyRegister,
   ApprovalRegister,
 } from "@src/module/auth/account/entity";
-import { Roles } from "@src/module/account/module/role/enum";
-import { RoleService } from "@src/module/account/module/role/service";
 import { EmailService } from "@src/module/email/email.service";
-import { Account } from "@src/module/account/entity";
-import { generateCode } from "@src/utils/tools";
 import { RedisService } from "@src/module/redis/redis.service";
+import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
+import { generateCode } from "@src/utils/tools";
 import * as process from "process";
+import type { Repository } from "typeorm";
 
 @Injectable()
 export class AuthAccountService {

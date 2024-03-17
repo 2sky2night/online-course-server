@@ -1,10 +1,10 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
-import { UserService } from "@src/module/user/service";
-import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
-import { Repository } from "typeorm";
 import { VideoMessage } from "@src/config/message";
+import { UserService } from "@src/module/user/service";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
+import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
+import { Repository } from "typeorm";
 
 /**
  * 用户订阅合集服务层

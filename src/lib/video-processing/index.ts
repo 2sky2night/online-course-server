@@ -1,9 +1,10 @@
-import { resolve as pathResolve, basename } from "node:path";
 import { existsSync, mkdirSync, readdirSync, rmdir, unlink } from "node:fs";
+import { basename, resolve as pathResolve } from "node:path";
+
 import {
+  generateM3U8Video,
   generateVideo,
   getVideoResolution,
-  generateM3U8Video,
 } from "@src/utils/ffmpeg";
 
 /**

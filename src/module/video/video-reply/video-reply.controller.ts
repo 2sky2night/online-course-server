@@ -9,21 +9,21 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { VideoReplyService } from "@src/module/video/video-reply/video-reply.service";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponseEmpty,
-  ApiResponsePage,
-  UserToken,
-} from "@src/common/decorator";
-import { CreateReplyDto } from "@src/module/video/video-reply/dto";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { CreateReplyDto } from "@src/module/video/video-reply/dto";
+import { VideoReplyService } from "@src/module/video/video-reply/video-reply.service";
 import { ResponseDto } from "@src/types/docs";
 import { ReplyDto } from "@src/types/docs/video/common";
 

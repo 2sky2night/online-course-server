@@ -1,27 +1,28 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Patch,
-  Body,
-  UseGuards,
   Post,
-  BadRequestException,
+  UseGuards,
 } from "@nestjs/common";
-import { AccountService } from "@src/module/account/service";
-import { initLoader } from "../init";
-import {
-  UpdateAccountPasswordDto,
-  UpdateAccountProfileDto,
-} from "@src/module/account/dto";
-import { AccountToken, ApiResponseEmpty } from "@src/common/decorator";
-import { AccountGuard } from "@src/common/guard";
-import { CommonMessage } from "@src/config/message";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import { AccountToken, ApiResponseEmpty } from "@src/common/decorator";
+import { AccountGuard } from "@src/common/guard";
+import { CommonMessage } from "@src/config/message";
+import {
+  UpdateAccountPasswordDto,
+  UpdateAccountProfileDto,
+} from "@src/module/account/dto";
+import { AccountService } from "@src/module/account/service";
 import { ResponseDto } from "@src/types/docs";
+
+import { initLoader } from "../init";
 
 @ApiTags("Account")
 @ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证

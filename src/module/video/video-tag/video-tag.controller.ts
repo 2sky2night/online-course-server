@@ -9,23 +9,23 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
-import {
-  AccountToken,
-  ApiResponseEmpty,
-  ApiResponsePage,
-  Role,
-} from "@src/common/decorator";
-import { CreateTagDto, UpdateTagDto } from "@src/module/video/video-tag/dto";
-import { Roles } from "@src/module/account/module/role/enum";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { Roles } from "@src/module/account/module/role/enum";
+import { CreateTagDto, UpdateTagDto } from "@src/module/video/video-tag/dto";
+import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { ResponseDto } from "@src/types/docs";
 import { CollectionDto, TagDto, VideoDto } from "@src/types/docs/video/common";
 

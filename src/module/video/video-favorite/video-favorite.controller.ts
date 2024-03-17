@@ -10,31 +10,31 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { VideoFavoriteService } from "@src/module/video/video-favorite/video-favorite.service";
-import { UserGuard } from "@src/common/guard";
-import {
-  ApiResponse,
-  ApiResponseEmpty,
-  ApiResponsePage,
-  UserToken,
-} from "@src/common/decorator";
-import {
-  AddVideoDto,
-  CreateFavoriteDto,
-  RemoveVideosDto,
-  UpdateFavoriteDto,
-} from "@src/module/video/video-favorite/dto";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
-import { bodyOptionCatcher } from "@src/utils/tools";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
+import { UserGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import {
+  AddVideoDto,
+  CreateFavoriteDto,
+  RemoveVideosDto,
+  UpdateFavoriteDto,
+} from "@src/module/video/video-favorite/dto";
+import { VideoFavoriteService } from "@src/module/video/video-favorite/video-favorite.service";
 import { ResponseDto } from "@src/types/docs";
 import { FavoriteDto, VideoDto } from "@src/types/docs/video/common";
 import { FavoriteListDto } from "@src/types/docs/video/favorite";
+import { bodyOptionCatcher } from "@src/utils/tools";
 
 /**
  * 视频收藏控制层

@@ -1,8 +1,9 @@
 import { resolve } from "node:path";
+
 import type { Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { ChunkFolder, Folder } from "@src/lib/folder";
 import type { UploadConfig } from "@src/config/upload/types";
+import { ChunkFolder, Folder } from "@src/lib/folder";
 import { VideoProcessing } from "@src/lib/video-processing";
 
 export const uploadVideoProvider: Provider[] = [

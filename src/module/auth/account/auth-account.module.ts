@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { AuthAccountController } from "@src/module/auth/account/controller";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { AccountModule } from "@src/module/account/account.module";
-import { AuthAccountService } from "@src/module/auth/account/service";
 import { RoleModule } from "@src/module/account/module/role/role.module";
+import { AuthAccountController } from "@src/module/auth/account/controller";
 import {
   ApplyRegister,
   ApprovalRegister,
 } from "@src/module/auth/account/entity";
+import { AuthAccountService } from "@src/module/auth/account/service";
 import { EmailModule } from "@src/module/email/email.module";
 
 /**

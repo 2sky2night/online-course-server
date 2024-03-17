@@ -1,3 +1,6 @@
+import { User } from "@src/module/user/entity";
+import { Video } from "@src/module/video/video/entity";
+import { VideoFavorite } from "@src/module/video/video-favorite/entity/video-favorite.entity";
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -7,9 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Video } from "@src/module/video/video/entity";
-import { User } from "@src/module/user/entity";
-import { VideoFavorite } from "@src/module/video/video-favorite/entity/video-favorite.entity";
 
 /**
  * 用户收藏视频关系表

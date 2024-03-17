@@ -1,18 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import type { DataSourceOptions } from "typeorm";
 import type {
-  TypeOrmOptionsFactory,
   TypeOrmModuleOptions,
+  TypeOrmOptionsFactory,
 } from "@nestjs/typeorm";
-import { Role } from "@src/module/account/module/role/entity";
 import { Account } from "@src/module/account/entity";
-import {
-  ApplyRegister,
-  ApprovalRegister,
-} from "src/module/auth/account/entity";
-import { User } from "@src/module/user/entity";
+import { Role } from "@src/module/account/module/role/entity";
 import { UserRegisterType } from "@src/module/auth/user/entity";
+import { File, FileVideo } from "@src/module/file/entity";
 import { AccountUpload, UserUpload } from "@src/module/upload/entity";
+import { User } from "@src/module/user/entity";
+import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
 import {
   Video,
   VideoHistory,
@@ -20,28 +17,31 @@ import {
   VideoView,
 } from "@src/module/video/video/entity";
 import { VideoCollection } from "@src/module/video/video-collection/entity";
-import { File, FileVideo } from "@src/module/file/entity";
 import {
   VideoComment,
   VideoCommentLike,
 } from "@src/module/video/video-comment/entity";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
+import {
+  VideoFavorite,
+  VideoRelationFavorite,
+} from "@src/module/video/video-favorite/entity";
+import { VideoPartition } from "@src/module/video/video-partition/entity";
 import {
   VideoReply,
   VideoReplyLike,
 } from "@src/module/video/video-reply/entity";
-import { VideoPartition } from "@src/module/video/video-partition/entity";
 import {
   VideoCollectionRelationTag,
   VideoRelationTag,
   VideoTag,
 } from "@src/module/video/video-tag/entity";
-import {
-  VideoFavorite,
-  VideoRelationFavorite,
-} from "@src/module/video/video-favorite/entity";
-import { CollectionSubscribe } from "@src/module/video/collection-subsribe/entity";
-import { VideoDanmu } from "@src/module/video/video-danmu/entity";
 import { readFileData } from "@src/utils/tools";
+import {
+  ApplyRegister,
+  ApprovalRegister,
+} from "src/module/auth/account/entity";
+import type { DataSourceOptions } from "typeorm";
 
 /**
  * 所有实体

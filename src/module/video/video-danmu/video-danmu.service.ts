@@ -1,10 +1,10 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { VideoDanmu } from "@src/module/video/video-danmu/entity";
-import { Repository } from "typeorm";
+import { VideoMessage } from "@src/config/message";
 import { UserService } from "@src/module/user/service";
 import { VideoService } from "@src/module/video/video/video.service";
-import { VideoMessage } from "@src/config/message";
+import { VideoDanmu } from "@src/module/video/video-danmu/entity";
+import { Repository } from "typeorm";
 
 /**
  * 弹幕服务层

@@ -1,34 +1,34 @@
 import {
   Body,
   Controller,
-  Inject,
-  Post,
-  UseGuards,
-  Patch,
-  Param,
   Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
-import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
-import {
-  AccountToken,
-  ApiResponseEmpty,
-  ApiResponsePage,
-  Role,
-} from "@src/common/decorator";
-import { Roles } from "@src/module/account/module/role/enum";
-import { AccountGuard, RoleGuard } from "@src/common/guard";
-import {
-  CreatePartitionDto,
-  UpdatePartitionDto,
-} from "@src/module/video/video-partition/dto";
-import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import {
   ApiBearerAuth,
   ApiExtraModels,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  AccountToken,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import { Roles } from "@src/module/account/module/role/enum";
+import {
+  CreatePartitionDto,
+  UpdatePartitionDto,
+} from "@src/module/video/video-partition/dto";
+import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { ResponseDto } from "@src/types/docs";
 import { PartitionDto } from "@src/types/docs/video/common";
 

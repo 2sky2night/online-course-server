@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Transporter, SentMessageInfo } from "nodemailer";
+import { SentMessageInfo, Transporter } from "nodemailer";
 import * as process from "process";
 
 @Injectable()

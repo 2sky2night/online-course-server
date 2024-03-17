@@ -4,10 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { Request } from "express";
 import { JwtService } from "@nestjs/jwt";
-import { AccountToken } from "@src/types/common";
 import { AuthMessage } from "@src/config/message";
+import { AccountToken } from "@src/types/common";
+import { Request } from "express";
 
 /**
  * 后台账户守卫
