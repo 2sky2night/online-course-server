@@ -8,10 +8,20 @@ import {
 } from "@nestjs/common";
 import { UserService } from "@src/module/user/service";
 import { UserGuard } from "@src/common/guard";
-import { UserToken } from "@src/common/decorator";
+import { ApiResponseEmpty, UserToken } from "@src/common/decorator";
 import { UpdateUserProfileDto } from "@src/module/user/dto";
 import { CommonMessage } from "@src/config/message";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
 
+@ApiTags("User")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("user")
 export class UserController {
   /**
@@ -25,6 +35,11 @@ export class UserController {
    * @param userId 用户id
    * @param profileDto 更新表单
    */
+  @ApiOperation({
+    summary: "更新用户信息",
+    description: "前台用户更新个人信息",
+  })
+  @ApiResponseEmpty()
   @UseGuards(UserGuard)
   @Patch("/profile")
   updateProfile(

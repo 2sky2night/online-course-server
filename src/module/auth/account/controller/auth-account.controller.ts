@@ -8,9 +8,29 @@ import {
   EmailLoginDto,
 } from "@src/module/auth/account/dto";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { AccountToken, Role } from "@src/common/decorator";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  Role,
+} from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import {
+  R_ApplyAccountDto,
+  R_EmailAccountDto,
+  R_LoginAccountDto,
+} from "@src/types/docs/auth/account";
 
+@ApiTags("AuthAccount")
+@ApiBearerAuth()
+@ApiExtraModels(ResponseDto)
 @Controller("/auth/account")
 export class AuthAccountController {
   /**
@@ -25,6 +45,11 @@ export class AuthAccountController {
    * @param username 用户名
    * @param password 密码
    */
+  @ApiOperation({
+    summary: "登录",
+    description: "登录后台应用",
+  })
+  @ApiResponse(R_LoginAccountDto)
   @Post("/login")
   login(@Body() { username, password }: LoginAccountDto) {
     return this.authAccountService.login(username, password);
@@ -38,6 +63,11 @@ export class AuthAccountController {
    * @param description 注册原因
    * @param role_name 申请的角色
    */
+  @ApiOperation({
+    summary: "申请注册",
+    description: "游客申请注册到后台应用中，只能申请管理员和老师的角色",
+  })
+  @ApiResponse(R_ApplyAccountDto)
   @Post("/apply")
   async apply(
     @Body()
@@ -64,7 +94,12 @@ export class AuthAccountController {
    * @param apply_id 申请号
    * @param status 审批状态
    */
+  @ApiOperation({
+    summary: "审批注册申请",
+    description: "超级管理员审批注册申请",
+  })
   @UseGuards(AccountGuard, RoleGuard)
+  @ApiResponseEmpty()
   @Role(Roles.SUPER_ADMIN)
   @Post("/approval")
   approval(
@@ -78,6 +113,11 @@ export class AuthAccountController {
    * 获取登录验证码
    * @param dto 邮箱
    */
+  @ApiOperation({
+    summary: "获取邮箱登录验证码",
+    description: "登录后台应用时通过邮箱获取验证码",
+  })
+  @ApiResponseEmpty()
   @Post("/login/email/code")
   getLoginCode(@Body() dto: EmailCodeDto) {
     return this.authAccountService.getLoginCode(dto.email);
@@ -87,6 +127,11 @@ export class AuthAccountController {
    * 邮箱登录
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "邮箱验证码登录",
+    description: "邮箱验证码登录后台应用",
+  })
+  @ApiResponse(R_EmailAccountDto)
   @Post("/login/email")
   emailLogin(@Body() dto: EmailLoginDto) {
     return this.authAccountService.emailLogin(dto.email, dto.code);

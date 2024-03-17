@@ -309,7 +309,7 @@ export class VideoCollectionService {
    */
   async info(collection_id: number) {
     const collection = await this.VCRepository.findOne({
-      relations: ["creator", "videos"],
+      relations: ["creator", "creator"],
       where: { collection_id },
     });
     if (collection === null) {

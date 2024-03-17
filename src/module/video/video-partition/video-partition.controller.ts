@@ -10,7 +10,12 @@ import {
   Query,
 } from "@nestjs/common";
 import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
-import { AccountToken, Role } from "@src/common/decorator";
+import {
+  AccountToken,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import {
@@ -18,10 +23,21 @@ import {
   UpdatePartitionDto,
 } from "@src/module/video/video-partition/dto";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import { PartitionDto } from "@src/types/docs/video/common";
 
 /**
  * 视频分区控制层
  */
+@ApiTags("VideoPartition")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("video/partition")
 export class VideoPartitionController {
   /**
@@ -36,6 +52,11 @@ export class VideoPartitionController {
    * @param account_id 账户id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "创建分区",
+    description: "后台账户创建分区",
+  })
+  @ApiResponseEmpty()
   @Post()
   @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
   @UseGuards(AccountGuard, RoleGuard)
@@ -52,6 +73,11 @@ export class VideoPartitionController {
    * @param partition_id 分区id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "修改分区信息",
+    description: "后台账户修改分区信息",
+  })
+  @ApiResponseEmpty()
   @Patch(":pid")
   @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
   @UseGuards(AccountGuard, RoleGuard)
@@ -73,6 +99,11 @@ export class VideoPartitionController {
    * @param limit 长度
    * @param desc 是否按照创建时间降序
    */
+  @ApiOperation({
+    summary: "获取分区列表",
+    description: "获取分区列表",
+  })
+  @ApiResponsePage(PartitionDto)
   @Get()
   list(
     @Query("offset", OffsetPipe) offset: number,

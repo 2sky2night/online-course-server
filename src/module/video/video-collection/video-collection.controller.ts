@@ -20,12 +20,30 @@ import {
   UpdateVideoCollectionDto,
 } from "@src/module/video/video-collection/dto";
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
-import { AccountToken, Role } from "@src/common/decorator";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
 import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { bodyOptionCatcher } from "@src/utils/tools";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import { CollectionDtoA } from "@src/types/docs/video/collection";
+import { CollectionDto } from "@src/types/docs/video/common";
 
+@ApiTags("VideoCollection")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("/video/collection")
 export class VideoCollectionController {
   /**
@@ -39,6 +57,11 @@ export class VideoCollectionController {
    * @param accountId 发布者
    * @param videoCollectionDto 表单
    */
+  @ApiOperation({
+    summary: "创建一个视频合集",
+    description: "老师创建一个视频合集",
+  })
+  @ApiResponseEmpty()
   @Post()
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -55,6 +78,11 @@ export class VideoCollectionController {
    * @param collectionId 合集id
    * @param videosDto 视频列表
    */
+  @ApiOperation({
+    summary: "在合集中添加视频",
+    description: "老师在视频合集中添加视频",
+  })
+  @ApiResponseEmpty()
   @Post(":cid/videos")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -76,6 +104,11 @@ export class VideoCollectionController {
    * @param collectionId 合集id
    * @param videosDto 视频列表
    */
+  @ApiOperation({
+    summary: "在合集中移除视频",
+    description: "老师在视频合集中移除视频",
+  })
+  @ApiResponseEmpty()
   @Delete(":cid/videos")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -97,6 +130,11 @@ export class VideoCollectionController {
    * @param collectionId 合集id
    * @param videosDto 表单
    */
+  @ApiOperation({
+    summary: "更新视频合集的信息",
+    description: "老师更新视频合集的信息",
+  })
+  @ApiResponseEmpty()
   @Patch(":cid")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -124,6 +162,11 @@ export class VideoCollectionController {
    * 获取合集信息
    * @param collectionId 合集id
    */
+  @ApiOperation({
+    summary: "获取合集信息",
+    description: "获取合集信息",
+  })
+  @ApiResponse(CollectionDtoA)
   @Get("/info/:cid")
   info(@Param("cid", new IntPipe("cid")) collectionId: number) {
     return this.VCService.info(collectionId);
@@ -135,6 +178,11 @@ export class VideoCollectionController {
    * @param limit 长度
    * @param desc 是否按照创建时间降序
    */
+  @ApiOperation({
+    summary: "查询合集列表",
+    description: "分页查询所有视频合集列表",
+  })
+  @ApiResponsePage(CollectionDtoA)
   @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,
@@ -150,6 +198,11 @@ export class VideoCollectionController {
    * @param account_id 账户id
    * @param dto 分区的id
    */
+  @ApiOperation({
+    summary: "更新合集的分区",
+    description: "老师更新合集的分区",
+  })
+  @ApiResponseEmpty()
   @Patch(":cid/partition")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -172,6 +225,11 @@ export class VideoCollectionController {
    * @param limit 长度
    * @param desc 是否根据视频创建时间降序
    */
+  @ApiOperation({
+    summary: "查询此分区下的合集列表",
+    description: "分页查询此分区下的视频合集列表",
+  })
+  @ApiResponsePage(CollectionDto)
   @Get("/list/partition/:pid")
   partitionList(
     @Param("pid", new IntPipe("pid")) partition_id: number,
@@ -188,6 +246,11 @@ export class VideoCollectionController {
    * @param tag_id_list 标签id列表
    * @param account_id 账户id
    */
+  @ApiOperation({
+    summary: "给合集添加标签",
+    description: "老师给合集添加标签",
+  })
+  @ApiResponseEmpty()
   @Post(":cid/tags")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -205,6 +268,11 @@ export class VideoCollectionController {
    * @param tag_id_list 标签id列表
    * @param account_id 账户id
    */
+  @ApiOperation({
+    summary: "移除合集的标签",
+    description: "老师移除合集的标签",
+  })
+  @ApiResponseEmpty()
   @Delete(":cid/tags")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)

@@ -10,15 +10,31 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
-import { AccountToken, Role } from "@src/common/decorator";
+import {
+  AccountToken,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+} from "@src/common/decorator";
 import { CreateTagDto, UpdateTagDto } from "@src/module/video/video-tag/dto";
 import { Roles } from "@src/module/account/module/role/enum";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import { CollectionDto, TagDto, VideoDto } from "@src/types/docs/video/common";
 
 /**
  * 视频标签控制层
  */
+@ApiTags("VideoTag")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("video/tag")
 export class VideoTagController {
   /**
@@ -33,6 +49,11 @@ export class VideoTagController {
    * @param account_id 账户id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "创建标签",
+    description: "后台账户创建标签",
+  })
+  @ApiResponseEmpty()
   @Post()
   @Role(Roles.SUPER_ADMIN, Roles.ADMIN)
   @UseGuards(AccountGuard, RoleGuard)
@@ -46,6 +67,11 @@ export class VideoTagController {
    * @param dto 表单
    * @param tag_id 标签id
    */
+  @ApiOperation({
+    summary: "更新标签",
+    description: "后台账户更新标签",
+  })
+  @ApiResponseEmpty()
   @Patch(":tid")
   @Role(Roles.SUPER_ADMIN, Roles.ADMIN)
   @UseGuards(AccountGuard, RoleGuard)
@@ -64,6 +90,11 @@ export class VideoTagController {
    * @param limit 长度
    * @param desc 是否降序
    */
+  @ApiOperation({
+    summary: "查询某个分区下的视频",
+    description: "分页查询某个分区下的所有视频",
+  })
+  @ApiResponsePage(VideoDto)
   @Get(":tid/videos")
   videoList(
     @Param("tid", new IntPipe("tid")) tag_id: number,
@@ -81,6 +112,11 @@ export class VideoTagController {
    * @param limit 长度
    * @param desc 是否降序
    */
+  @ApiOperation({
+    summary: "查询某个分区下的视频合集",
+    description: "分页查询某个分区下的所有视频合集",
+  })
+  @ApiResponsePage(CollectionDto)
   @Get(":tid/collection")
   collectionList(
     @Param("tid", new IntPipe("tid")) tag_id: number,
@@ -97,6 +133,11 @@ export class VideoTagController {
    * @param limit 长度
    * @param desc 是否降序
    */
+  @ApiOperation({
+    summary: "分页获取标签",
+    description: "分页获取所有标签",
+  })
+  @ApiResponsePage(TagDto)
   @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,

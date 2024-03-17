@@ -130,7 +130,11 @@ export class UploadVideoService {
    * @param chunk_hash 切片的索引
    * @param buffer 切片文件
    */
-  uploadChunk(file_hash: string, chunk_hash: string, buffer: Buffer) {
+  uploadChunk(
+    file_hash: string,
+    chunk_hash: string,
+    buffer: Buffer,
+  ): Promise<null> {
     // 查询文件系统中是否存储此切片文件夹?
     let folderPath = this.tempFolder.hasDir(file_hash);
     // 不存在此切片文件夹就创建此文件夹
@@ -305,7 +309,7 @@ export class UploadVideoService {
     } else {
       try {
         // 合并完成，redis中会记录的是文件信息
-        const data = JSON.parse(value);
+        const data = JSON.parse(value); // TODO 视频文件的url尽量不要暴露（24.3.17）
         return {
           ...data,
         };

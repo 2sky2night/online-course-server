@@ -1,9 +1,18 @@
 import { IsArray, IsNumber } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 /**
  * 添加视频DTO
  */
 export class AddVideosDto {
+  @ApiProperty({
+    description: "视频id列表",
+    type: "array",
+    items: {
+      type: "number",
+    },
+    examples: [1, 2, 3],
+  })
   /**
    * 需要添加的视频
    */

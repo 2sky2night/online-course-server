@@ -12,10 +12,20 @@ import {
   UpdateAccountPasswordDto,
   UpdateAccountProfileDto,
 } from "@src/module/account/dto";
-import { AccountToken } from "@src/common/decorator";
+import { AccountToken, ApiResponseEmpty } from "@src/common/decorator";
 import { AccountGuard } from "@src/common/guard";
 import { CommonMessage } from "@src/config/message";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
 
+@ApiTags("Account")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("account")
 export class AccountController {
   constructor(private accountService: AccountService) {
@@ -28,6 +38,11 @@ export class AccountController {
    * @param accountId 更新信息的目标账户
    * @param profileDto 更新信息表单
    */
+  @ApiOperation({
+    summary: "更新账户信息",
+    description: "后台账户更新个人信息",
+  })
+  @ApiResponseEmpty()
   @UseGuards(AccountGuard)
   @Patch("/profile")
   updateProfile(
@@ -51,6 +66,11 @@ export class AccountController {
    * @param accountId 更新密码的目标账户
    * @param passwordDto 更新密码表单
    */
+  @ApiOperation({
+    summary: "更新账户密码",
+    description: "后台账户更新密码",
+  })
+  @ApiResponseEmpty()
   @UseGuards(AccountGuard)
   @Post("/password")
   updatePassword(

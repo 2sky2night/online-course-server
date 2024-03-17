@@ -253,7 +253,11 @@ export class AuthAccountService {
    * @param apply_id 申请号
    * @param status 审批状态
    */
-  async approval(account_id: number, apply_id: number, status: boolean) {
+  async approval(
+    account_id: number,
+    apply_id: number,
+    status: boolean,
+  ): Promise<null> {
     // 创建审批
     const approval = await this.createApproval(account_id, apply_id, status);
     // 获取申请数据
@@ -281,7 +285,7 @@ export class AuthAccountService {
    * 获取邮箱验证码
    * @param email 邮箱地址
    */
-  async getLoginCode(email: string) {
+  async getLoginCode(email: string): Promise<null> {
     const account = await this.accountService.findByEmail(email);
     if (account === null)
       throw new BadRequestException(AuthMessage.email_not_exists);

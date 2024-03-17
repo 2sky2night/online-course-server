@@ -12,7 +12,12 @@ import {
 } from "@nestjs/common";
 import { VideoFavoriteService } from "@src/module/video/video-favorite/video-favorite.service";
 import { UserGuard } from "@src/common/guard";
-import { UserToken } from "@src/common/decorator";
+import {
+  ApiResponse,
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
 import {
   AddVideoDto,
   CreateFavoriteDto,
@@ -21,10 +26,22 @@ import {
 } from "@src/module/video/video-favorite/dto";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { bodyOptionCatcher } from "@src/utils/tools";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import { FavoriteDto, VideoDto } from "@src/types/docs/video/common";
+import { FavoriteListDto } from "@src/types/docs/video/favorite";
 
 /**
  * 视频收藏控制层
  */
+@ApiTags("VideoFavorite")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("video/favorite")
 export class VideoFavoriteController {
   @Inject(VideoFavoriteService)
@@ -35,6 +52,11 @@ export class VideoFavoriteController {
    * @param user_id 用户id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "创建视频收藏夹",
+    description: "前台用户创建视频收藏夹",
+  })
+  @ApiResponseEmpty()
   @Post()
   @UseGuards(UserGuard)
   createFavorite(
@@ -54,6 +76,11 @@ export class VideoFavoriteController {
    * @param user_id 用户id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "更新收藏夹信息",
+    description: "前台用户更新收藏夹信息",
+  })
+  @ApiResponseEmpty()
   @Patch(":fid")
   @UseGuards(UserGuard)
   updateFavorite(
@@ -75,6 +102,11 @@ export class VideoFavoriteController {
    * @param user_id 用户id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "更新收藏夹信息",
+    description: "前台用户更新收藏夹信息",
+  })
+  @ApiResponseEmpty()
   @Post("/videos")
   @UseGuards(UserGuard)
   addVideos(@UserToken("sub") user_id: number, @Body() dto: AddVideoDto) {
@@ -93,6 +125,11 @@ export class VideoFavoriteController {
    * @param user_id
    * @param dto
    */
+  @ApiOperation({
+    summary: "从默认收藏夹中移除多个视频",
+    description: "前台用户从默认收藏夹中移除多个视频",
+  })
+  @ApiResponseEmpty()
   @Delete("/default/videos")
   @UseGuards(UserGuard)
   removeDefaultVideos(
@@ -109,6 +146,11 @@ export class VideoFavoriteController {
    * @param limit 长度
    * @param desc 降序
    */
+  @ApiOperation({
+    summary: "查询用户默认收藏夹中视频",
+    description: "分页查询用户默认收藏夹中的所有视频",
+  })
+  @ApiResponsePage(VideoDto)
   @Get("/default/videos")
   favoriteDefaultVideoList(
     @Query("user_id", new IntPipe("user_id")) user_id: number,
@@ -125,6 +167,11 @@ export class VideoFavoriteController {
    * @param favorite_id 收藏夹id
    * @param dto 表单
    */
+  @ApiOperation({
+    summary: "从收藏夹中移除一些视频",
+    description: "前台用户从收藏夹中移除一些视频",
+  })
+  @ApiResponseEmpty()
   @Delete(":fid/videos")
   @UseGuards(UserGuard)
   removeVideos(
@@ -147,6 +194,11 @@ export class VideoFavoriteController {
    * @param desc 是否降序
    * @param video_id 视频id
    */
+  @ApiOperation({
+    summary: "分页查询用户收藏夹对此视频的收藏状态",
+    description: "分页查询用户收藏夹对此视频的收藏状态",
+  })
+  @ApiResponse(FavoriteListDto)
   @Get("/user/list/with-video")
   @UseGuards(UserGuard)
   userFavoritesWithVideo(
@@ -172,6 +224,11 @@ export class VideoFavoriteController {
    * @param limit 长度
    * @param desc 创建时间降序
    */
+  @ApiOperation({
+    summary: "查询用户收藏夹列表",
+    description: "分页查询前台用户收藏夹列表",
+  })
+  @ApiResponsePage(FavoriteDto)
   @Get("/user/list")
   @UseGuards(UserGuard)
   userFavoritesList(
@@ -190,6 +247,11 @@ export class VideoFavoriteController {
    * @param limit 长度
    * @param desc 排序
    */
+  @ApiOperation({
+    summary: "查询收藏夹中的视频",
+    description: "查询收藏夹中的视频",
+  })
+  @ApiResponsePage(VideoDto)
   @Get(":fid/videos")
   favoriteVideoList(
     @Param("fid", new IntPipe("fid")) favorite_id: number,

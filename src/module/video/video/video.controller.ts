@@ -13,6 +13,9 @@ import {
 import { VideoService } from "@src/module/video/video/video.service";
 import {
   AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+  ApiResponsePage,
   Role,
   UserOptionToken,
   UserToken,
@@ -34,7 +37,23 @@ import {
 } from "@src/module/video/video/dto";
 import { bodyOptionCatcher } from "@src/utils/tools";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import {
+  R_VideoInfoDto,
+  R_VideoViewsCount,
+  R_VideoWatchCount,
+} from "@src/types/docs/video/video";
+import { VideoDto } from "@src/types/docs/video/common";
 
+@ApiTags("Video")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("/video")
 export class VideoController {
   /**
@@ -48,6 +67,11 @@ export class VideoController {
    * @param accountId 发布者
    * @param publishVideoDto 表单
    */
+  @ApiOperation({
+    summary: "老师发布视频",
+    description: "老师发布视频",
+  })
+  @ApiResponseEmpty()
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
   @Post()
@@ -64,6 +88,11 @@ export class VideoController {
    * @param videoId 视频id
    * @param videoDto 表单
    */
+  @ApiOperation({
+    summary: "更新视频信息",
+    description: "老师更新视频的信息",
+  })
+  @ApiResponseEmpty()
   @Patch(":vid")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -86,6 +115,11 @@ export class VideoController {
    * 查询视频信息
    * @param videoId 视频id
    */
+  @ApiOperation({
+    summary: "查询视频的详情信息",
+    description: "查询视频的详情信息",
+  })
+  @ApiResponse(R_VideoInfoDto)
   @Get("/info/:vid")
   info(@Param("vid", new IntPipe("vid")) videoId: number) {
     return this.videoService.info(videoId);
@@ -97,6 +131,11 @@ export class VideoController {
    * @param limit 长度
    * @param desc 是否按照时间降序
    */
+  @ApiOperation({
+    summary: "分页查询视频",
+    description: "分页查询视频",
+  })
+  @ApiResponsePage(VideoDto)
   @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,
@@ -111,6 +150,11 @@ export class VideoController {
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "增加视频浏览量",
+    description: "增加视频浏览量",
+  })
+  @ApiResponseEmpty()
   @Post(":vid/views")
   @UseGuards(UserOptionalGuard)
   addViews(
@@ -124,6 +168,11 @@ export class VideoController {
    * 获取视频浏览量
    * @param video_id 视频id
    */
+  @ApiOperation({
+    summary: "获取视频浏览量",
+    description: "获取视频浏览量",
+  })
+  @ApiResponse(R_VideoViewsCount)
   @Get(":vid/views")
   viewsCount(@Param("vid", new IntPipe("vid")) video_id: number) {
     return this.videoService.viewsCount(video_id);
@@ -135,6 +184,11 @@ export class VideoController {
    * @param user_id 用户id
    * @param dto 浏览时长
    */
+  @ApiOperation({
+    summary: "增加视频浏览历史记录",
+    description: "前台用户增加视频浏览历史记录,并记录用户观看的时长",
+  })
+  @ApiResponseEmpty()
   @Post(":vid/history")
   @UseGuards(UserGuard)
   addHistory(
@@ -150,6 +204,11 @@ export class VideoController {
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "点赞视频",
+    description: "前台用户给视频点赞",
+  })
+  @ApiResponseEmpty()
   @Post(":vid/like")
   @UseGuards(UserGuard)
   addLike(
@@ -164,6 +223,11 @@ export class VideoController {
    * @param video_id 视频号
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "取消点赞视频",
+    description: "前台用户取消点赞点赞",
+  })
+  @ApiResponseEmpty()
   @Delete(":vid/like")
   @UseGuards(UserGuard)
   removeLike(
@@ -178,6 +242,11 @@ export class VideoController {
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "删除视频观看记录",
+    description: "前台用户删除视频观看记录",
+  })
+  @ApiResponseEmpty()
   @Delete(":vid/history")
   @UseGuards(UserGuard)
   removeHistory(
@@ -193,6 +262,11 @@ export class VideoController {
    * @param account_id 账户id
    * @param dto 分区信息
    */
+  @ApiOperation({
+    summary: "修改视频分区",
+    description: "老师修改视频分区",
+  })
+  @ApiResponseEmpty()
   @Patch(":vid/partition")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -215,6 +289,11 @@ export class VideoController {
    * @param limit 长度
    * @param desc 是否根据视频创建时间降序
    */
+  @ApiOperation({
+    summary: "查询某分区下的视频",
+    description: "查询某分区下的视频",
+  })
+  @ApiResponsePage(VideoDto)
   @Get("/list/partition/:pid")
   partitionList(
     @Param("pid", new IntPipe("pid")) partition_id: number,
@@ -231,6 +310,11 @@ export class VideoController {
    * @param account_id 账户id
    * @param tag_id_list 标签id列表
    */
+  @ApiOperation({
+    summary: "给视频添加标签",
+    description: "老师给视频添加标签",
+  })
+  @ApiResponseEmpty()
   @Post(":vid/tags")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -248,6 +332,11 @@ export class VideoController {
    * @param account_id 账户id
    * @param tag_id_list 标签id列表
    */
+  @ApiOperation({
+    summary: "删除视频的一些标签",
+    description: "老师给视频移除一些标签",
+  })
+  @ApiResponseEmpty()
   @Delete(":vid/tags")
   @Role(Roles.TEACHER)
   @UseGuards(AccountGuard, RoleGuard)
@@ -260,10 +349,16 @@ export class VideoController {
   }
 
   /**
+   * TODO 是否需要换个实现思路，标识浏览器指纹，将指纹来标识唯一用户
    * 增加视频实时观看人数
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "增加视频实时观看人数",
+    description: "前台用户增加视频实时观看人数",
+  })
+  @ApiResponseEmpty()
   @Post(":vid/watch")
   @UseGuards(UserGuard)
   watchVideo(
@@ -278,6 +373,11 @@ export class VideoController {
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "移除视频实时观看人数",
+    description: "前台用户移除视频实时观看人数",
+  })
+  @ApiResponseEmpty()
   @Delete(":vid/watch")
   @UseGuards(UserGuard)
   decWatchVideo(
@@ -291,6 +391,11 @@ export class VideoController {
    * 查询视频观看实时人数
    * @param video_id 视频id
    */
+  @ApiOperation({
+    summary: "查询视频观看实时人数",
+    description: "查询视频观看实时人数",
+  })
+  @ApiResponse(R_VideoWatchCount)
   @Get(":vid/watch")
   videoWatchCount(@Param("vid", new IntPipe("vid")) video_id: number) {
     return this.videoService.videoWatchCount(video_id);
@@ -301,6 +406,11 @@ export class VideoController {
    * @param video_id 视频id
    * @param user_id 用户id
    */
+  @ApiOperation({
+    summary: "查询当前用户对视频的态度(点赞、收藏状态)",
+    description: "查询当前用户对视频的态度(点赞、收藏状态)",
+  })
+  @ApiResponse(R_VideoWatchCount)
   @Get(":vid/status")
   @UseGuards(UserGuard)
   getVideoStatus(

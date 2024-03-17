@@ -121,7 +121,10 @@ export class AccountService {
    * @param accountId 用户id
    * @param profileDto 更新字段
    */
-  async updateProfile(accountId: number, profileDto: UpdateAccountProfileDto) {
+  async updateProfile(
+    accountId: number,
+    profileDto: UpdateAccountProfileDto,
+  ): Promise<null> {
     const account = await this.findById(accountId, true);
     if (profileDto.account_name) {
       // 修改了用户名

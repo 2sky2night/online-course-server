@@ -11,10 +11,25 @@ import {
 } from "@nestjs/common";
 import { VideoReplyService } from "@src/module/video/video-reply/video-reply.service";
 import { UserGuard } from "@src/common/guard";
-import { UserToken } from "@src/common/decorator";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  UserToken,
+} from "@src/common/decorator";
 import { CreateReplyDto } from "@src/module/video/video-reply/dto";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
+import { ResponseDto } from "@src/types/docs";
+import { ReplyDto } from "@src/types/docs/video/common";
 
+@ApiTags("VideoReply")
+@ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
+@ApiExtraModels(ResponseDto)
 @Controller("video")
 export class VideoReplyController {
   /**
@@ -29,6 +44,11 @@ export class VideoReplyController {
    * @param user_id 用户id
    * @param dto 回复表单
    */
+  @ApiOperation({
+    summary: "发布回复",
+    description: "前台用户发布回复",
+  })
+  @ApiResponseEmpty()
   @Post("/reply")
   @UseGuards(UserGuard)
   addReply(@UserToken("sub") user_id: number, @Body() dto: CreateReplyDto) {
@@ -46,6 +66,11 @@ export class VideoReplyController {
    * @param user_id 用户id
    * @param reply_id 回复id
    */
+  @ApiOperation({
+    summary: "点赞回复",
+    description: "前台用户点赞回复",
+  })
+  @ApiResponseEmpty()
   @Post("/reply/:rid")
   @UseGuards(UserGuard)
   addReplyLike(
@@ -60,6 +85,11 @@ export class VideoReplyController {
    * @param user_id 用户id
    * @param reply_id 回复id
    */
+  @ApiOperation({
+    summary: "取消点赞回复",
+    description: "前台用户取消点赞回复",
+  })
+  @ApiResponseEmpty()
   @Delete("/reply/:rid")
   @UseGuards(UserGuard)
   removeReplyLike(
@@ -76,6 +106,11 @@ export class VideoReplyController {
    * @param limit 长度
    * @param desc 是否按照创建时间降序
    */
+  @ApiOperation({
+    summary: "查询评论的回复列表",
+    description: "分页查询评论的所有回复列表",
+  })
+  @ApiResponsePage(ReplyDto)
   @Get("/comment/:cid/reply")
   list(
     @Param("cid", new IntPipe("cid")) comment_id: number,

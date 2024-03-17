@@ -92,7 +92,10 @@ export class UserService {
    * @param userId 要更新的用户
    * @param profileDto 更新提交的表单
    */
-  async updateProfile(userId: number, profileDto: UpdateUserProfileDto) {
+  async updateProfile(
+    userId: number,
+    profileDto: UpdateUserProfileDto,
+  ): Promise<null> {
     const user = await this.findByUID(userId);
     if (profileDto.user_name) {
       // 查询用户是否重复
