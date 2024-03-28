@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiExtraModels,
@@ -9,9 +17,11 @@ import {
   AccountToken,
   ApiResponse,
   ApiResponseEmpty,
+  ApiResponsePage,
   Role,
 } from "@src/common/decorator";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { BooleanPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { Roles } from "@src/module/account/module/role/enum";
 import {
   ApplyAccountDto,
@@ -23,6 +33,8 @@ import {
 import { AuthAccountService } from "@src/module/auth/account/service";
 import { ResponseDto } from "@src/types/docs";
 import {
+  ApplyRegisterInfoDto,
+  ApprovalLogInfoDto,
   R_ApplyAccountDto,
   R_EmailAccountDto,
   R_LoginAccountDto,
@@ -135,6 +147,50 @@ export class AuthAccountController {
   @Post("/login/email")
   emailLogin(@Body() dto: EmailLoginDto) {
     return this.authAccountService.emailLogin(dto.email, dto.code);
+  }
+
+  /**
+   * 超级管理员查询申请注册记录
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "分页查询申请注册记录",
+    description: "超级管理员查询申请注册记录",
+  })
+  @ApiResponsePage(ApplyRegisterInfoDto)
+  @Role(Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  @Get("/apply/list")
+  getApplyList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.authAccountService.getApplyList(offset, limit, desc);
+  }
+
+  /**
+   * 超级管理员查询审批申请注册记录
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "分页查询审批申请注册记录",
+    description: "超级管理员查询审批申请注册记录",
+  })
+  @ApiResponsePage(ApprovalLogInfoDto)
+  @Role(Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  @Get("/approval/list")
+  getApprovalList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.authAccountService.getApprovalList(offset, limit, desc);
   }
 
   /**

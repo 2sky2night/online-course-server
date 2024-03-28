@@ -29,7 +29,7 @@ export class ApprovalRegister {
   /**
    * 审批状态
    */
-  @Column({ type: "boolean" })
+  @Column({ type: "boolean", comment: "1审批成功，0审批驳回" })
   status: boolean;
 
   /**

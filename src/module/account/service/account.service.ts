@@ -14,6 +14,7 @@ import {
   UpdateAccountPasswordDto,
   UpdateAccountProfileDto,
 } from "@src/module/account/dto";
+import { Role } from "@src/module/account/module/role/entity";
 import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
 import type { Repository } from "typeorm";
 
@@ -161,5 +162,25 @@ export class AccountService {
     const key = passwordEncrypt(password);
     await this.accountRepository.update(accountId, { password: key });
     return null;
+  }
+
+  /**
+   * 获取用户信息，包含了基本信息和角色信息
+   * @param accountId 用户id
+   */
+  async getAccountInfo(accountId: number) {
+    const account = await this.findById(accountId, true);
+    const role = await account.role;
+    return this.formatAccountRole({ ...account, role } as any);
+  }
+
+  /**
+   * 格式化用户信息
+   * @param account
+   */
+  formatAccountRole(account: Account & { role: Role }) {
+    Reflect.deleteProperty(account, "__role__");
+    Reflect.deleteProperty(account, "__has_role__");
+    return account;
   }
 }

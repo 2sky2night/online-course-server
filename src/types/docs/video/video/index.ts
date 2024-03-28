@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { AccountDto } from "@src/types/docs/account";
 import {
-  AccountDto,
   PartitionDto,
   SourceDto,
   TagDto,

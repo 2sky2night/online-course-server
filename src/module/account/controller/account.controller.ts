@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Patch,
   Post,
   UseGuards,
@@ -12,7 +13,11 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { AccountToken, ApiResponseEmpty } from "@src/common/decorator";
+import {
+  AccountToken,
+  ApiResponse,
+  ApiResponseEmpty,
+} from "@src/common/decorator";
 import { AccountGuard } from "@src/common/guard";
 import { CommonMessage } from "@src/config/message";
 import {
@@ -21,6 +26,7 @@ import {
 } from "@src/module/account/dto";
 import { AccountService } from "@src/module/account/service";
 import { ResponseDto } from "@src/types/docs";
+import { AccountInfoDto } from "@src/types/docs/account";
 
 import { initLoader } from "../init";
 
@@ -83,5 +89,16 @@ export class AccountController {
     } else {
       return this.accountService.updatePassword(accountId, passwordDto);
     }
+  }
+
+  @ApiOperation({
+    summary: "后台账户获取个人信息",
+    description: "根据token获取个人信息",
+  })
+  @ApiResponse(AccountInfoDto)
+  @UseGuards(AccountGuard)
+  @Get("/info")
+  getInfoByToken(@AccountToken("sub") accountId: number) {
+    return this.accountService.getAccountInfo(accountId);
   }
 }

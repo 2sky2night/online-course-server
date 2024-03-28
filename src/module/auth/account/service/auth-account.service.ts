@@ -20,7 +20,7 @@ import {
 import { EmailService } from "@src/module/email/email.service";
 import { RedisService } from "@src/module/redis/redis.service";
 import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
-import { generateCode } from "@src/utils/tools";
+import { generateCode, pageResult } from "@src/utils/tools";
 import * as process from "process";
 import type { Repository } from "typeorm";
 
@@ -332,5 +332,74 @@ export class AuthAccountService {
     await this.redisService.del(redisKey);
     // 生成token
     return this.generationToken(account);
+  }
+
+  /**
+   * 查询申请列表
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async getApplyList(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.applyRepository.findAndCount({
+      skip: offset,
+      take: limit,
+      select: {
+        apply_id: true,
+        account_name: true,
+        email: true,
+        description: true,
+        created_time: true,
+      },
+      order: {
+        created_time: desc ? "DESC" : "ASC",
+      },
+      relations: {
+        role: true,
+        approval: true,
+      },
+    });
+    const formatList = list.map((item) => {
+      const approval = item["__approval__"];
+      Reflect.deleteProperty(item, "__approval__");
+      return {
+        ...item,
+        approval,
+      };
+    });
+    return pageResult(formatList, total, offset, limit);
+  }
+
+  /**
+   * 查询审核日志
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async getApprovalList(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.approvalRepository.findAndCount({
+      skip: offset,
+      take: limit,
+      order: {
+        created_time: desc ? "DESC" : "ASC",
+      },
+      relations: {
+        apply: true,
+        approval_account: true,
+      },
+    });
+    const formatList = list.map((item) => {
+      const apply = item["__apply__"];
+      const approval_account = item["__approval_account__"];
+      delete item["__apply__"];
+      delete item["__approval_account__"];
+      delete apply["password"];
+      return {
+        ...item,
+        apply,
+        approval_account,
+      };
+    });
+    return pageResult(formatList, total, offset, limit);
   }
 }

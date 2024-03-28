@@ -1,9 +1,12 @@
+import { Role } from "@src/module/account/module/role/entity";
 import { ApprovalRegister } from "@src/module/auth/account/entity/approval-register.entity";
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -75,4 +78,11 @@ export class ApplyRegister {
    */
   @OneToOne(() => ApprovalRegister, (approval) => approval.apply)
   approval: Promise<ApprovalRegister>;
+
+  /**
+   * 一个用户拥有一个角色
+   */
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: "role_id" })
+  role: Role;
 }

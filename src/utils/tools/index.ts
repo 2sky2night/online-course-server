@@ -105,3 +105,23 @@ export function readFileData(filePath: string, utf8: boolean) {
     }
   });
 }
+
+/**
+ * 包装列表返回数据
+ * @param list 数据
+ * @param total 总数
+ * @param offset 偏移量
+ * @param limit 页长度
+ */
+export function pageResult<T>(
+  list: T[],
+  total: number,
+  offset: number,
+  limit: number,
+) {
+  return {
+    list,
+    total,
+    has_more: total > offset + limit,
+  };
+}
