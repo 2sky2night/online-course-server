@@ -46,6 +46,7 @@ import { ResponseDto } from "@src/types/docs";
 import { VideoDto } from "@src/types/docs/video/common";
 import {
   R_VideoInfoDto,
+  R_VideoListItemDto,
   R_VideoViewsCount,
   R_VideoWatchCount,
 } from "@src/types/docs/video/video";
@@ -135,7 +136,7 @@ export class VideoController {
     summary: "分页查询视频",
     description: "分页查询视频",
   })
-  @ApiResponsePage(VideoDto)
+  @ApiResponsePage(R_VideoListItemDto)
   @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,

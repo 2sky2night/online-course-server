@@ -843,4 +843,34 @@ export class VideoService {
       is_like: isLike,
     };
   }
+
+  /**
+   * 获取某合集下的视频列表
+   * @param collection_id 合集id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 根据创建时间降序
+   */
+  async videoListInCollection(
+    collection_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    const [list, total] = await this.videoRepository
+      .createQueryBuilder("video")
+      .leftJoinAndSelect(
+        "video.collections",
+        "collection",
+        "collection.collection_id = :collection_id",
+        { collection_id },
+      )
+      .leftJoinAndSelect("video.publisher", "publisher")
+      .skip(offset)
+      .take(limit)
+      .orderBy("video.created_time", desc ? "DESC" : "ASC")
+      .getManyAndCount();
+    list.forEach((item) => Reflect.deleteProperty(item, "collections"));
+    return [list, total] as [Video[], number];
+  }
 }

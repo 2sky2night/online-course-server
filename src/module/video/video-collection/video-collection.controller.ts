@@ -39,6 +39,7 @@ import { VideoCollectionService } from "@src/module/video/video-collection/video
 import { ResponseDto } from "@src/types/docs";
 import { CollectionDtoA } from "@src/types/docs/video/collection";
 import { CollectionDto } from "@src/types/docs/video/common";
+import { R_VideoListItemDto } from "@src/types/docs/video/video";
 import { bodyOptionCatcher } from "@src/utils/tools";
 
 @ApiTags("VideoCollection")
@@ -282,5 +283,27 @@ export class VideoCollectionController {
     @AccountToken("sub") account_id: number,
   ) {
     return this.VCService.removeTags(account_id, collection_id, tag_id_list);
+  }
+
+  /**
+   * 获取此合集下的视频列表
+   * @param collection_id
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "获取此合集下的视频列表",
+    description: "获取此合集下的视频列表",
+  })
+  @ApiResponsePage(R_VideoListItemDto)
+  @Get(":cid/videos")
+  videoList(
+    @Param("cid", new IntPipe("cid")) collection_id: number,
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.VCService.videoList(collection_id, offset, limit, desc);
   }
 }

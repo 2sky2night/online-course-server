@@ -377,17 +377,15 @@ export class AuthAccountService {
    * @param desc
    */
   async getApprovalList(offset: number, limit: number, desc: boolean) {
-    const [list, total] = await this.approvalRepository.findAndCount({
-      skip: offset,
-      take: limit,
-      order: {
-        created_time: desc ? "DESC" : "ASC",
-      },
-      relations: {
-        apply: true,
-        approval_account: true,
-      },
-    });
+    const [list, total] = await this.approvalRepository
+      .createQueryBuilder("app")
+      .orderBy("apply.created_time", desc ? "DESC" : "ASC")
+      .skip(offset)
+      .take(limit)
+      .leftJoinAndSelect("app.apply", "apply")
+      .leftJoinAndSelect("app.approval_account", "account")
+      .leftJoinAndSelect("apply.role", "role")
+      .getManyAndCount();
     const formatList = list.map((item) => {
       const apply = item["__apply__"];
       const approval_account = item["__approval_account__"];

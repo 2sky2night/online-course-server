@@ -17,6 +17,7 @@ import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { VideoTag } from "@src/module/video/video-tag/entity";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
+import { pageResult } from "@src/utils/tools";
 import { In, Repository } from "typeorm";
 
 @Injectable()
@@ -524,5 +525,28 @@ export class VideoCollectionService {
     return videos.every((video) =>
       rawCollection.videos.some((i) => i.video_id === video.video_id),
     );
+  }
+
+  /**
+   * 获取某合集下的视频列表
+   * @param collection_id 合集id
+   * @param offset 偏移量
+   * @param limit 长度
+   * @param desc 根据创建时间降序
+   */
+  async videoList(
+    collection_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    await this.findById(collection_id, true);
+    const [list, total] = await this.videoService.videoListInCollection(
+      collection_id,
+      offset,
+      limit,
+      desc,
+    );
+    return pageResult(list, total, offset, limit);
   }
 }
