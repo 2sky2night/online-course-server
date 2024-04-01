@@ -78,6 +78,9 @@ export class VideoPartitionService {
       order: { created_time: desc ? "DESC" : "ASC" },
       skip: offset,
       take: limit,
+      relations: {
+        account: true,
+      },
     });
     return {
       list,
@@ -113,5 +116,22 @@ export class VideoPartitionService {
    */
   findByName(partition_name: string) {
     return this.VPRepository.findOneBy({ partition_name });
+  }
+
+  /**
+   * 查询分区详情
+   * @param partition_id
+   */
+  async info(partition_id: number) {
+    const item = await this.VPRepository.findOne({
+      where: { partition_id },
+      relations: {
+        account: true,
+      },
+    });
+    if (item) {
+      return item;
+    }
+    throw new NotFoundException(VideoMessage.partition_not_exist);
   }
 }

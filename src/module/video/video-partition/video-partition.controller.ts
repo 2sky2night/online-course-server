@@ -17,6 +17,7 @@ import {
 } from "@nestjs/swagger";
 import {
   AccountToken,
+  ApiResponse,
   ApiResponseEmpty,
   ApiResponsePage,
   Role,
@@ -30,7 +31,7 @@ import {
 } from "@src/module/video/video-partition/dto";
 import { VideoPartitionService } from "@src/module/video/video-partition/video-partition.service";
 import { ResponseDto } from "@src/types/docs";
-import { PartitionDto } from "@src/types/docs/video/common";
+import { PartitionInfoDto } from "@src/types/docs/video/partition";
 
 /**
  * 视频分区控制层
@@ -103,7 +104,7 @@ export class VideoPartitionController {
     summary: "获取分区列表",
     description: "获取分区列表",
   })
-  @ApiResponsePage(PartitionDto)
+  @ApiResponsePage(PartitionInfoDto)
   @Get()
   list(
     @Query("offset", OffsetPipe) offset: number,
@@ -111,5 +112,19 @@ export class VideoPartitionController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.service.list(offset, limit, desc);
+  }
+
+  /**
+   * 获取分区详情
+   * @param partition_id 分区id
+   */
+  @ApiOperation({
+    summary: "获取分区详情",
+    description: "获取分区详情",
+  })
+  @ApiResponse(PartitionInfoDto)
+  @Get(":pid")
+  info(@Param("pid", new IntPipe("pid")) partition_id: number) {
+    return this.service.info(partition_id);
   }
 }

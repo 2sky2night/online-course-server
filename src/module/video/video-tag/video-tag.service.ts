@@ -66,6 +66,7 @@ export class VideoTagService {
     )
       .where("relation.tag_id = :tag_id", { tag_id: tag.tag_id })
       .leftJoinAndSelect("relation.video", "video")
+      .leftJoinAndSelect("video.publisher", "publisher")
       .orderBy("video.created_time", desc ? "DESC" : "ASC")
       .skip(offset)
       .take(limit)
@@ -96,6 +97,7 @@ export class VideoTagService {
     )
       .where("relation.tag_id = :tag_id", { tag_id: tag.tag_id })
       .leftJoinAndSelect("relation.collection", "collection")
+      .leftJoinAndSelect("collection.creator", "creator")
       .orderBy("collection.created_time", desc ? "DESC" : "ASC")
       .skip(offset)
       .take(limit)
@@ -118,6 +120,9 @@ export class VideoTagService {
       skip: offset,
       take: limit,
       order: { created_time: desc ? "DESC" : "ASC" },
+      relations: {
+        account: true,
+      },
     });
     return {
       list,

@@ -376,6 +376,7 @@ export class VideoService {
     const partition = await this.VPService.findByIdOrFail(partition_id);
     const [list, total] = await this.videoRepository
       .createQueryBuilder("video")
+      .leftJoinAndSelect("video.publisher", "publisher")
       .where("video.partition_id = :partition_id", {
         partition_id: partition.partition_id,
       })

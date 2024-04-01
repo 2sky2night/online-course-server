@@ -43,7 +43,6 @@ import {
 } from "@src/module/video/video/dto";
 import { VideoService } from "@src/module/video/video/video.service";
 import { ResponseDto } from "@src/types/docs";
-import { VideoDto } from "@src/types/docs/video/common";
 import {
   R_VideoInfoDto,
   R_VideoListItemDto,
@@ -294,7 +293,7 @@ export class VideoController {
     summary: "查询某分区下的视频",
     description: "查询某分区下的视频",
   })
-  @ApiResponsePage(VideoDto)
+  @ApiResponsePage(R_VideoListItemDto)
   @Get("/list/partition/:pid")
   partitionList(
     @Param("pid", new IntPipe("pid")) partition_id: number,

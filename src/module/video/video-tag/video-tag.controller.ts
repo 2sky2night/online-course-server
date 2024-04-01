@@ -27,7 +27,9 @@ import { Roles } from "@src/module/account/module/role/enum";
 import { CreateTagDto, UpdateTagDto } from "@src/module/video/video-tag/dto";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { ResponseDto } from "@src/types/docs";
-import { CollectionDto, TagDto, VideoDto } from "@src/types/docs/video/common";
+import { CollectionDtoA } from "@src/types/docs/video/collection";
+import { TagInfoDto } from "@src/types/docs/video/tag";
+import { R_VideoListItemDto } from "@src/types/docs/video/video";
 
 /**
  * 视频标签控制层
@@ -94,7 +96,7 @@ export class VideoTagController {
     summary: "查询某个分区下的视频",
     description: "分页查询某个分区下的所有视频",
   })
-  @ApiResponsePage(VideoDto)
+  @ApiResponsePage(R_VideoListItemDto)
   @Get(":tid/videos")
   videoList(
     @Param("tid", new IntPipe("tid")) tag_id: number,
@@ -116,7 +118,7 @@ export class VideoTagController {
     summary: "查询某个分区下的视频合集",
     description: "分页查询某个分区下的所有视频合集",
   })
-  @ApiResponsePage(CollectionDto)
+  @ApiResponsePage(CollectionDtoA)
   @Get(":tid/collection")
   collectionList(
     @Param("tid", new IntPipe("tid")) tag_id: number,
@@ -137,7 +139,7 @@ export class VideoTagController {
     summary: "分页获取标签",
     description: "分页获取所有标签",
   })
-  @ApiResponsePage(TagDto)
+  @ApiResponsePage(TagInfoDto)
   @Get("/list")
   list(
     @Query("offset", OffsetPipe) offset: number,
