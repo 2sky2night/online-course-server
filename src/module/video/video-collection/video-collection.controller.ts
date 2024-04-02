@@ -38,7 +38,6 @@ import {
 import { VideoCollectionService } from "@src/module/video/video-collection/video-collection.service";
 import { ResponseDto } from "@src/types/docs";
 import { CollectionDtoA } from "@src/types/docs/video/collection";
-import { CollectionDto } from "@src/types/docs/video/common";
 import { R_VideoListItemDto } from "@src/types/docs/video/video";
 import { bodyOptionCatcher } from "@src/utils/tools";
 
@@ -230,7 +229,7 @@ export class VideoCollectionController {
     summary: "查询此分区下的合集列表",
     description: "分页查询此分区下的视频合集列表",
   })
-  @ApiResponsePage(CollectionDto)
+  @ApiResponsePage(CollectionDtoA)
   @Get("/list/partition/:pid")
   partitionList(
     @Param("pid", new IntPipe("pid")) partition_id: number,

@@ -236,6 +236,7 @@ export class VideoCollectionService {
         partition_id: partition.partition_id,
       })
       .orderBy("collection.created_time", desc ? "DESC" : "ASC")
+      .leftJoinAndSelect("collection.creator", "creator")
       .skip(offset)
       .take(limit)
       .getManyAndCount();

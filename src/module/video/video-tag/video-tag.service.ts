@@ -311,4 +311,21 @@ export class VideoTagService {
   removeCollectionTags(relation: VideoCollectionRelationTag[]) {
     return this.VCRTRepository.softRemove(relation);
   }
+
+  /**
+   * 获取标签的详情信息
+   * @param tag_id
+   */
+  async info(tag_id: number) {
+    const item = await this.videoTagRepository.findOne({
+      where: { tag_id },
+      relations: {
+        account: true,
+      },
+    });
+    if (item) {
+      return item;
+    }
+    throw new NotFoundException(VideoMessage.tag_not_exist);
+  }
 }

@@ -17,6 +17,7 @@ import {
 } from "@nestjs/swagger";
 import {
   AccountToken,
+  ApiResponse,
   ApiResponseEmpty,
   ApiResponsePage,
   Role,
@@ -147,5 +148,19 @@ export class VideoTagController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.service.list(offset, limit, desc);
+  }
+
+  /**
+   * 获取标签的详情信息
+   * @param tag_id
+   */
+  @ApiOperation({
+    summary: "获取标签的详情信息",
+    description: "获取标签的详情信息",
+  })
+  @ApiResponse(TagInfoDto)
+  @Get(":tid")
+  info(@Param("tid", new IntPipe("tid")) tag_id: number) {
+    return this.service.info(tag_id);
   }
 }
