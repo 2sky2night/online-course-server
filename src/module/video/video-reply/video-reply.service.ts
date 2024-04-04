@@ -8,6 +8,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { VideoMessage } from "@src/config/message";
 import { User } from "@src/module/user/entity";
 import { UserService } from "@src/module/user/service";
+import { VideoService } from "@src/module/video/video/video.service";
 import { VideoComment } from "@src/module/video/video-comment/entity";
 import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
 import {
@@ -46,6 +47,13 @@ export class VideoReplyService {
    */
   @Inject(UserService)
   private userService: UserService;
+
+  /**
+   * 视频服务层
+   * @private
+   */
+  @Inject(VideoService)
+  private videoService: VideoService;
 
   /**
    * 添加回复
@@ -231,5 +239,37 @@ export class VideoReplyService {
    */
   deleteLike(like_id: number) {
     return this.VRLRepository.softDelete(like_id);
+  }
+
+  /**
+   * 查询某个视频里的回复
+   * @param video_id
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async replyListInVideo(
+    video_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    await this.videoService.findById(video_id, true);
+    const [list, total] = await this.videoReplyRepository
+      .createQueryBuilder("reply")
+      .leftJoinAndSelect("reply.comment", "comment")
+      .leftJoinAndSelect(
+        "comment.video",
+        "video",
+        "comment.video_id = video.video_id",
+      )
+      .where("video.video_id = :video_id", { video_id })
+      .leftJoinAndSelect("reply.user", "user")
+      .take(limit)
+      .skip(offset)
+      .orderBy("reply.created_time", desc ? "DESC" : "ASC")
+      .getManyAndCount();
+    list.forEach((item) => Reflect.deleteProperty(item, "comment"));
+    return pageResult(list, total, offset, limit);
   }
 }

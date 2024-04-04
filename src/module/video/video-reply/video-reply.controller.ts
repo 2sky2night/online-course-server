@@ -141,4 +141,26 @@ export class VideoReplyController {
   ) {
     return this.service.commonList(offset, limit, desc);
   }
+
+  /**
+   * 查询某个视频下的所有回复
+   * @param video_id
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询某个视频下的所有回复",
+    description: "查询某个视频下的所有回复",
+  })
+  @ApiResponsePage(ReplyDtoA)
+  @Get(":vid/reply/list")
+  replyListInVideo(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.service.replyListInVideo(video_id, offset, limit, desc);
+  }
 }
