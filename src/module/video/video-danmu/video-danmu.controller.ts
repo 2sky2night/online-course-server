@@ -21,12 +21,13 @@ import {
   UserToken,
 } from "@src/common/decorator";
 import { UserGuard } from "@src/common/guard";
-import { IntPipe } from "@src/common/pipe";
+import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { VideoMessage } from "@src/config/message";
 import { CreateDanmuDto } from "@src/module/video/video-danmu/dto";
 import { VideoDanmuService } from "@src/module/video/video-danmu/video-danmu.service";
 import { ResponseDto } from "@src/types/docs";
 import { DanmuDto } from "@src/types/docs/video/common";
+import { DanmuDtoA } from "@src/types/docs/video/danmu";
 
 /**
  * 弹幕控制层
@@ -85,5 +86,47 @@ export class VideoDanmuController {
       throw new BadRequestException(VideoMessage.get_danmu_error);
     }
     return this.service.list(video_id, start, end);
+  }
+
+  /**
+   * 查询所有弹幕列表
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询所有弹幕",
+    description: "查询所有弹幕",
+  })
+  @ApiResponsePage(DanmuDtoA)
+  @Get("/danmu/list")
+  commonList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.service.commonList(offset, limit, desc);
+  }
+
+  /**
+   * 查询某个视频下的所有弹幕
+   * @param video_id
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询某个视频下的所有弹幕",
+    description: "查询某个视频下的所有弹幕",
+  })
+  @ApiResponsePage(DanmuDtoA)
+  @Get(":vid/danmu/list")
+  danmuListInVideo(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.service.danmuListInVideo(video_id, offset, limit, desc);
   }
 }
