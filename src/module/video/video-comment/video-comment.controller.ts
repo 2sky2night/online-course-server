@@ -25,7 +25,7 @@ import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { AddCommentDto } from "@src/module/video/video-comment/dto";
 import { VideoCommentService } from "@src/module/video/video-comment/video-comment.service";
 import { ResponseDto } from "@src/types/docs";
-import { CommentDto } from "@src/types/docs/video/common";
+import { CommentDtoA } from "@src/types/docs/video/comment";
 
 /**
  * 评论控制层
@@ -74,7 +74,7 @@ export class VideoCommentController {
     summary: "查询视频评论列表",
     description: "分页查询视频评论列表",
   })
-  @ApiResponsePage(CommentDto)
+  @ApiResponsePage(CommentDtoA)
   @Get(":vid/comment")
   list(
     @Param("vid", new IntPipe("vid")) video_id: number,
@@ -121,5 +121,25 @@ export class VideoCommentController {
     @UserToken("sub") user_id: number,
   ) {
     return this.service.removeCommentLike(comment_id, user_id);
+  }
+
+  /**
+   * 查询所有评论
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询所有评论",
+    description: "分页查询所有评论",
+  })
+  @ApiResponsePage(CommentDtoA)
+  @Get("/comment/list")
+  commonList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.service.commentList(offset, limit, desc);
   }
 }

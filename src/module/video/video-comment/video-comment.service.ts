@@ -14,6 +14,7 @@ import {
   VideoComment,
   VideoCommentLike,
 } from "@src/module/video/video-comment/entity";
+import { pageResult } from "@src/utils/tools";
 import { Repository } from "typeorm";
 
 /**
@@ -80,6 +81,7 @@ export class VideoCommentService {
       .where("video.video_id = :video_id", { video_id })
       .orderBy("comment.created_time", desc ? "DESC" : "ASC")
       .select(["comment"])
+      .leftJoinAndSelect("comment.user", "user")
       .skip(offset)
       .take(limit)
       .getManyAndCount();
@@ -88,6 +90,24 @@ export class VideoCommentService {
       total,
       has_more: total > offset + limit,
     };
+  }
+
+  /**
+   * 查询所有评论
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async commentList(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.VCRepository.findAndCount({
+      order: { created_time: desc ? "DESC" : "ASC" },
+      take: limit,
+      skip: offset,
+      relations: {
+        user: true,
+      },
+    });
+    return pageResult(list, total, offset, limit);
   }
 
   /**
