@@ -14,6 +14,7 @@ import {
   VideoReply,
   VideoReplyLike,
 } from "@src/module/video/video-reply/entity";
+import { pageResult } from "@src/utils/tools";
 import { Repository } from "typeorm";
 
 /**
@@ -128,12 +129,31 @@ export class VideoReplyService {
       .orderBy("reply.created_time", desc ? "DESC" : "ASC")
       .skip(offset)
       .take(limit)
+      .leftJoinAndSelect("reply.user", "user")
       .getManyAndCount();
     return {
       list,
       total,
       has_more: total > limit + offset,
     };
+  }
+
+  /**
+   * 查询所有回复
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async commonList(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.videoReplyRepository.findAndCount({
+      take: limit,
+      skip: offset,
+      order: { created_time: desc ? "DESC" : "ASC" },
+      relations: {
+        user: true,
+      },
+    });
+    return pageResult(list, total, offset, limit);
   }
 
   /**

@@ -25,7 +25,7 @@ import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { CreateReplyDto } from "@src/module/video/video-reply/dto";
 import { VideoReplyService } from "@src/module/video/video-reply/video-reply.service";
 import { ResponseDto } from "@src/types/docs";
-import { ReplyDto } from "@src/types/docs/video/common";
+import { ReplyDtoA } from "@src/types/docs/video/reply";
 
 @ApiTags("VideoReply")
 @ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
@@ -110,7 +110,7 @@ export class VideoReplyController {
     summary: "查询评论的回复列表",
     description: "分页查询评论的所有回复列表",
   })
-  @ApiResponsePage(ReplyDto)
+  @ApiResponsePage(ReplyDtoA)
   @Get("/comment/:cid/reply")
   list(
     @Param("cid", new IntPipe("cid")) comment_id: number,
@@ -120,5 +120,25 @@ export class VideoReplyController {
     desc: boolean,
   ) {
     return this.service.list(comment_id, offset, limit, desc);
+  }
+
+  /**
+   * 查询所有回复
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询所有回复",
+    description: "查询所有回复",
+  })
+  @ApiResponsePage(ReplyDtoA)
+  @Get("/reply/list")
+  commonList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.service.commonList(offset, limit, desc);
   }
 }
