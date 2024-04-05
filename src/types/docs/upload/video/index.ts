@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { FileVideo } from "@src/module/file/entity";
 import { UploadChunkDto } from "@src/module/upload/module/video/dto";
 import { ResponseDto } from "@src/types/docs";
-import { FileDto } from "@src/types/docs/file";
+import { FileDto, FileVideoDto } from "@src/types/docs/file";
 
 // 直接上传视频响应的数据
 export class R_UploadVideoDto {
@@ -127,6 +127,6 @@ export class FileUploadChunkDto extends UploadChunkDto {
 }
 
 export class R_GetFileVideos extends FileDto {
-  @ApiProperty({ type: [FileVideo] })
+  @ApiProperty({ type: [FileVideoDto] })
   m3u8: FileVideo[];
 }
