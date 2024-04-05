@@ -92,4 +92,17 @@ export class FileService {
     if (resolution !== null) video.resolution = resolution;
     return this.FVRepository.save(video);
   }
+
+  /**
+   * 获取文件的视频源
+   * @param file_id
+   */
+  getFileVideos(file_id: number) {
+    return this.fileRepository.findOne({
+      where: { file_id },
+      relations: {
+        m3u8: true,
+      },
+    });
+  }
 }

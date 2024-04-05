@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UploadMessage, VideoMessage } from "@src/config/message";
+import { FileMessage, UploadMessage, VideoMessage } from "@src/config/message";
 import { ChunkFolder, Folder } from "@src/lib/folder";
 import { VideoProcessing } from "@src/lib/video-processing";
 import { Account } from "@src/module/account/entity";
@@ -396,5 +396,18 @@ export class UploadVideoService {
     );
     // 在redis中更新此视频处理键(视频处理已经完成)
     await this.redisService.set(processingKey, "done");
+  }
+
+  /**
+   * 获取视频
+   * @param file_id
+   */
+  async getFileVideos(file_id: number) {
+    const file = await this.fileService.getFileVideos(file_id);
+    if (file) {
+      return file;
+    } else {
+      throw new NotFoundException(FileMessage.file_not_exist);
+    }
   }
 }

@@ -28,7 +28,7 @@ import {
   Role,
 } from "@src/common/decorator";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
-import { FileChunkPipe, FileVideoPipe } from "@src/common/pipe";
+import { FileChunkPipe, FileVideoPipe, IntPipe } from "@src/common/pipe";
 import { UploadMessage } from "@src/config/message";
 import { Roles } from "@src/module/account/module/role/enum";
 import {
@@ -44,6 +44,7 @@ import {
   FileUploadVideoDto,
   R_ChunkUploadProgress,
   R_FastUploadDto,
+  R_GetFileVideos,
   R_GetVideoMergeProgress,
   R_GetVideoProcessingProgress,
   R_MergeChunk,
@@ -241,5 +242,21 @@ export class UploadVideoController {
   @UseGuards(AccountGuard, RoleGuard)
   getVideoMergeProgress(@Query("merge_key") mergeKey: string) {
     return this.uploadVideoService.getVideoMergeProgress(mergeKey);
+  }
+
+  /**
+   * 获取文件的视频源
+   * @param file_id
+   */
+  @ApiOperation({
+    summary: "获取文件的视频源",
+    description: "获取文件的视频源",
+  })
+  @ApiResponse(R_GetFileVideos)
+  @Get("/source/:fid")
+  @Role(Roles.TEACHER)
+  @UseGuards(AccountGuard, RoleGuard)
+  getFileVideos(@Param("fid", new IntPipe("fid")) file_id: number) {
+    return this.uploadVideoService.getFileVideos(file_id);
   }
 }
