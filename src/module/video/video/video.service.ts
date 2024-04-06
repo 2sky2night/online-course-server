@@ -862,12 +862,8 @@ export class VideoService {
   ) {
     const [list, total] = await this.videoRepository
       .createQueryBuilder("video")
-      .leftJoinAndSelect(
-        "video.collections",
-        "collection",
-        "collection.collection_id = :collection_id",
-        { collection_id },
-      )
+      .leftJoinAndSelect("video.collections", "collection")
+      .where("collection.collection_id = :collection_id", { collection_id }) // 非常奇怪，这样查询就是对的
       .leftJoinAndSelect("video.publisher", "publisher")
       .skip(offset)
       .take(limit)
