@@ -277,7 +277,7 @@ export class VideoService {
     const tags = info.tagRelation.map((item) => item.tag); // 视频标签
     // 观看数量
     const views = await this.VVRespository.createQueryBuilder("views")
-      .where("views.video_id", { video_id })
+      .where("views.video_id = :video_id", { video_id })
       .getCount();
     // 点赞数量
     const likes = await this.VLRepository.createQueryBuilder("like")
