@@ -12,6 +12,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { VideoMessage } from "@src/config/message";
 import { FfmpegFolder, Folder } from "@src/lib/folder";
 import { Account } from "@src/module/account/entity";
+import { Roles } from "@src/module/account/module/role/enum";
 import { AccountService } from "@src/module/account/service";
 import { File } from "@src/module/file/entity";
 import { FileType } from "@src/module/file/enum";
@@ -35,6 +36,7 @@ import { VideoPartitionService } from "@src/module/video/video-partition/video-p
 import { VideoTag } from "@src/module/video/video-tag/entity";
 import { VideoTagService } from "@src/module/video/video-tag/video-tag.service";
 import { getVideoDuration } from "@src/utils/ffmpeg";
+import { pageResult } from "@src/utils/tools";
 import { In, Repository } from "typeorm";
 
 @Injectable()
@@ -873,5 +875,40 @@ export class VideoService {
       .getManyAndCount();
     list.forEach((item) => Reflect.deleteProperty(item, "collections"));
     return [list, total] as [Video[], number];
+  }
+
+  /**
+   * 获取某个老师的视频
+   * @param account_id
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async getTeacherVideoList(
+    account_id: number,
+    offset: number,
+    limit: number,
+    desc: boolean,
+  ) {
+    const account = await this.accountService.findById(account_id, true);
+    const role = await account.role;
+    if (role.role_name === Roles.TEACHER) {
+      const [list, total] = await this.videoRepository
+        .createQueryBuilder("video")
+        .leftJoinAndSelect(
+          "video.publisher",
+          "account",
+          "account.account_id = video.account_id",
+        )
+        .where("account.account_id = :account_id", { account_id })
+        .skip(offset)
+        .take(limit)
+        .orderBy("video.created_time", desc ? "DESC" : "ASC")
+        .getManyAndCount();
+      return pageResult(list, total, offset, limit);
+    } else {
+      // 角色非老师
+      throw new BadRequestException();
+    }
   }
 }

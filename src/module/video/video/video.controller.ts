@@ -419,4 +419,24 @@ export class VideoController {
   ) {
     return this.videoService.getVideoStatus(video_id, user_id);
   }
+
+  @ApiOperation({
+    summary: "查询某个老师发布的视频",
+    description: "查询某个老师发布的视频",
+  })
+  @ApiResponsePage(R_VideoListItemDto)
+  @Get("/list/teacher")
+  getTeacherVideoList(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+    @Query("tid", new IntPipe("tid")) account_id: number,
+  ) {
+    return this.videoService.getTeacherVideoList(
+      account_id,
+      offset,
+      limit,
+      desc,
+    );
+  }
 }
