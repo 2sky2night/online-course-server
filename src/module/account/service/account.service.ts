@@ -151,7 +151,15 @@ export class AccountService {
     accountId: number,
     { old_password, password }: UpdateAccountPasswordDto,
   ) {
-    const account = await this.findById(accountId, true);
+    const account = await this.accountRepository.findOne({
+      select: ["password"],
+      where: {
+        account_id: accountId,
+      },
+    });
+    if (!account) {
+      throw new NotFoundException(AccountMessage.account_not_found);
+    }
     // 查询旧密码是否正确
     const raw_password = passwordDecrypt(account.password);
     if (raw_password !== old_password) {
