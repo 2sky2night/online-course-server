@@ -4,6 +4,7 @@ import { UserMessage } from "@src/config/message";
 import type { UserRegisterType } from "@src/module/auth/user/entity";
 import { UpdateUserProfileDto } from "@src/module/user/dto";
 import { User } from "@src/module/user/entity";
+import { pageResult } from "@src/utils/tools";
 import { Repository } from "typeorm";
 
 @Injectable()
@@ -58,6 +59,32 @@ export class UserService {
     } else {
       return null;
     }
+  }
+
+  /**
+   * 查询所有前台用户
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async list(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.userRepository.findAndCount({
+      relations: { register_type: true },
+      order: {
+        created_time: desc ? "DESC" : "ASC",
+      },
+      skip: offset,
+      take: limit,
+    });
+    const users = list.map((user) => {
+      const register_type = user["__register_type__"];
+      Reflect.deleteProperty(user, "__register_type__");
+      return {
+        ...user,
+        register_type,
+      };
+    });
+    return pageResult(users, total, offset, limit);
   }
 
   /**

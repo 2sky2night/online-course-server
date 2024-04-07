@@ -23,3 +23,27 @@ export class UserDto extends BaseModel {
   @ApiProperty({ description: "用户年龄", example: 25 })
   age: number | null;
 }
+
+/**
+ * 用户注册类型dto
+ */
+export class UserRegisterTypeDto extends BaseModel {
+  /**
+   * 注册类型id
+   */
+  @ApiProperty({ description: "注册类型id" })
+  register_id: number;
+  /**
+   * 注册平台的名称
+   */
+  @ApiProperty({ description: "注册类型的名称" })
+  register_platform: string;
+}
+
+/**
+ * 用户基本信息(包含注册类型)
+ */
+export class UserInfoDto extends UserDto {
+  @ApiProperty({ description: "用户注册的类型", type: UserRegisterTypeDto })
+  register_type: UserRegisterTypeDto;
+}

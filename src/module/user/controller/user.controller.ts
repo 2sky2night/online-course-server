@@ -2,8 +2,10 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Inject,
   Patch,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import {
@@ -12,12 +14,20 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { ApiResponseEmpty, UserToken } from "@src/common/decorator";
-import { UserGuard } from "@src/common/guard";
+import {
+  ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
+  UserToken,
+} from "@src/common/decorator";
+import { AccountGuard, RoleGuard, UserGuard } from "@src/common/guard";
+import { BooleanPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { CommonMessage } from "@src/config/message";
+import { Roles } from "@src/module/account/module/role/enum";
 import { UpdateUserProfileDto } from "@src/module/user/dto";
 import { UserService } from "@src/module/user/service";
 import { ResponseDto } from "@src/types/docs";
+import { UserInfoDto } from "@src/types/docs/user";
 
 @ApiTags("User")
 @ApiBearerAuth() // 标明此控制器的所有接口需要Bearer类型的token验证
@@ -61,5 +71,27 @@ export class UserController {
     } else {
       throw new BadRequestException(CommonMessage.form_empty_error);
     }
+  }
+
+  /**
+   * 查询前台所有用户
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询前台所有用户",
+    description: "查询前台所有用户",
+  })
+  @ApiResponsePage(UserInfoDto)
+  @Role(Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  @Get("/list")
+  list(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.userService.list(offset, limit, desc);
   }
 }
