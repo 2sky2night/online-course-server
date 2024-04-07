@@ -5,6 +5,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import {
@@ -17,13 +18,17 @@ import {
   AccountToken,
   ApiResponse,
   ApiResponseEmpty,
+  ApiResponsePage,
+  Role,
 } from "@src/common/decorator";
-import { AccountGuard } from "@src/common/guard";
+import { AccountGuard, RoleGuard } from "@src/common/guard";
+import { BooleanPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
 import { CommonMessage } from "@src/config/message";
 import {
   UpdateAccountPasswordDto,
   UpdateAccountProfileDto,
 } from "@src/module/account/dto";
+import { Roles } from "@src/module/account/module/role/enum";
 import { AccountService } from "@src/module/account/service";
 import { ResponseDto } from "@src/types/docs";
 import { AccountInfoDto } from "@src/types/docs/account";
@@ -89,6 +94,28 @@ export class AccountController {
     } else {
       return this.accountService.updatePassword(accountId, passwordDto);
     }
+  }
+
+  /**
+   * 查询后台所有用户
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  @ApiOperation({
+    summary: "查询后台所有用户",
+    description: "查询后台所有用户",
+  })
+  @ApiResponsePage(AccountInfoDto)
+  @Role(Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  @Get("/list")
+  list(
+    @Query("offset", OffsetPipe) offset: number,
+    @Query("limit", LimitPipe) limit: number,
+    @Query("desc", BooleanPipe) desc: boolean,
+  ) {
+    return this.accountService.list(offset, limit, desc);
   }
 
   @ApiOperation({

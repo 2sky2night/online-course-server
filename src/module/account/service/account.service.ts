@@ -16,6 +16,7 @@ import {
 } from "@src/module/account/dto";
 import { Role } from "@src/module/account/module/role/entity";
 import { passwordDecrypt, passwordEncrypt } from "@src/utils/crypto";
+import { pageResult } from "@src/utils/tools";
 import type { Repository } from "typeorm";
 
 import { Account } from "../entity";
@@ -63,6 +64,33 @@ export class AccountService {
       // 账户名存在
       throw new BadRequestException(AccountMessage.name_exists);
     }
+  }
+
+  /**
+   * 查询所有后台用户
+   * @param offset
+   * @param limit
+   * @param desc
+   */
+  async list(offset: number, limit: number, desc: boolean) {
+    const [list, total] = await this.accountRepository.findAndCount({
+      take: limit,
+      skip: offset,
+      order: { created_time: desc ? "DESC" : "ASC" },
+      relations: {
+        role: true,
+      },
+    });
+    const accounts = list.map((item) => {
+      const role = item["__role__"];
+      Reflect.deleteProperty(item, "__role__");
+      Reflect.deleteProperty(item, "__has_role__");
+      return {
+        ...item,
+        role,
+      };
+    });
+    return pageResult(accounts, total, offset, limit);
   }
 
   /**
