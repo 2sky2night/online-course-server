@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class CpuDto {
   @ApiProperty({ description: "cpu核心数量", example: 12 })
-  cpu_count: number;
+  core_count: number;
   @ApiProperty({ description: "cpu使用率，百分比", example: 20 })
   usage: number;
 }
