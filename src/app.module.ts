@@ -8,6 +8,7 @@ import { RoleModule } from "@src/module/account/module/role/role.module";
 import { AuthAccountModule } from "@src/module/auth/account/auth-account.module";
 import { AuthUserModule } from "@src/module/auth/user/auth-user.module";
 import { FileModule } from "@src/module/file/file.module";
+import { MonitorModule } from "@src/module/monitor/monitor.module";
 import { RedisModule } from "@src/module/redis/redis.module";
 import { UploadModule } from "@src/module/upload/upload.module";
 import { UserModule } from "@src/module/user/user.module";
@@ -56,6 +57,7 @@ import OAuthConfig from "src/config/oauth";
     VideoFavoriteModule,
     CollectionSubscribeModule,
     VideoDanmuModule,
+    MonitorModule,
   ],
 })
 export class AppModule {}

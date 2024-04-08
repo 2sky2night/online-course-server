@@ -154,3 +154,10 @@ export const VideoMessage = Object.freeze({
 export const FileMessage = Object.freeze({
   file_not_exist: "此文件不存在!",
 });
+
+/**
+ * 监控模块的提示词
+ */
+export const MonitorMessage = Object.freeze({
+  system_call_error: "获取系统信息失败!",
+});
