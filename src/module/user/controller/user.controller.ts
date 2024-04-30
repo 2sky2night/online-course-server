@@ -15,6 +15,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import {
+  ApiResponse,
   ApiResponseEmpty,
   ApiResponsePage,
   Role,
@@ -93,5 +94,16 @@ export class UserController {
     @Query("desc", BooleanPipe) desc: boolean,
   ) {
     return this.userService.list(offset, limit, desc);
+  }
+
+  @ApiOperation({
+    summary: "获取用户信息",
+    description: "根据token获取用户信息",
+  })
+  @ApiResponse(UserInfoDto)
+  @UseGuards(UserGuard)
+  @Get("/info")
+  info(@UserToken("sub") user_id: number) {
+    return this.userService.info(user_id);
   }
 }

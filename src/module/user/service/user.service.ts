@@ -135,4 +135,22 @@ export class UserService {
     await this.userRepository.update(user.user_id, profileDto);
     return null;
   }
+
+  /**
+   * 根据用户id获取用户数据
+   * @param user_id
+   */
+  async info(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+      relations: {
+        register_type: true,
+      },
+    });
+    if (!user) throw new BadRequestException(UserMessage.user_not_found);
+    const register_type = Reflect.get(user, "__register_type__") || {};
+    Reflect.deleteProperty(user, "__register_type__");
+    Reflect.deleteProperty(user, "__has_register_type__");
+    return { ...user, register_type };
+  }
 }
