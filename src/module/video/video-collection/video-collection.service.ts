@@ -320,13 +320,15 @@ export class VideoCollectionService {
    */
   async info(collection_id: number) {
     const collection = await this.VCRepository.findOne({
-      relations: ["creator", "creator"],
+      relations: ["creator", "videos"],
       where: { collection_id },
     });
     if (collection === null) {
       throw new NotFoundException(VideoMessage.collection_not_exist);
     }
-    return collection;
+    const item = { ...collection, video_count: collection.videos?.length || 0 };
+    Reflect.deleteProperty(item, "videos");
+    return item;
   }
 
   /**
