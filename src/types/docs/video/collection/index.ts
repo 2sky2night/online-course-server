@@ -6,4 +6,7 @@ import { CollectionDto } from "@src/types/docs/video/common";
 export class CollectionDtoA extends CollectionDto {
   @ApiProperty({ description: "创建者", type: AccountDto })
   creator: AccountDto;
+
+  @ApiProperty({ description: "视频数量" })
+  video_count: number;
 }

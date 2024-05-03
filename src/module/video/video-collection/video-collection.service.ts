@@ -237,11 +237,20 @@ export class VideoCollectionService {
       })
       .orderBy("collection.created_time", desc ? "DESC" : "ASC")
       .leftJoinAndSelect("collection.creator", "creator")
+      .leftJoinAndSelect("collection.videos", "video")
       .skip(offset)
       .take(limit)
       .getManyAndCount();
+
     return {
-      list,
+      list: list.map((item) => {
+        const newItem = { ...item };
+        Reflect.deleteProperty(newItem, "videos");
+        return {
+          ...newItem,
+          video_count: item.videos.length,
+        };
+      }),
       total,
       has_more: total > limit + offset,
     };
