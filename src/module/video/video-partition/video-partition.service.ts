@@ -80,10 +80,15 @@ export class VideoPartitionService {
       take: limit,
       relations: {
         account: true,
+        videos: true,
       },
     });
     return {
-      list,
+      list: list.map((item) => {
+        const newItem = { ...item, video_count: item.videos.length };
+        Reflect.deleteProperty(newItem, "videos");
+        return newItem;
+      }),
       total,
       has_more: total > limit + offset,
     };
