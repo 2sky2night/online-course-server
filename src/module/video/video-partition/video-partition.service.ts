@@ -81,12 +81,18 @@ export class VideoPartitionService {
       relations: {
         account: true,
         videos: true,
+        videoCollections: true,
       },
     });
     return {
       list: list.map((item) => {
-        const newItem = { ...item, video_count: item.videos.length };
+        const newItem = {
+          ...item,
+          video_count: item.videos.length,
+          collection_count: item.videoCollections.length,
+        };
         Reflect.deleteProperty(newItem, "videos");
+        Reflect.deleteProperty(newItem, "videoCollections");
         return newItem;
       }),
       total,

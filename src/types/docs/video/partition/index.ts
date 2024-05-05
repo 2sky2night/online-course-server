@@ -8,4 +8,7 @@ export class PartitionInfoDto extends PartitionDto {
 
   @ApiProperty({ description: "分区下的视频数量" })
   video_count: number;
+
+  @ApiProperty({ description: "分区下的合集数量" })
+  collection_count: number;
 }
