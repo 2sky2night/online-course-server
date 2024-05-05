@@ -11,6 +11,12 @@ import {
 export class R_VideoListItemDto extends VideoDto {
   @ApiProperty({ description: "发布者信息" })
   publisher: AccountDto;
+
+  @ApiProperty({ description: "观看数量" })
+  view_count: number;
+
+  @ApiProperty({ description: "评论数量，不包含回复数量" })
+  comment_count: number;
 }
 
 // 视频动态数据

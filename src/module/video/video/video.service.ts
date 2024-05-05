@@ -309,7 +309,7 @@ export class VideoService {
    */
   async list(offset: number, limit: number, desc: boolean) {
     const [list, total] = await this.videoRepository.findAndCount({
-      relations: ["publisher"],
+      relations: ["publisher", "views", "comments"],
       skip: offset,
       take: limit,
       order: {
@@ -317,7 +317,7 @@ export class VideoService {
       },
     });
     return {
-      list,
+      list: this.videoListFormat(list),
       total,
       has_more: total > offset + limit,
     };
@@ -379,6 +379,8 @@ export class VideoService {
     const [list, total] = await this.videoRepository
       .createQueryBuilder("video")
       .leftJoinAndSelect("video.publisher", "publisher")
+      .leftJoinAndSelect("video.views", "view")
+      .leftJoinAndSelect("video.comments", "comment")
       .where("video.partition_id = :partition_id", {
         partition_id: partition.partition_id,
       })
@@ -387,7 +389,7 @@ export class VideoService {
       .take(limit)
       .getManyAndCount();
     return {
-      list,
+      list: this.videoListFormat(list),
       total,
       has_more: total > limit + offset,
     };
@@ -863,6 +865,8 @@ export class VideoService {
     const [list, total] = await this.videoRepository
       .createQueryBuilder("video")
       .leftJoinAndSelect("video.collections", "collection")
+      .leftJoinAndSelect("video.views", "view")
+      .leftJoinAndSelect("video.comments", "comment")
       .where("collection.collection_id = :collection_id", { collection_id }) // 非常奇怪，这样查询就是对的
       .leftJoinAndSelect("video.publisher", "publisher")
       .skip(offset)
@@ -870,7 +874,8 @@ export class VideoService {
       .orderBy("video.created_time", desc ? "DESC" : "ASC")
       .getManyAndCount();
     list.forEach((item) => Reflect.deleteProperty(item, "collections"));
-    return [list, total] as [Video[], number];
+
+    return [this.videoListFormat(list), total] as [Video[], number];
   }
 
   /**
@@ -906,5 +911,22 @@ export class VideoService {
       // 角色非老师
       throw new BadRequestException();
     }
+  }
+
+  /**
+   * 格式化视频列表
+   * @param list
+   */
+  videoListFormat(list: Video[]) {
+    return list.map((item) => {
+      const newItem = {
+        ...item,
+        view_count: item.views.length,
+        comment_count: item.comments.length,
+      };
+      Reflect.deleteProperty(newItem, "views");
+      Reflect.deleteProperty(newItem, "comments");
+      return newItem;
+    });
   }
 }
