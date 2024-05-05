@@ -274,6 +274,7 @@ export class VideoService {
       .leftJoinAndSelect("video.partition", "partition") // 视频分区
       .leftJoinAndSelect("video.tagRelation", "tagRelation") // 视频与标签关系
       .leftJoinAndSelect("tagRelation.tag", "tag") // 标签信息
+      .leftJoinAndSelect("video.comments", "comment") // 评论信息
       .getOne();
     const source = info.file.m3u8; // 播放源信息
     const tags = info.tagRelation.map((item) => item.tag); // 视频标签
@@ -287,8 +288,13 @@ export class VideoService {
       .getCount();
     // 收藏数量
     const stars = await this.VFService.videoStarCount(video_id);
+    // 评论数量
+    const comments = info.comments.length;
+
     Reflect.deleteProperty(info, "file");
     Reflect.deleteProperty(info, "tagRelation");
+    Reflect.deleteProperty(info, "comments");
+
     return {
       ...info,
       source,
@@ -297,6 +303,7 @@ export class VideoService {
         views,
         likes,
         stars,
+        comments,
       },
     };
   }

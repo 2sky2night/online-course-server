@@ -29,6 +29,9 @@ export class VideoDataCountDto {
 
   @ApiProperty({ description: "视频收藏数", example: 123 })
   stars: number;
+
+  @ApiProperty({ description: "评论数量，不包括回复数量", example: 123 })
+  comments: number;
 }
 
 // 视频详情信息
