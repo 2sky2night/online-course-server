@@ -44,6 +44,7 @@ import {
 import { VideoService } from "@src/module/video/video/video.service";
 import { ResponseDto } from "@src/types/docs";
 import {
+  R_GetVideoStatus,
   R_VideoInfoDto,
   R_VideoListItemDto,
   R_VideoViewsCount,
@@ -410,7 +411,7 @@ export class VideoController {
     summary: "查询当前用户对视频的态度(点赞、收藏状态)",
     description: "查询当前用户对视频的态度(点赞、收藏状态)",
   })
-  @ApiResponse(R_VideoWatchCount)
+  @ApiResponse(R_GetVideoStatus)
   @Get(":vid/status")
   @UseGuards(UserGuard)
   getVideoStatus(
