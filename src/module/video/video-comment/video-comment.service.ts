@@ -82,14 +82,21 @@ export class VideoCommentService {
       .orderBy("comment.created_time", desc ? "DESC" : "ASC")
       .select(["comment"])
       .leftJoinAndSelect("comment.user", "user")
+      .leftJoinAndSelect("comment.replies", "reply")
       .skip(offset)
       .take(limit)
       .getManyAndCount();
-    return {
-      list,
+
+    return pageResult(
+      list.map((item) => {
+        const newItem = { ...item, reply_count: item.replies.length };
+        Reflect.deleteProperty(newItem, "replies");
+        return newItem;
+      }),
       total,
-      has_more: total > offset + limit,
-    };
+      offset,
+      limit,
+    );
   }
 
   /**
