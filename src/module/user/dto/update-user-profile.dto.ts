@@ -54,6 +54,6 @@ export class UpdateUserProfileDto {
     required: false,
   })
   @IsOptional()
-  @IsBoolean({ message: "年龄必须是布尔值!" })
+  @IsBoolean({ message: "性别必须是布尔值!" })
   gender?: boolean;
 }
