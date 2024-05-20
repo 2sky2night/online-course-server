@@ -20,11 +20,9 @@ import {
   ApiResponse,
   ApiResponseEmpty,
   ApiResponsePage,
-  Role,
 } from "@src/common/decorator";
 import { AccountGuard, RoleGuard } from "@src/common/guard";
 import { BooleanPipe, IntPipe, LimitPipe, OffsetPipe } from "@src/common/pipe";
-import { Roles } from "@src/module/account/module/role/enum";
 import {
   CreatePartitionDto,
   UpdatePartitionDto,
@@ -59,7 +57,7 @@ export class VideoPartitionController {
   })
   @ApiResponseEmpty()
   @Post()
-  @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
+  // @Role(Roles.ADMIN, Roles.SUPER_ADMIN) 放开老师也可以创建分区
   @UseGuards(AccountGuard, RoleGuard)
   addPartition(
     @AccountToken("sub") account_id: number,
@@ -80,7 +78,7 @@ export class VideoPartitionController {
   })
   @ApiResponseEmpty()
   @Patch(":pid")
-  @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
+  // @Role(Roles.ADMIN, Roles.SUPER_ADMIN) 放开老师也可以修改分区
   @UseGuards(AccountGuard, RoleGuard)
   updatePartition(
     @AccountToken("sub") account_id: number,
