@@ -133,9 +133,13 @@ export class VideoPartitionController {
   })
   @ApiResponseEmpty()
   @Delete(":pid")
-  @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
-  @UseGuards(AccountGuard, RoleGuard)
-  deletePartition(@Param("pid") partition_id: number) {
-    return this.service.deletePartition(partition_id);
+  // @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
+  // @UseGuards(AccountGuard, RoleGuard)
+  @UseGuards(AccountGuard) // 老师也可以删除分区
+  deletePartition(
+    @Param("pid") partition_id: number,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.service.deletePartition(partition_id, account_id);
   }
 }

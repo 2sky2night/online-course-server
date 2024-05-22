@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -7,6 +8,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { VideoMessage } from "@src/config/message";
 import { Account } from "@src/module/account/entity";
+import { Roles } from "@src/module/account/module/role/enum";
 import { AccountService } from "@src/module/account/service";
 import { VideoPartition } from "@src/module/video/video-partition/entity";
 import { Repository } from "typeorm";
@@ -149,10 +151,24 @@ export class VideoPartitionService {
   /**
    * 软删除分区
    * @param partition_id 分区id
+   * @param account_id 账户id
    */
-  async deletePartition(partition_id: number) {
-    const partition = await this.findByIdOrFail(partition_id);
-    await this.VPRepository.softRemove(partition);
-    return null;
+  async deletePartition(partition_id: number, account_id: number) {
+    const partition = await this.VPRepository.findOne({
+      where: { partition_id },
+      relations: { account: true },
+    });
+    if (!partition)
+      throw new NotFoundException(VideoMessage.partition_not_exist);
+    const account = await this.accountService.getAccountInfo(account_id);
+    if (
+      account.role.role_name === Roles.SUPER_ADMIN || // 是管理人员
+      account.role.role_name === Roles.ADMIN || // 是管理人员
+      account.account_id === partition.account.account_id // 是创建者
+    ) {
+      await this.VPRepository.softRemove(partition);
+      return null;
+    }
+    throw new ForbiddenException("无权限");
   }
 }
