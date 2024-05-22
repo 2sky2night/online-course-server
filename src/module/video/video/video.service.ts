@@ -2,6 +2,7 @@ import { basename } from "node:path";
 
 import {
   BadRequestException,
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -935,5 +936,40 @@ export class VideoService {
       Reflect.deleteProperty(newItem, "comments");
       return newItem;
     });
+  }
+
+  /**
+   * 当前用户是否有权限操作视频
+   * @param accountId 后台账户id
+   * @param videoId 视频id
+   * @param toAdmin 是否给管理员开放
+   */
+  async hasPermission(accountId: number, videoId: number, toAdmin = false) {
+    const video = await this.videoRepository.findOne({
+      where: { video_id: videoId },
+      relations: { publisher: true },
+    });
+    if (!video) throw new NotFoundException(VideoMessage.video_not_exist);
+    const { account_id, role: { role_name } = { role_name: "" } } =
+      await this.accountService.getAccountInfo(accountId);
+    if (
+      account_id === video.publisher.account_id || // 是视频发布者
+      (toAdmin &&
+        (role_name === Roles.SUPER_ADMIN || role_name === Roles.ADMIN)) // 是管理人员
+    ) {
+      return video;
+    }
+    throw new ForbiddenException("无权限");
+  }
+
+  /**
+   * 软删除视频
+   * @param video_id 视频id
+   * @param account_id 账户id
+   */
+  async deleteVideo(video_id: number, account_id: number) {
+    const video = await this.hasPermission(account_id, video_id, true);
+    await this.videoRepository.softRemove(video);
+    return null;
   }
 }
