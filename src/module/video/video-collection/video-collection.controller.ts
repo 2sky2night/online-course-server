@@ -305,4 +305,18 @@ export class VideoCollectionController {
   ) {
     return this.VCService.videoList(collection_id, offset, limit, desc);
   }
+
+  @ApiOperation({
+    summary: "删除合集",
+    description: "软删除合集",
+  })
+  @ApiResponseEmpty()
+  @UseGuards(AccountGuard)
+  @Delete(":cid")
+  deleteCollection(
+    @Param("cid") collection_id: number,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.VCService.deleteCollection(collection_id, account_id);
+  }
 }

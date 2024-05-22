@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -8,6 +9,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { VideoMessage } from "@src/config/message";
 import { Account } from "@src/module/account/entity";
+import { Roles } from "@src/module/account/module/role/enum";
 import { AccountService } from "@src/module/account/service";
 import { Video } from "@src/module/video/video/entity";
 import { VideoService } from "@src/module/video/video/video.service";
@@ -560,5 +562,52 @@ export class VideoCollectionService {
       desc,
     );
     return pageResult(list, total, offset, limit);
+  }
+
+  /**
+   * 是否有权限操作合集
+   * @param collectionId 合集id
+   * @param accountId 账户id
+   * @param toAdmin 是否对管理员开放
+   */
+  async hasPermission(
+    collectionId: number,
+    accountId: number,
+    toAdmin = false,
+  ) {
+    const collection = await this.VCRepository.findOne({
+      where: { collection_id: collectionId },
+      relations: { creator: true },
+    });
+    if (!collection)
+      throw new NotFoundException(VideoMessage.collection_not_exist);
+    const { account_id, role: { role_name } = { role_name: "" } } =
+      await this.accountService.getAccountInfo(accountId);
+    if (
+      account_id === collection.creator.account_id || // 是合集创建者
+      (toAdmin &&
+        (role_name === Roles.SUPER_ADMIN || role_name === Roles.ADMIN)) // 是管理人员
+    ) {
+      return collection;
+    }
+    throw new ForbiddenException("无权限");
+  }
+
+  /**
+   * 软删除合集
+   * @param collection_id 合集id
+   * @param account_id 账户id
+   */
+  async deleteCollection(
+    collection_id: number,
+    account_id: number,
+  ): Promise<null> {
+    const collection = await this.hasPermission(
+      collection_id,
+      account_id,
+      true,
+    );
+    await this.VCRepository.softRemove(collection);
+    return null;
   }
 }
