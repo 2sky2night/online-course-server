@@ -440,4 +440,18 @@ export class VideoController {
       desc,
     );
   }
+
+  @ApiOperation({
+    summary: "删除视频",
+    description: "软删除视频",
+  })
+  @ApiResponseEmpty()
+  @Delete(":vid")
+  @UseGuards(AccountGuard)
+  deleteVideo(
+    @Param("vid", new IntPipe("vid")) video_id: number,
+    @AccountToken("sub") account_id: number,
+  ) {
+    return this.videoService.deleteVideo(video_id, account_id);
+  }
 }

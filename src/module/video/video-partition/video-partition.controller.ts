@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -124,5 +125,17 @@ export class VideoPartitionController {
   @Get(":pid")
   info(@Param("pid", new IntPipe("pid")) partition_id: number) {
     return this.service.info(partition_id);
+  }
+
+  @ApiOperation({
+    summary: "删除分区",
+    description: "软删除分区",
+  })
+  @ApiResponseEmpty()
+  @Delete(":pid")
+  @Role(Roles.ADMIN, Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  deletePartition(@Param("pid") partition_id: number) {
+    return this.service.deletePartition(partition_id);
   }
 }
