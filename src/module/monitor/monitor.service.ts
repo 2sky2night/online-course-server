@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "node:fs";
+import { env } from "node:process";
+
 import {
   Injectable,
   InternalServerErrorException,
@@ -9,6 +12,8 @@ import * as si from "systeminformation";
 
 @Injectable()
 export class MonitorService {
+  private readonly errorLogPath = env.ERROR_LOG_PATH;
+
   constructor(
     private readonly health: HealthCheckService,
     private readonly db: TypeOrmHealthIndicator,
@@ -64,6 +69,19 @@ export class MonitorService {
     } catch (e) {
       Logger.error(e);
       throw new InternalServerErrorException(MonitorMessage.system_call_error);
+    }
+  }
+
+  getErrorLog() {
+    if (existsSync(this.errorLogPath)) {
+      try {
+        const logStr = readFileSync(this.errorLogPath, { encoding: "utf8" });
+        return JSON.parse(`[${logStr.slice(0, logStr.length - 1)}]`);
+      } catch (e) {
+        throw new InternalServerErrorException("读取日志文件失败!");
+      }
+    } else {
+      throw new InternalServerErrorException("日志文件路径不存在!");
     }
   }
 }

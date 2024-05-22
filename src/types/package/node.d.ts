@@ -156,5 +156,9 @@ declare namespace NodeJS {
      * 数据库密码存储路径
      */
     DATABASE_PASSWORD_PATH: string;
+    /**
+     * 错误日志的路径
+     */
+    ERROR_LOG_PATH: string;
   }
 }
