@@ -145,4 +145,14 @@ export class VideoPartitionService {
     }
     throw new NotFoundException(VideoMessage.partition_not_exist);
   }
+
+  /**
+   * 软删除分区
+   * @param partition_id 分区id
+   */
+  async deletePartition(partition_id: number) {
+    const partition = await this.findByIdOrFail(partition_id);
+    await this.VPRepository.softRemove(partition);
+    return null;
+  }
 }
