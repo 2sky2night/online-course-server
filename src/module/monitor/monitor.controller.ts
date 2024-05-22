@@ -47,4 +47,11 @@ export class MonitorController {
   getSystemUsage() {
     return this.service.getSystemUsage();
   }
+
+  @Get("/error-log")
+  @Role(Roles.SUPER_ADMIN)
+  @UseGuards(AccountGuard, RoleGuard)
+  getErrorLog() {
+    return this.service.getErrorLog();
+  }
 }
